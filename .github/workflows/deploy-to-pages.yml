@@ -1,5 +1,7 @@
 name: Deploy to GitHub Pages
-on: [ push ]
+on:
+  push:
+    branches: [ main ]
 jobs:
   build:
     uses: ./.github/workflows/build.yml
