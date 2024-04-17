@@ -1,0 +1,17 @@
+name: Build
+on:
+  workflow_call:
+    inputs:
+      upload-pages-artifact:
+        type: boolean
+        required: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./build.sh
+      - if: ${{ inputs.upload-pages-artifact }}
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: build/
