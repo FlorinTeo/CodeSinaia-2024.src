@@ -1,0 +1,66 @@
+<head>
+    <meta charset="utf-8">
+    <title>Graph Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="js/graph/node.js?v=6.0"></script>
+    <script type="module" src="js/graph/graph.js?v=6.0"></script>
+    <script type="module" src="js/queue/queue.js?v=6.0"></script>
+    <script type="module" src="js/queue/item.js?v=6.0"></script>
+    <script type="module" src="js/main.js?v=6.0"></script>
+    <script type="module" src="js/graphics.js?v=6.0"></script>
+    <script type="module" src="js/contextMenu.js?v=6.0"></script>
+</head>
+<body  class="frame">
+    <div id="hMainDiv" class="canvas">
+        <canvas id="hMainCanvas"></canvas>
+        <div id="hNodeState" class="canvasStatus"></div>
+    </div>
+
+    <div id="hCtxMenuCanvas" class="ctxmenu">
+        <p id="hCtxMenuCanvas_ResetS">
+            <label>Reset states___</label>
+            <input type="text" autocomplete="nope">
+        </p>
+        <p id="hCtxMenuCanvas_ResetC">Reset colors</p>
+        <p id="hCtxMenuCanvas_ResetQ">Reset queue</p>
+        <p id="hCtxMenuCanvas_ResetG">Reset graph</p>
+        <div class="menu-separator"></div>
+        <p id="hCtxMenuCanvas_XFer">Transfer graph</p>
+        <div class="menu-separator"></div>
+        <p id="hCtxMenuCanvas_Help">Help</p>
+    </div>
+
+    <div id="hCtxMenuNode" class="ctxmenu">
+        <p id="hCtxMenuNode_Label">
+            <label>Label___</label>
+            <input id="hInput_NodeL" type="text" autocomplete="nope">
+        </p>
+        <p id="hCtxMenuNode_State">
+            <label>State___</label>
+            <input id="hInput_NodeS" type="text" autocomplete="nope">
+        </p>
+        <div class="menu-separator"></div>
+        <p id="hCtxMenuNode_Enqueue">Enqueue</p>
+        <p id="hCtxMenuNode_Dequeue">Dequeue</p>
+    </div>
+
+    <dialog id="hXferDialog" class="dialog">
+        <div id="hXferTitleBar" class="textBar">
+            <img id="hXferClose" src="res/window-close.png" alt="Close" style="width:24px;height:24px;">
+        </div>
+        <div class="text">
+            <textarea id="hXferText">This is where the graph goes.</textarea>
+        </div>
+        <div class="textStatus">
+            <div>
+                <input id="hXferBtn_Copy" type="image" src="res/clip-copy.png" title="Copy" alt="Copy" style="width:24px;height:24px;">
+                <input id="hXferBtn_Refresh" type="image" src="res/refresh.png" title="Refresh" alt="Refresh" style="width:24px;height:24px;">
+                <input id="hXferBtn_Paste" type="image" src="res/clip-paste.png" title="Paste" alt="Paste" style="width:24px;height:24px;">
+            </div>
+            <div>
+                <input id="hXferBtn_In" type="image" src="res/xfer-in.png" title="Xfer In" alt="XferIn" style="width:24px;height:24px;">
+                <input id="hXferBtn_Out" type="image" src="res/xfer-out.png" title="Xfer Out" alt="XferOut" style="width:24px;height:24px;">
+            </div>
+        </div>
+    </dialog>
+</body>
