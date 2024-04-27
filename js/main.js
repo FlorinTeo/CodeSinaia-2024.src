@@ -54,6 +54,7 @@ repaint();
 // #region - window/dialog event handlers
 // state variables to control UI actions
 let clickedNode = null;
+let ctrlClicked = false;
 let dragging = false;
 
 // browser resize event handler
@@ -84,6 +85,7 @@ hCanvas.addEventListener('mousedown', (event) => {
   let x = event.clientX - hCanvas.offsetLeft;
   let y = event.clientY - hCanvas.offsetTop;
   clickedNode = graph.getNode(x, y);
+  ctrlClicked = event.ctrlKey;
 });
 
 // mouse move event handler
@@ -93,15 +95,26 @@ hCanvas.addEventListener('mousemove', (event) => {
   let y = event.clientY - hCanvas.offsetTop;
   let hoverNode = graph.getNode(x, y);
   dragging = (event.button == 0) && (clickedNode != null);
-  if (dragging) {
-    repaint();
-    if (hoverNode != null) {
-      graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 'black');
-    } else {
-      graphics.drawLine(clickedNode.x, clickedNode.y, x, y, RADIUS, 0, '#CCCCCC');
-    }
-  } else {
+
+  if (!dragging) {
+    // if not dragging, just show the state of the node the mouse may be hovering over
     hNodeState.innerHTML = (hoverNode != null) ? hoverNode.toString(true) : '';
+  } else if (clickedNode != null) {
+    // in the middle of {drag} that started over a node (clickedNode)
+    if (ctrlClicked) {
+      // {ctrl-drag} => draw a lead line since we may be creating/removing an edge.
+      repaint();
+      if (hoverNode != null) {
+        graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 'black');
+      } else {
+        graphics.drawLine(clickedNode.x, clickedNode.y, x, y, RADIUS, 0, '#CCCCCC');
+      }
+    } else {
+      // simple {drag} => just move the node following the mouse
+      clickedNode.x = x;
+      clickedNode.y = y;
+      repaint();
+    }
   }
 });
 
@@ -111,32 +124,32 @@ hCanvas.addEventListener('mouseup', (event) => {
   let y = event.clientY - hCanvas.offsetTop;
   let droppedNode = graph.getNode(x, y);
 
-  // check if  we're dropping over an existent node
-  if (droppedNode != null) {
-    // dropped over an existent node
-    // check if we were dragging or just clicking
-    if (dragging) {
-      // dragging over an existent node => reset edge from clickedNode to droppedNode
-      graph.resetEdge(clickedNode, droppedNode)
-    } else if (event.button == 0) { // left-click => remove node
+  // if this is not related to a "left-button-click", nothing to do
+  if (!event.button == 0) {
+    return;
+  }
+
+  // check if this is the end of a {drag} or a {click} event
+  if (dragging) {
+    // dragging makes sense only if one node (clickedNode) is ctrl-dragged over another (droppedNode)
+    // otherwise, clickedNode move was taken care of by the mousemove handler.
+    if (ctrlClicked && clickedNode != null && droppedNode != null) {
+      // {control-drag} over an existent node => reset edge from clickedNode to droppedNode
+      graph.resetEdge(clickedNode, droppedNode);
+    }
+    dragging = false;
+  } else if (ctrlClicked) {
+    // {control-click} => either add a new node, or remove an existent one
+    if (droppedNode != null) {
+      // {control-click} over existent node => remove node
       queue.clear();
       graph.removeNode(droppedNode);
-    }
-  } else {
-    // dropped over an empty area
-    // check if we were dragging or just clicking
-    if (dragging) {
-      // dragging over an empty area => move the node clicked at the begining
-      clickedNode.x = x;
-      clickedNode.y = y;
-    } else if (event.button == 0) { // left-click => add node
+    } else {
+      // {click} over an empty areay => add node
       graph.addNode(nextLabel(), x, y);
     }
   }
-  // in all cases repaint the graph
   repaint();
-  // and reset dragging state
-  dragging = false;
   clickedNode = null;
 });
 
