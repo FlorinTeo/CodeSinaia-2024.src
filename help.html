@@ -1,0 +1,101 @@
+<head>
+    <meta charset="utf-8">
+    <title>Graph Visualizer help</title>
+    <link rel="stylesheet" href="help.css">
+</head>
+<body>
+    <div>
+        <h2>Graph Visualizer reference</h2>
+    </div>
+    <b>Graph Visualizer</b> allows creating, editing, serializing and restoring a visual representation of a generic Graph. 
+    Starting with an empty canvas you can use a combination of mouse clicks, moves, drags and wheel actions to add and remove nodes,
+    connect them with edges, reposition them and customize their color and label.
+    A context menu, allows editing node properties and using a few abstract datastructure operations to simulate typical graph algorithms.
+    <p>
+    The list of actions that can be used in the <b>Graph Visualiser</b> are as follow:
+    </p>
+    <u><b>Basic operations:</b></u>
+    <table>
+        <tr>
+            <td class="icons">
+                <img src="res/ctrl-key.png" width="50px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/mouse-left-click.png" width="40px">
+            </td>
+            <td>
+                <b>Add a Node</b><br>
+                On an open area on the canvas <b>[left-click]</b> while pressing the <b>[Ctrl]</b> key.</td>
+        </tr>
+        <tr>
+            <td class="icons">
+                <img src="res/node-blue.png" width="50px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/ctrl-key.png" width="50px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/mouse-left-click.png" width="40px">
+            </td>
+            <td>
+                <b>Remove a Node</b><br>
+                Move the cursor over a Node, then <b>[left-click]</b> while pressing the <b>[Ctrl]</b> key.
+                Removing a Node removes all outgoing and incoming edges and clears the content of the auxiliary datastructures.
+            </td>
+        </tr>
+        <tr>
+            <td class="icons">
+                <img src="res/node-blue.png" width="50px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/mouse-move.png" width="36px">
+            </td>
+            <td>
+                <b>Reposition a Node</b><br>
+                Point to a Node, then <b>[drag]</b> it to a new position on the canvas.
+                The Node remains attached to the Graph and preserves all its properties.
+            </td>
+        </tr>
+        <tr>
+            <td class="icons">
+                <img src="res/node-red.png" width="50px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/mouse-wheel.png" width="45px">
+
+            </td>
+            <td>
+                <b>Change the color of a Node</b><br>
+                While hovering over a Node, <b>[scroll down]</b> with the mouse wheel to  loop through
+                five predefined colors: [<span style="color:blue">blue</span>, <span style="color:red">red</span>,
+                <span style="color:green">green</span>, <span style="color:magenta">magenta</span>, <span style="color:orange">yellow</span>] or
+                <b>[scroll up]</b> to reset the color of the Node to the default <span style="color:gray">gray</span>.
+            </td>
+        </tr>
+        <tr>
+            <td class="icons">
+                <img src="res/node-gray.png" width="50px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/ctrl-key.png" width="50px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/mouse-wheel.png" width="45px">
+
+            </td>
+            <td>
+                <b>Change the label of a Node</b><br>
+                While hovering over a Node, press the <b>[Ctrl]</b> key while </b><b>[scroll up]</b> or <b>[scroll down]</b> with the mouse wheel.
+                The label of the node will loop through available letters in the range [1-9A-Z]. If no letter is available, the default '?' label
+                will be used.
+            </td>
+        </tr>
+        <tr>
+            <td class="icons">
+                <img src="res/ctrl-key.png" width="50px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/edge-add.png" width="80px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/mouse-move.png" width="36px">
+            </td>
+            <td>
+                <b>Add/Remove an Edge</b><br>
+                Move the cursor over a Node, then, while pressing <b>[Ctrl]</b> key, <b>[drag]</b> a line over another Node.
+                A directed Edge will connect the first Node to the Second, or, if the Edge existed already, it will be removed.
+            </td>
+        </tr>
+    </table>
+</body>
