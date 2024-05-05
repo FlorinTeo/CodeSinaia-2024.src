@@ -56,6 +56,27 @@ export class Queue {
         return item.node;
     }
 
+    removeNode(node) {
+        if (this.#size <= 1) {
+            this.#size = 0;
+            this.#head = null;
+            return;
+        }
+        let item = this.#head;
+        do {
+            if (item.node == node) {
+                item.prev.next = item.next;
+                item.next.prev = item.prev;
+                this.#size--;
+                break;
+            }
+            item = item.next;
+        } while(item != this.#head);
+        if (this.#head == item) {
+            this.#head = item.next;
+        }
+    }
+
     peek() {
         return (this.#head != null) ? this.#head.node : null;
     }
