@@ -142,7 +142,7 @@ hCanvas.addEventListener('mouseup', (event) => {
     // {control-click} => either add a new node, or remove an existent one
     if (droppedNode != null) {
       // {control-click} over existent node => remove node
-      queue.clear();
+      queue.removeNode(droppedNode);
       graph.removeNode(droppedNode);
     } else {
       // {click} over an empty areay => add node
