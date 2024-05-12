@@ -1,6 +1,6 @@
 import { Item } from "./item.js"
 
-export class Queue {
+export class Stack {
     /*
     Class members:
         graphics  - the graphics engine
@@ -19,21 +19,20 @@ export class Queue {
 
     repaint() {
         if (this.#size > 0) {
-            let crtX = this.#graphics.width - 10;
-            let crtY = 10;
-            crtX -= this.#graphics.drawVMargin(crtX, crtY, 20, 'black') + 4;
+            let crtX = this.#graphics.width - 20;
+            let crtY = this.#graphics.height - 30;
+            //crtY -= this.#graphics.drawVMargin(crtX, 10, 20, 'black') + 4;
             let crtItem = this.#head.prev;
             while(crtItem != this.#head) {
-                crtX -= crtItem.repaint(crtX, crtY, 20);
-                crtX -= this.#graphics.drawVMargin(crtX, crtY, 20, 'gray') + 4;
+                crtItem.repaint(crtX, crtY, 20, 'gray');
+                crtY -= 20;
                 crtItem = crtItem.prev;
-            } 
-            crtX -= this.#head.repaint(crtX, crtY, 20);
-            crtX -= this.#graphics.drawVMargin(crtX, crtY, 20, 'black') + 4;
+            }             
+            crtY -= this.#head.repaint(crtX, crtY, 20, 'black');
         }
     }
 
-    enqueue(node) {
+    push(node) {
         let item = new Item(this.#graphics, node);
 
         if (this.#head == null) {
@@ -45,11 +44,12 @@ export class Queue {
             item.prev = this.#head.prev;
             item.next.prev = item;
             item.prev.next = item;
+            this.#head = item;
         }
         this.#size++;
     }
 
-    dequeue() {
+    pop() {
         if (this.#head == null) {
             return null;
         }
