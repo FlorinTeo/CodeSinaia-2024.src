@@ -1,4 +1,5 @@
 import { Item } from "./item.js"
+
 export class Queue {
     /*
     Class members:
@@ -6,6 +7,7 @@ export class Queue {
         head    - the head item in the Queue double linked list (or null if queue is empty)
         size    - the number of items in the queue
     */
+    #graphics;
     #head;
     #size;
     
