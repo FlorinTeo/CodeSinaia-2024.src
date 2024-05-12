@@ -59,23 +59,27 @@ export class Queue {
     }
 
     removeNode(node) {
-        if (this.#size <= 1) {
-            this.#size = 0;
-            this.#head = null;
+        if (this.#head == null) {
             return;
         }
-        let item = this.#head;
-        do {
+        let item = this.#head.next;
+        while(item != this.#head) {
             if (item.node == node) {
-                item.prev.next = item.next;
                 item.next.prev = item.prev;
+                item.prev.next = item.next;
                 this.#size--;
-                break;
             }
             item = item.next;
-        } while(item != this.#head);
-        if (this.#head == item) {
-            this.#head = item.next;
+        }
+        if (this.#head.node == node) {
+            if (this.#size == 1) {
+                this.#head = null;
+            } else {
+                this.#head.prev.next = this.#head.next;
+                this.#head.next.prev = this.#head.prev;
+                this.#head = this.#head.next;
+            }
+            this.#size--;
         }
     }
 
