@@ -9,9 +9,11 @@ export class Graph {
         graphics  - the graphics engine
         nodes     - Map of <label, Node> entries
     */
+    #nodes;
+    #graphics;
 
     constructor(graphics) {
-        this.graphics = graphics;
+        this.#graphics = graphics;
         this.clear();
     }
 
@@ -23,7 +25,7 @@ export class Graph {
 
     traverse(lambda) {
         // reset all the node markers
-        for(const node of this.nodes) {
+        for(const node of this.#nodes) {
             node.marker = 0;
         }
         // repeteadly ...
@@ -31,7 +33,7 @@ export class Graph {
         while (!done) {
             done = true;
             // look for an un-marked node
-            for(const node of this.nodes) {
+            for(const node of this.#nodes) {
                 // and if found, traverse the node and do it all over again
                 if (node.marker == 0) {
                     node.traverse(lambda);
@@ -49,23 +51,23 @@ export class Graph {
     }
 
     getNode(x, y) {
-        let node = this.nodes.find(n => n.isTarget(x, y));
+        let node = this.#nodes.find(n => n.isTarget(x, y));
         return (node != undefined) ? node : null;
     }
 
     addNode(label, x, y) {
-        let node = new Node(this.graphics, label, x, y);
+        let node = new Node(this.#graphics, label, x, y);
         if (node )
-        this.nodes.push(node);
+        this.#nodes.push(node);
     }
 
     removeNode(node) {
-        for(const otherNode of this.nodes) {
+        for(const otherNode of this.#nodes) {
             if (otherNode.hasEdge(node)) {
                 otherNode.removeEdge(node);
             }
         }
-        this.nodes = this.nodes.filter(n => !(n === node));
+        this.#nodes = this.#nodes.filter(n => !(n === node));
     }
 
     resetEdge(fromNode, toNode) {
@@ -77,7 +79,7 @@ export class Graph {
     }
 
     matchAll(fMatch) {
-        for(const node of this.nodes) {
+        for(const node of this.#nodes) {
             if (!fMatch(node)) {
                 return false;
             }
@@ -86,16 +88,16 @@ export class Graph {
     }
 
     size() {
-        return this.nodes.length;
+        return this.#nodes.length;
     }
 
     clear() {
-        this.nodes = [];
+        this.#nodes = [];
     }
 
     toString(brief = false) {
         let output = '';
-        for(const node of this.nodes) {
+        for(const node of this.#nodes) {
             output += node.toString(brief);
             output += '\n';
         }
@@ -114,7 +116,7 @@ export class Graph {
                 alert("Input is not a serialized graph!");
                 return false;
             }
-            newGraph.set(label, new Node(this.graphics, label, x, y));
+            newGraph.set(label, new Node(this.#graphics, label, x, y));
             newEdges.set(label, toLabels);
         }
 
@@ -128,7 +130,7 @@ export class Graph {
             }
         }
 
-        this.nodes = Array.from(newGraph.values());
+        this.#nodes = Array.from(newGraph.values());
         return true;
     }
 }

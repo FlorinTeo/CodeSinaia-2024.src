@@ -12,15 +12,15 @@ export class Queue {
     #size;
     
     constructor(graphics) {
-        this.graphics = graphics;
+        this.#graphics = graphics;
         this.#head = null;
         this.#size = 0;
     }
 
     repaint() {
         if (this.#size > 0) {
-            let crtX = this.graphics.width - 10;
-            crtX -= this.graphics.drawVMargin(crtX, 10, 20, 'black') + 4;
+            let crtX = this.#graphics.width - 10;
+            crtX -= this.#graphics.drawVMargin(crtX, 10, 20, 'black') + 4;
             let crtItem = this.#head.prev;
             while(crtItem != this.#head) {
                 crtX -= crtItem.repaint(crtX, 10, 20, 'gray');
@@ -31,7 +31,7 @@ export class Queue {
     }
 
     enqueue(node) {
-        let item = new Item(this.graphics, node);
+        let item = new Item(this.#graphics, node);
 
         if (this.#head == null) {
             item.next = item;

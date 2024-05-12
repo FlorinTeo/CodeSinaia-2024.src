@@ -106,6 +106,17 @@ export class Graphics {
         return 4;
     }
 
+    /**
+     * Writes the given text in an area of the canvas identified by
+     * its top-right x, y corner, and vertically allign to the given
+     * hight down from the top-right corner.
+     * @param {*} fromX top-right x coordinate of the text area.
+     * @param {*} fromY top-right y coordinate of the text area.
+     * @param {*} height vertical text alignment down from the top-right corner.
+     * @param {*} color color of the text
+     * @param {*} text the text to be drawn
+     * @returns 
+     */
     drawHText(fromX, fromY, height, color, text) {
         let crtX = fromX;
         let context = this.hCanvas.getContext("2d");
