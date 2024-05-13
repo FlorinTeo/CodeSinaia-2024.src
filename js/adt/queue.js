@@ -24,11 +24,13 @@ export class Queue {
             crtX -= this.#graphics.drawVMargin(crtX, crtY, 20, 'black') + 4;
             let crtItem = this.#head.prev;
             while(crtItem != this.#head) {
-                crtX -= crtItem.repaint(crtX, crtY, 20);
+                let [dx, _] = this.#graphics.drawHText(crtX, crtY, crtItem.node.label);
+                crtX -= dx;
                 crtX -= this.#graphics.drawVMargin(crtX, crtY, 20, 'gray') + 4;
                 crtItem = crtItem.prev;
-            } 
-            crtX -= this.#head.repaint(crtX, crtY, 20);
+            }
+            let [dx, _] = this.#graphics.drawHText(crtX, crtY, this.#head.node.label);
+            crtX -= dx;
             crtX -= this.#graphics.drawVMargin(crtX, crtY, 20, 'black') + 4;
         }
     }

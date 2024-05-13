@@ -230,6 +230,7 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetT', () => {
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetG', () => {
   graph.clear();
   queue.clear();
+  stack.clear();
   repaint();
 });
 

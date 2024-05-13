@@ -14,8 +14,4 @@ export class Item {
         this.prev = null;
         this.next = null;
     }
-
-    repaint(fromX, fromY, height) {
-        return this.#graphics.drawHText(fromX, fromY, height, this.node.label);
-    }
 }

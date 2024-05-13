@@ -24,11 +24,12 @@ export class Stack {
             //crtY -= this.#graphics.drawVMargin(crtX, 10, 20, 'black') + 4;
             let crtItem = this.#head.prev;
             while(crtItem != this.#head) {
-                crtItem.repaint(crtX, crtY, 20, 'gray');
-                crtY -= 20;
+                let [_, dy] = this.#graphics.drawHText(crtX, crtY, crtItem.node.label);
+                crtY -= dy;
                 crtItem = crtItem.prev;
-            }             
-            crtY -= this.#head.repaint(crtX, crtY, 20, 'black');
+            }
+            let [_, dy] = this.#graphics.drawHText(crtX, crtY, this.#head.node.label);
+            crtY -= dy
         }
     }
 

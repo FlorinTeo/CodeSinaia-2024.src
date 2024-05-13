@@ -115,9 +115,9 @@ export class Graphics {
      * @param {*} height vertical text alignment down from the top-right corner.
      * @param {*} color color of the text
      * @param {*} text the text to be drawn
-     * @returns 
+     * @returns the width and height of text that was drawn
      */
-    drawHText(fromX, fromY, height, text) {
+    drawHText(fromX, fromY, text) {
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
         context.font = '12px Arial';
@@ -125,9 +125,10 @@ export class Graphics {
         context.fillStyle = 'black';
         let textMetrics = context.measureText(text);
         fromX -= textMetrics.width;
-        context.fillText(text, fromX, fromY + (height + 12)/2);
+        fromY += textMetrics.fontBoundingBoxAscent + textMetrics.fontBoundingBoxDescent;
+        context.fillText(text, fromX, fromY);
         context.stroke();
-        return textMetrics.width;
+        return [textMetrics.width, textMetrics.fontBoundingBoxAscent + textMetrics.fontBoundingBoxDescent];
     }
 
     // clears the drawing canvas
