@@ -1,6 +1,7 @@
-import { RADIUS } from "./graph/node.js"
-import { Graph } from "./graph/graph.js"
-import { Queue } from "./queue/queue.js"
+import { RADIUS } from "./adt/node.js"
+import { Graph } from "./adt/graph.js"
+import { Queue } from "./adt/queue.js"
+import { Stack } from "./adt/stack.js"
 import { Graphics } from "./graphics.js"
 import { ContextMenu } from "./contextMenu.js"
 import { XferDialog } from "./xferDialog.js"
@@ -17,12 +18,14 @@ export let graphics = new Graphics(hCanvas);
 export let xferDialog = new XferDialog(graphics);
 export let graph = new Graph(graphics);
 export let queue = new Queue(graphics);
+export let stack = new Stack(graphics);
 
 // exported functions
 export function repaint() {
   graphics.clear();
   graph.repaint();
   queue.repaint();
+  stack.repaint();
 }
 
 const AUTO_LABELS = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -143,6 +146,7 @@ hCanvas.addEventListener('mouseup', (event) => {
     if (droppedNode != null) {
       // {control-click} over existent node => remove node
       queue.removeNode(droppedNode);
+      stack.removeNode(droppedNode);
       graph.removeNode(droppedNode);
     } else {
       // {click} over an empty areay => add node
@@ -186,15 +190,17 @@ hCanvas.addEventListener('contextmenu', (event) => {
     ctxMenuNode.setInput('hCtxMenuNode_State', clickedNode.state);
     ctxMenuNode.setVisible(new Map([
       ['hCtxMenuNode_Dequeue', clickedNode === queue.peek()],
+      ['hCtxMenuNode_Pop', clickedNode === stack.peek()],
     ]));
     ctxMenuNode.show(event.pageX - 10, event.pageY - 10, () => { clickedNode = null; });
   } else {
     // customize and show hCtxMenuCanvas
     ctxMenuCanvas.setInput('hCtxMenuCanvas_ResetS', 0);
     ctxMenuCanvas.setVisible(new Map([
-      ['hCtxMenuCanvas_ResetS', graph.size() > 0 && !graph.matchAll((node) => { return node.state == 0; })],
+      ['hCtxMenuCanvas_ResetS', graph.size() > 0],
       ['hCtxMenuCanvas_ResetC', graph.size() > 0 && !graph.matchAll((node) => { return node.fillIndex == 0; })],
       ['hCtxMenuCanvas_ResetQ', queue.size() > 0],
+      ['hCtxMenuCanvas_ResetT', stack.size() > 0],
       ['hCtxMenuCanvas_ResetG', graph.size() > 0],
     ]));
     ctxMenuCanvas.show(event.pageX - 10, event.pageY - 10);
@@ -216,9 +222,15 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetQ', () => {
   repaint();
 });
 
+ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetT', () => {
+  stack.clear();
+  repaint();
+});
+
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetG', () => {
   graph.clear();
   queue.clear();
+  stack.clear();
   repaint();
 });
 
@@ -249,6 +261,16 @@ ctxMenuNode.addContextMenuListener('hCtxMenuNode_Enqueue', () => {
 
 ctxMenuNode.addContextMenuListener('hCtxMenuNode_Dequeue', () => {
   queue.dequeue();
+  repaint();
+});
+
+ctxMenuNode.addContextMenuListener('hCtxMenuNode_Push', () => {
+  stack.push(clickedNode);
+  repaint();
+});
+
+ctxMenuNode.addContextMenuListener('hCtxMenuNode_Pop', () => {
+  stack.pop();
   repaint();
 });
 // #endregion - Node context menu handlers

@@ -1,4 +1,5 @@
 import { Item } from "./item.js"
+
 export class Queue {
     /*
     Class members:
@@ -6,30 +7,39 @@ export class Queue {
         head    - the head item in the Queue double linked list (or null if queue is empty)
         size    - the number of items in the queue
     */
+    #graphics;
     #head;
     #size;
     
     constructor(graphics) {
-        this.graphics = graphics;
+        this.#graphics = graphics;
         this.#head = null;
         this.#size = 0;
     }
 
     repaint() {
         if (this.#size > 0) {
-            let crtX = this.graphics.width - 10;
-            crtX -= this.graphics.drawVMargin(crtX, 10, 20, 'black') + 4;
+            let crtX = this.#graphics.width - 10;
+            let crtY = 10;
+            let [w, _] = this.#graphics.drawVMargin(crtX, crtY, 18, 'black');
+            crtX -= w + 4;
             let crtItem = this.#head.prev;
             while(crtItem != this.#head) {
-                crtX -= crtItem.repaint(crtX, 10, 20, 'gray');
+                [w, _] = this.#graphics.drawHText(crtX, crtY + 4, crtItem.node.label);
+                crtX -= w;
+                [w, _] = this.#graphics.drawVMargin(crtX, crtY, 18, 'gray');
+                crtX -= w + 4;
                 crtItem = crtItem.prev;
-            } 
-            crtX -= this.#head.repaint(crtX, 10, 20, 'black') + 4;
+            }
+            [w, _] = this.#graphics.drawHText(crtX, crtY + 4, this.#head.node.label);
+            crtX -= w;
+            [w, _] = this.#graphics.drawVMargin(crtX, crtY, 18, 'black');
+            crtX -= w + 4;
         }
     }
 
     enqueue(node) {
-        let item = new Item(this.graphics, node);
+        let item = new Item(this.#graphics, node);
 
         if (this.#head == null) {
             item.next = item;
@@ -57,23 +67,27 @@ export class Queue {
     }
 
     removeNode(node) {
-        if (this.#size <= 1) {
-            this.#size = 0;
-            this.#head = null;
+        if (this.#head == null) {
             return;
         }
-        let item = this.#head;
-        do {
+        let item = this.#head.next;
+        while(item != this.#head) {
             if (item.node == node) {
-                item.prev.next = item.next;
                 item.next.prev = item.prev;
+                item.prev.next = item.next;
                 this.#size--;
-                break;
             }
             item = item.next;
-        } while(item != this.#head);
-        if (this.#head == item) {
-            this.#head = item.next;
+        }
+        if (this.#head.node == node) {
+            if (this.#size == 1) {
+                this.#head = null;
+            } else {
+                this.#head.prev.next = this.#head.next;
+                this.#head.next.prev = this.#head.prev;
+                this.#head = this.#head.next;
+            }
+            this.#size--;
         }
     }
 

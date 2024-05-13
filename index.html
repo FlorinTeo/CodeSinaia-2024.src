@@ -2,13 +2,14 @@
     <meta charset="utf-8">
     <title>Graph Visualizer</title>
     <link rel="stylesheet" href="styles.css">
-    <script type="module" src="js/graph/node.js?v=6.0"></script>
-    <script type="module" src="js/graph/graph.js?v=6.0"></script>
-    <script type="module" src="js/queue/queue.js?v=6.0"></script>
-    <script type="module" src="js/queue/item.js?v=6.0"></script>
-    <script type="module" src="js/main.js?v=7.0"></script>
-    <script type="module" src="js/graphics.js?v=6.0"></script>
-    <script type="module" src="js/contextMenu.js?v=6.0"></script>
+    <script type="module" src="js/adt/node.js"></script>
+    <script type="module" src="js/adt/graph.js"></script>
+    <script type="module" src="js/adt/queue.js"></script>
+    <script type="module" src="js/adt/stack.js"></script>
+    <script type="module" src="js/adt/item.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/graphics.js"></script>
+    <script type="module" src="js/contextMenu.js"></script>
 </head>
 <body  class="frame">
     <div id="hMainDiv" class="canvas">
@@ -23,6 +24,8 @@
         </p>
         <p id="hCtxMenuCanvas_ResetC">Reset colors</p>
         <p id="hCtxMenuCanvas_ResetQ">Reset queue</p>
+        <p id="hCtxMenuCanvas_ResetT">Reset stack</p>
+        <div class="menu-separator"></div>
         <p id="hCtxMenuCanvas_ResetG">Reset graph</p>
         <div class="menu-separator"></div>
         <p id="hCtxMenuCanvas_XFer">Transfer graph</p>
@@ -42,6 +45,8 @@
         <div class="menu-separator"></div>
         <p id="hCtxMenuNode_Enqueue">Enqueue</p>
         <p id="hCtxMenuNode_Dequeue">Dequeue</p>
+        <p id="hCtxMenuNode_Push">Push</p>
+        <p id="hCtxMenuNode_Pop">Pop</p>
     </div>
 
     <dialog id="hXferDialog" class="dialog">
