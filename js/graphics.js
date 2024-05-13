@@ -91,7 +91,7 @@ export class Graphics {
      * @param {*} fromY top-right y coordinate of the margin area
      * @param {*} height height of the margin
      * @param {*} color color to use for drawing the margin
-     * @returns width of the margin area
+     * @returns the width and height of the drawn area
      */
     drawVMargin(fromX, fromY, height, color) {
         let context = this.hCanvas.getContext("2d");
@@ -103,7 +103,43 @@ export class Graphics {
         context.lineTo(fromX-4, fromY + height);
         context.lineTo(fromX, fromY + height);
         context.stroke();
-        return 4;
+        return [4, height];
+    }
+
+    /**
+     * Draws a vertical square bracket with the top-right corner at
+     * the given x,y, with given height, painted in given color.
+     * @param {*} fromX top-right X coordinate of the margin area
+     * @param {*} fromY top-right y coordinate of the margin area
+     * @param {*} height height of the margin
+     * @param {*} color color to use for drawing the margin
+     * @returns the width and height of the drawn area
+     */
+    drawHMargin(fromX, fromY, width, color) {
+        let context = this.hCanvas.getContext("2d");
+        context.beginPath();
+        context.strokeStyle = color;
+        context.lineWidth = 1;
+        context.moveTo(fromX, fromY);
+        context.lineTo(fromX, fromY + 4);
+        context.lineTo(fromX - width, fromY + 4);
+        context.lineTo(fromX - width, fromY);
+        context.stroke();
+        return [width, 4];
+    }
+
+    /**
+     * Given a label/text, it gets the pixel width and height rendered text.
+     * @param {*} text the text to be measured
+     * @returns the width and height of the rendered area
+     */
+    measureText(text) {
+        let context = this.hCanvas.getContext("2d");
+        context.font = '12px Arial';
+        context.textAlign = 'left';
+        context.fillStyle = 'black';
+        let textMetrics = context.measureText(text);
+        return [textMetrics.width, textMetrics.actualBoundingBoxAscent + textMetrics.actualBoundingBoxDescent];
     }
 
     /**
@@ -115,20 +151,21 @@ export class Graphics {
      * @param {*} height vertical text alignment down from the top-right corner.
      * @param {*} color color of the text
      * @param {*} text the text to be drawn
-     * @returns the width and height of text that was drawn
+     * @returns the width and height of the drawn area
      */
     drawHText(fromX, fromY, text) {
+        let [w, h] = this.measureText(text);
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
         context.font = '12px Arial';
         context.textAlign = 'left';
         context.fillStyle = 'black';
         let textMetrics = context.measureText(text);
-        fromX -= textMetrics.width;
-        fromY += textMetrics.fontBoundingBoxAscent + textMetrics.fontBoundingBoxDescent;
+        fromX -= w;
+        fromY += h;
         context.fillText(text, fromX, fromY);
         context.stroke();
-        return [textMetrics.width, textMetrics.fontBoundingBoxAscent + textMetrics.fontBoundingBoxDescent];
+        return [w, h];
     }
 
     // clears the drawing canvas

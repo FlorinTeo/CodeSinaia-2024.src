@@ -10,26 +10,34 @@ export class Stack {
     #graphics;
     #head;
     #size;
+    #maxTextH;
+    #maxTextW;
     
     constructor(graphics) {
         this.#graphics = graphics;
         this.#head = null;
         this.#size = 0;
+        this.#maxTextH = 0;
+        this.#maxTextW = 0;
     }
 
     repaint() {
         if (this.#size > 0) {
-            let crtX = this.#graphics.width - 20;
-            let crtY = this.#graphics.height - 30;
-            //crtY -= this.#graphics.drawVMargin(crtX, 10, 20, 'black') + 4;
+            let crtX = this.#graphics.width - 10;
+            let crtY = this.#graphics.height - 10;
+            let [_, h] = this.#graphics.drawHMargin(crtX, crtY, this.#maxTextW + 8, 'black');
+            crtY -= h + this.#maxTextH - 2;
             let crtItem = this.#head.prev;
             while(crtItem != this.#head) {
-                let [_, dy] = this.#graphics.drawHText(crtX, crtY, crtItem.node.label);
-                crtY -= dy;
+                [_, h] = this.#graphics.drawHText(crtX - 4, crtY, crtItem.node.label);
+                crtY -= h;
+                [_, h] = this.#graphics.drawHMargin(crtX, crtY, this.#maxTextW + 8, 'gray');
+                crtY -= h + this.#maxTextH - 2;
                 crtItem = crtItem.prev;
             }
-            let [_, dy] = this.#graphics.drawHText(crtX, crtY, this.#head.node.label);
-            crtY -= dy
+            [_, h] = this.#graphics.drawHText(crtX - 4, crtY, this.#head.node.label);
+            crtY -= h;
+            [_, h] = this.#graphics.drawHMargin(crtX, crtY, this.#maxTextW + 8, 'lightgray');
         }
     }
 
@@ -47,7 +55,26 @@ export class Stack {
             item.prev.next = item;
             this.#head = item;
         }
+        this.#measureText(item.node.label);
         this.#size++;
+    }
+
+    #measureText(text) {
+        if (text) {
+            let[w, h] = this.#graphics.measureText(text);
+            this.#maxTextW = Math.max(this.#maxTextW, w);
+            this.#maxTextH = Math.max(this.#maxTextH, h);
+        } else {
+            this.#maxTextW = 0;
+            this.#maxTextH = 0;
+            let crtItem = this.#head;
+            for(let i = 0; i < this.#size; i++) {
+                let[w, h] = this.#graphics.measureText(crtItem.node.label);
+                this.#maxTextW = Math.max(this.#maxTextW, w);
+                this.#maxTextH = Math.max(this.#maxTextH, h);
+                crtItem = crtItem.next;
+            }
+        }
     }
 
     pop() {
@@ -59,6 +86,7 @@ export class Stack {
         item.next.prev = item.prev;
         this.#size--;
         this.#head = (this.#size == 0) ? null : item.next;
+        this.#measureText();
         return item.node;
     }
 
@@ -85,6 +113,7 @@ export class Stack {
             }
             this.#size--;
         }
+        this.#measureText();
     }
 
     peek() {
@@ -98,5 +127,7 @@ export class Stack {
     clear() {
         this.#head = null;
         this.#size = 0;
+        this.#maxTextW = 0;
+        this.#maxTextH = 0;
     }
 }

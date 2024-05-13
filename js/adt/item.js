@@ -14,4 +14,8 @@ export class Item {
         this.prev = null;
         this.next = null;
     }
+
+    measureNode() {
+        
+    }
 }
