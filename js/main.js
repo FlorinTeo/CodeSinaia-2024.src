@@ -246,6 +246,7 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_Help', () => {
 // #region - Node context menu handlers
 ctxMenuNode.addContextMenuListener('hCtxMenuNode_Label', (_, value) => {
   let prevLabel = graph.reLabel(clickedNode, value);
+  stack.measureWidth();
   repaint();
 });
 

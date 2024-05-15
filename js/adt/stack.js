@@ -55,11 +55,11 @@ export class Stack {
             item.prev.next = item;
             this.#head = item;
         }
-        this.#measureText(item.node.label);
+        this.measureWidth(item.node.label);
         this.#size++;
     }
 
-    #measureText(text) {
+    measureWidth(text) {
         if (text) {
             let[w, h] = this.#graphics.measureText(text);
             this.#maxTextW = Math.max(this.#maxTextW, w);
@@ -86,7 +86,7 @@ export class Stack {
         item.next.prev = item.prev;
         this.#size--;
         this.#head = (this.#size == 0) ? null : item.next;
-        this.#measureText();
+        this.measureWidth();
         return item.node;
     }
 
@@ -113,7 +113,7 @@ export class Stack {
             }
             this.#size--;
         }
-        this.#measureText();
+        this.measureWidth();
     }
 
     peek() {
