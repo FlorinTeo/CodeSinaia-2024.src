@@ -22,7 +22,7 @@ export class Graphics {
     }
 
     // draws a line between the given coordinates, in given color
-    drawLine(fromX, fromY, toX, toY, marginFrom, marginTo, color) {
+    drawLine(fromX, fromY, toX, toY, marginFrom, marginTo, width, color) {
         let dX = toX - fromX;
         let dY = toY - fromY;
         let length = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
@@ -37,7 +37,7 @@ export class Graphics {
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
         context.strokeStyle = color;
-        context.lineWidth = 1;
+        context.lineWidth = width;
         context.moveTo(fromX, fromY);
         context.lineTo(toX, toY);
         context.stroke();
