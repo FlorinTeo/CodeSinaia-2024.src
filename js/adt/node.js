@@ -44,7 +44,7 @@ export class Node {
     repaint() {
         for(const neighbor of this.neighbors) {
             if (neighbor.marker == 0 || !neighbor.hasEdge(this)) {
-                this.#graphics.drawLine(this.x, this.y, neighbor.x, neighbor.y, RADIUS, RADIUS, 'black');
+                this.#graphics.drawLine(this.x, this.y, neighbor.x, neighbor.y, RADIUS, RADIUS, 1, 'black');
             }
             this.#graphics.drawArrow(this.x, this.y, neighbor.x, neighbor.y, RADIUS, ARROW_LENGTH, ARROW_WIDTH, 'black');
         }

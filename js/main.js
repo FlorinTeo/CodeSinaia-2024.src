@@ -5,6 +5,7 @@ import { Stack } from "./adt/stack.js"
 import { Graphics } from "./graphics.js"
 import { ContextMenu } from "./contextMenu.js"
 import { XferDialog } from "./xferDialog.js"
+import { HIGHLIGHT_COLOR } from "./adt/highlight.js"
 
 // html elements
 export let hDiv = document.getElementById("hMainDiv");
@@ -58,6 +59,7 @@ repaint();
 // state variables to control UI actions
 let clickedNode = null;
 let ctrlClicked = false;
+let shiftClicked = false;
 let dragging = false;
 
 // browser resize event handler
@@ -89,6 +91,7 @@ hCanvas.addEventListener('mousedown', (event) => {
   let y = event.clientY - hCanvas.offsetTop;
   clickedNode = graph.getNode(x, y);
   ctrlClicked = event.ctrlKey;
+  shiftClicked = event.shiftKey;
 });
 
 // mouse move event handler
@@ -104,13 +107,16 @@ hCanvas.addEventListener('mousemove', (event) => {
     hNodeState.innerHTML = (hoverNode != null) ? hoverNode.toString(true) : '';
   } else if (clickedNode != null) {
     // in the middle of {drag} that started over a node (clickedNode)
-    if (ctrlClicked) {
-      // {ctrl-drag} => draw a lead line since we may be creating/removing an edge.
+    if (ctrlClicked || shiftClicked) {
+      // {ctrl-drag} or {shift-drag} => draw a lead line since we may be creating/removing an edge.
       repaint();
       if (hoverNode != null) {
-        graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 'black');
+        if (shiftClicked) {
+          graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 6, HIGHLIGHT_COLOR);
+        }
+        graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 1, 'black');
       } else {
-        graphics.drawLine(clickedNode.x, clickedNode.y, x, y, RADIUS, 0, '#CCCCCC');
+        graphics.drawLine(clickedNode.x, clickedNode.y, x, y, RADIUS, 0, 1, '#CCCCCC');
       }
     } else {
       // simple {drag} => just move the node following the mouse
@@ -136,9 +142,13 @@ hCanvas.addEventListener('mouseup', (event) => {
   if (dragging) {
     // dragging makes sense only if one node (clickedNode) is ctrl-dragged over another (droppedNode)
     // otherwise, clickedNode move was taken care of by the mousemove handler.
-    if (ctrlClicked && clickedNode != null && droppedNode != null) {
+    if (clickedNode != null && droppedNode != null) {
       // {control-drag} over an existent node => reset edge from clickedNode to droppedNode
-      graph.resetEdge(clickedNode, droppedNode);
+      if (ctrlClicked) {
+        graph.resetEdge(clickedNode, droppedNode);
+      } else if (shiftClicked) {
+        graph.resetHighlight(clickedNode, droppedNode);
+      }
     }
     dragging = false;
   } else if (ctrlClicked) {

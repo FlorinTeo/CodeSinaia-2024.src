@@ -1,4 +1,5 @@
-import { Node } from "./node.js"
+import { Node } from "./node.js";
+import { Highlight } from "./highlight.js";
 
 /**
  * Models the entire Graph
@@ -6,10 +7,12 @@ import { Node } from "./node.js"
 export class Graph {
     /*
     Class members:
-        graphics  - the graphics engine
-        nodes     - Map of <label, Node> entries
+        graphics   - the graphics engine
+        nodes      - array of Node objects
+        highlights - array of [fromNode, toNode, color] highlighting entries
     */
     #nodes;
+    #highlights;
     #graphics;
 
     constructor(graphics) {
@@ -18,6 +21,9 @@ export class Graph {
     }
 
     repaint() {
+        for(const highlight of this.#highlights) {
+            highlight.repaint();
+        }
         this.traverse((node)=>{
             node.repaint();
         });
@@ -68,6 +74,7 @@ export class Graph {
             }
         }
         this.#nodes = this.#nodes.filter(n => !(n === node));
+        this.#highlights = this.#highlights.filter(h => !h.contains(node));
     }
 
     resetEdge(fromNode, toNode) {
@@ -75,6 +82,14 @@ export class Graph {
             fromNode.removeEdge(toNode);
         } else {
             fromNode.addEdge(toNode);
+        }
+    }
+
+    resetHighlight(fromNode, toNode) {
+        if (this.#highlights.some(h => h.matches(fromNode, toNode))) {
+            this.#highlights = this.#highlights.filter(h => !h.matches(fromNode, toNode));
+        } else if (fromNode.hasEdge(toNode) || toNode.hasEdge(fromNode)) {
+            this.#highlights.push(new Highlight(this.#graphics, fromNode, toNode));
         }
     }
 
@@ -93,6 +108,7 @@ export class Graph {
 
     clear() {
         this.#nodes = [];
+        this.#highlights = [];
     }
 
     toString(brief = false) {
