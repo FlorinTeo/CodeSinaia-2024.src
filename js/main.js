@@ -52,16 +52,21 @@ function alphaFirstCompare(a, b) {
   }
 }
 
+function isWindowsOS() {
+  return (navigator.userAgentData && navigator.userAgentData.platform == 'Windows')
+      || (navigator.platform == 'Win32');
+}
+
 // main entry point
 repaint();
 
-// #region - window/dialog event handlers
 // state variables to control UI actions
 let clickedNode = null;
 let ctrlClicked = false;
 let shiftClicked = false;
 let dragging = false;
 
+// #region - window/dialog event handlers
 // browser resize event handler
 const resizeObserver = new ResizeObserver(entries => {
   for (const entry of entries) {
@@ -85,20 +90,12 @@ xferDialog.addCloseListener((event) => {
 
 // #region - key event handlers
 document.addEventListener('keydown', (event) => {
-  if (navigator.userAgentData.platform == 'Windows') {
-    ctrlClicked = event.ctrlKey;  
-  } else {
-    ctrlClicked = event.metaKey;
-  }
+  ctrlClicked = isWindowsOS() ? event.ctrlKey : event.metaKey;
   shiftClicked = event.shiftKey;
 });
 
 document.addEventListener('keyup', (event) => {
-  if (navigator.userAgentData.platform == 'Windows') {
-    ctrlClicked = event.ctrlKey;  
-  } else {
-    ctrlClicked = event.metaKey;
-  }
+  ctrlClicked = isWindowsOS() ? event.ctrlKey : event.metaKey;
   shiftClicked = event.shiftKey;
 });
 // #endregion - key event handlers
