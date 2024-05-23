@@ -83,6 +83,26 @@ xferDialog.addCloseListener((event) => {
 });
 // #endregion - window/dialog event handlers
 
+// #region - key event handlers
+document.addEventListener('keydown', (event) => {
+  if (navigator.userAgentData.platform == 'Windows') {
+    ctrlClicked = event.ctrlKey;  
+  } else {
+    ctrlClicked = event.metaKey;
+  }
+  shiftClicked = event.shiftKey;
+});
+
+document.addEventListener('keyup', (event) => {
+  if (navigator.userAgentData.platform == 'Windows') {
+    ctrlClicked = event.ctrlKey;  
+  } else {
+    ctrlClicked = event.metaKey;
+  }
+  shiftClicked = event.shiftKey;
+});
+// #endregion - key event handlers
+
 // #region - mouse event handlers
 // mouse down event handler
 // retain the target node (if any) at the beginning of a click or drag action
@@ -90,8 +110,6 @@ hCanvas.addEventListener('mousedown', (event) => {
   let x = event.clientX - hCanvas.offsetLeft;
   let y = event.clientY - hCanvas.offsetTop;
   clickedNode = graph.getNode(x, y);
-  ctrlClicked = event.ctrlKey;
-  shiftClicked = event.shiftKey;
 });
 
 // mouse move event handler
@@ -108,14 +126,22 @@ hCanvas.addEventListener('mousemove', (event) => {
   } else if (clickedNode != null) {
     // in the middle of {drag} that started over a node (clickedNode)
     if (ctrlClicked || shiftClicked) {
-      // {ctrl-drag} or {shift-drag} => draw a lead line since we may be creating/removing an edge.
+      // {ctrl-drag} or {shift-drag} => draw an edge lead line since we may be creating/removing an edge.
       repaint();
       if (hoverNode != null) {
         if (shiftClicked) {
+          // {shift-drag} => draw a highlight lead line and an edge lead line as applicable
           graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 6, HIGHLIGHT_COLOR);
+          if (clickedNode.hasEdge(hoverNode) || hoverNode.hasEdge(clickedNode)) {
+            graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 1, 'black');    
+          }
         }
-        graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 1, 'black');
+        if (ctrlClicked) {
+          // {ctrl-drag} => draw an edge lead line
+          graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 1, 'black');
+        }
       } else {
+        // not hovering over a node => draw a gray tracking line
         graphics.drawLine(clickedNode.x, clickedNode.y, x, y, RADIUS, 0, 1, '#CCCCCC');
       }
     } else {
@@ -143,10 +169,12 @@ hCanvas.addEventListener('mouseup', (event) => {
     // dragging makes sense only if one node (clickedNode) is ctrl-dragged over another (droppedNode)
     // otherwise, clickedNode move was taken care of by the mousemove handler.
     if (clickedNode != null && droppedNode != null) {
-      // {control-drag} over an existent node => reset edge from clickedNode to droppedNode
       if (ctrlClicked) {
+        // {control-drag} over an existent node => reset edge from clickedNode to droppedNode
         graph.resetEdge(clickedNode, droppedNode);
-      } else if (shiftClicked) {
+      }
+      if (shiftClicked) {
+        // {shift-drag} over an existent node => reset highlight from clickedNode to droppedNode
         graph.resetHighlight(clickedNode, droppedNode);
       }
     }

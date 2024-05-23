@@ -1,7 +1,7 @@
 import { RADIUS } from './node.js';
 
 export const HIGHLIGHT_THICKNESS = 6;
-export const HIGHLIGHT_COLOR = '#D0FF00';
+export const HIGHLIGHT_COLOR = '#FFFD55';
 
 /**
  * Models the highlight line between two nodes
