@@ -1,11 +1,11 @@
 import { RADIUS } from "./adt/node.js"
+import { HIGHLIGHT_PALLETE } from "./adt/graph.js";
 import { Graph } from "./adt/graph.js"
 import { Queue } from "./adt/queue.js"
 import { Stack } from "./adt/stack.js"
 import { Graphics } from "./graphics.js"
 import { ContextMenu } from "./contextMenu.js"
 import { XferDialog } from "./xferDialog.js"
-import { HIGHLIGHT_COLOR } from "./adt/highlight.js"
 
 // html elements
 export let hDiv = document.getElementById("hMainDiv");
@@ -131,7 +131,7 @@ hCanvas.addEventListener('mousemove', (event) => {
       if (hoverNode != null) {
         if (shiftClicked) {
           // {shift-drag} => draw a highlight lead line and an edge lead line as applicable
-          graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 6, HIGHLIGHT_COLOR);
+          graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 6, HIGHLIGHT_PALLETE[1]);
           if (clickedNode.hasEdge(hoverNode) || hoverNode.hasEdge(clickedNode)) {
             graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 1, 'black');    
           }

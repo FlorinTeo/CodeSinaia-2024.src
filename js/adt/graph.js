@@ -1,6 +1,8 @@
 import { Node } from "./node.js";
 import { Highlight } from "./highlight.js";
 
+export const HIGHLIGHT_PALLETE = ['#EBEBEB', '#FFFD55', '#6EFBFF', '#FFCACA', '#93FF2D', '#ECA4FF'];
+
 /**
  * Models the entire Graph
  */

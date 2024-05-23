@@ -1,11 +1,11 @@
+import { HIGHLIGHT_PALLETE } from "./graph.js";
+
 /**
  * Models a node in the Graph
  */
 export const RADIUS = 16;
 export const ARROW_WIDTH = 5;
 export const ARROW_LENGTH = 8;
-
-const FILL_PALLETE = ['#EBEBEB', '#FFFD55', '#6EFBFF', '#FFCACA', '#93FF2D', '#ECA4FF'];
 
 export class Node {
 
@@ -38,7 +38,7 @@ export class Node {
 
     toggleFill(deltaIndex) {
         deltaIndex = Math.sign(deltaIndex);
-        this.fillIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.fillIndex + deltaIndex) % FILL_PALLETE.length);
+        this.fillIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.fillIndex + deltaIndex) % HIGHLIGHT_PALLETE.length);
     }
 
     repaint() {
@@ -48,7 +48,7 @@ export class Node {
             }
             this.#graphics.drawArrow(this.x, this.y, neighbor.x, neighbor.y, RADIUS, ARROW_LENGTH, ARROW_WIDTH, 'black');
         }
-        this.#graphics.drawNode(this.label,this.x, this.y, RADIUS, FILL_PALLETE[this.fillIndex]);
+        this.#graphics.drawNode(this.label,this.x, this.y, RADIUS, HIGHLIGHT_PALLETE[this.fillIndex]);
     }
 
     traverse(lambda) {

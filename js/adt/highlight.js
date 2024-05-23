@@ -1,7 +1,7 @@
 import { RADIUS } from './node.js';
+import { HIGHLIGHT_PALLETE } from './graph.js';
 
-export const HIGHLIGHT_THICKNESS = 6;
-export const HIGHLIGHT_COLOR = '#FFFD55';
+const HIGHLIGHT_THICKNESS = 6;
 
 /**
  * Models the highlight line between two nodes
@@ -16,7 +16,7 @@ export class Highlight {
         this.#graphics = graphics;
         this.#fromNode = fromNode;
         this.#toNode = toNode;
-        this.#color = HIGHLIGHT_COLOR;
+        this.#color = HIGHLIGHT_PALLETE[1];
     }
 
     repaint() {
