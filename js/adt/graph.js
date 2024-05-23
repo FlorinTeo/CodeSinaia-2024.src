@@ -111,7 +111,15 @@ export class Graph {
 
     clear() {
         this.#nodes = [];
+        this.clearHighlights();
+    }
+
+    clearHighlights() {
         this.#highlights = [];
+    }
+
+    countHighlights() {
+        return this.#highlights.length;
     }
 
     toString(brief = false) {

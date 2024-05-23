@@ -236,7 +236,8 @@ hCanvas.addEventListener('contextmenu', (event) => {
     ctxMenuCanvas.setInput('hCtxMenuCanvas_ResetS', 0);
     ctxMenuCanvas.setVisible(new Map([
       ['hCtxMenuCanvas_ResetS', graph.size() > 0],
-      ['hCtxMenuCanvas_ResetC', graph.size() > 0 && !graph.matchAll((node) => { return node.fillIndex == 0; })],
+      ['hCtxMenuCanvas_ResetNh', !graph.matchAll((node) => { return node.fillIndex == 0; })],
+      ['hCtxMenuCanvas_ResetEh', graph.countHighlights() > 0],
       ['hCtxMenuCanvas_ResetQ', queue.size() > 0],
       ['hCtxMenuCanvas_ResetT', stack.size() > 0],
       ['hCtxMenuCanvas_ResetG', graph.size() > 0],
@@ -250,8 +251,13 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetS', (_, value) => {
   graph.traverse((node) => { node.state = value; });
 });
 
-ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetC', () => {
+ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetNh', () => {
   graph.traverse((node) => { node.fillIndex = 0; });
+  repaint();
+});
+
+ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetEh', () => {
+  graph.clearHighlights();
   repaint();
 });
 
