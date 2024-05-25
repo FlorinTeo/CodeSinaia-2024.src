@@ -68,7 +68,7 @@ export class Graph {
         let minHighlight = undefined;
         for(const highlight of this.#highlights) {
             let d = highlight.getDistance(x, y);
-            if (d < minD) {
+            if (d && d < minD) {
                 minD = d;
                 minHighlight = highlight;
             }

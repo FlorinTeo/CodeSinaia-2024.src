@@ -1,7 +1,8 @@
 import { RADIUS } from './node.js';
 import { HIGHLIGHT_PALLETE } from './graph.js';
 
-const HIGHLIGHT_THICKNESS = 6;
+export const HIGHLIGHT_THICKNESS = 6;
+const HIGHLIGHT_SENSITIVITY = 12;
 
 /**
  * Models the highlight line between two nodes
@@ -10,21 +11,28 @@ export class Highlight {
     #graphics
     #fromNode
     #toNode
-    #color
+    #highlightIndex
 
     constructor(graphics, fromNode, toNode) {
         this.#graphics = graphics;
         this.#fromNode = fromNode;
         this.#toNode = toNode;
-        this.#color = HIGHLIGHT_PALLETE[1];
+        this.#highlightIndex = 1;
     }
 
     repaint() {
-        this.#graphics.drawLine(
-            this.#fromNode.x, this.#fromNode.y,
-            this.#toNode.x, this.#toNode.y,
-            RADIUS, RADIUS,
-            HIGHLIGHT_THICKNESS, this.#color);
+        if (this.#highlightIndex != 0) {
+            this.#graphics.drawLine(
+                this.#fromNode.x, this.#fromNode.y,
+                this.#toNode.x, this.#toNode.y,
+                RADIUS, RADIUS,
+                HIGHLIGHT_THICKNESS, HIGHLIGHT_PALLETE[this.#highlightIndex]);
+        }
+    }
+
+    toggleHighlight(deltaIndex) {
+        deltaIndex = Math.sign(deltaIndex);
+        this.#highlightIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.#highlightIndex + deltaIndex) % HIGHLIGHT_PALLETE.length);
     }
 
     matches(fromNode, toNode) {
@@ -41,9 +49,19 @@ export class Highlight {
         let y1 = this.#fromNode.y;
         let x2 = this.#toNode.x;
         let y2 = this.#toNode.y;
-        let a = y2 - y1;
-        let b = x1 - x2;
-        let c = y1 * x2 - y2 * x1;
-        return Math.abs((a * x + b * y + c) / Math.sqrt(a * a + b * b));
+        let d = undefined;
+        if (Math.sign(x-x1+HIGHLIGHT_SENSITIVITY) * Math.sign(x2+HIGHLIGHT_SENSITIVITY-x) != -1
+            && Math.sign(y-y1+HIGHLIGHT_SENSITIVITY) * Math.sign(y2+HIGHLIGHT_SENSITIVITY-y) != -1) {
+            let a = y2 - y1;
+            let b = x1 - x2;
+            let c = y1 * x2 - y2 * x1;
+            d = Math.abs((a * x + b * y + c) / Math.sqrt(a * a + b * b));
+            if (d > HIGHLIGHT_SENSITIVITY) {
+                d = undefined;
+            }
+        }
+        return d;
     }
+
+
 }

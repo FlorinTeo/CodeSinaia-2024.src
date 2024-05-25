@@ -207,11 +207,13 @@ hCanvas.addEventListener('wheel', (event) => {
     } else {
       targetNode.toggleHighlight(event.deltaY);
     }
-    repaint();
   } else {
     let targetHighlight = graph.getHighlight(x, y);
-    console.log(targetHighlight);
+    if (targetHighlight) {
+      targetHighlight.toggleHighlight(event.deltaY);
+    }
   }
+  repaint();
 },
 { passive: false });
 // #endregion - mouse event handlers
@@ -237,7 +239,7 @@ hCanvas.addEventListener('contextmenu', (event) => {
     ctxMenuCanvas.setInput('hCtxMenuCanvas_ResetS', 0);
     ctxMenuCanvas.setVisible(new Map([
       ['hCtxMenuCanvas_ResetS', graph.size() > 0],
-      ['hCtxMenuCanvas_ResetNh', !graph.matchAll((node) => { return node.fillIndex == 0; })],
+      ['hCtxMenuCanvas_ResetNh', !graph.matchAll((node) => { return node.highlightIndex == 0; })],
       ['hCtxMenuCanvas_ResetEh', graph.countHighlights() > 0],
       ['hCtxMenuCanvas_ResetQ', queue.size() > 0],
       ['hCtxMenuCanvas_ResetT', stack.size() > 0],
@@ -253,7 +255,7 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetS', (_, value) => {
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetNh', () => {
-  graph.traverse((node) => { node.fillIndex = 0; });
+  graph.traverse((node) => { node.highlightIndex = 0; });
   repaint();
 });
 

@@ -16,7 +16,7 @@ export class Node {
         label       - text to be printed inside the node
         state       - public state holder for this node
         neigbhors   - list of neighboring nodes
-        fillIndex   - index of the last custom filling color used
+        highlightIndex   - index of the last custom filling color used
         marker      - internal state holder for this node 
     */
     #graphics;
@@ -28,7 +28,7 @@ export class Node {
         this.label = label;
         this.state = 0;
         this.neighbors = [];
-        this.fillIndex = 0;
+        this.highlightIndex = 0;
         this.marker = 0;
     }
 
@@ -38,7 +38,7 @@ export class Node {
 
     toggleHighlight(deltaIndex) {
         deltaIndex = Math.sign(deltaIndex);
-        this.fillIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.fillIndex + deltaIndex) % HIGHLIGHT_PALLETE.length);
+        this.highlightIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.highlightIndex + deltaIndex) % HIGHLIGHT_PALLETE.length);
     }
 
     repaint() {
@@ -48,7 +48,7 @@ export class Node {
             }
             this.#graphics.drawArrow(this.x, this.y, neighbor.x, neighbor.y, RADIUS, ARROW_LENGTH, ARROW_WIDTH, 'black');
         }
-        this.#graphics.drawNode(this.label,this.x, this.y, RADIUS, HIGHLIGHT_PALLETE[this.fillIndex]);
+        this.#graphics.drawNode(this.label,this.x, this.y, RADIUS, HIGHLIGHT_PALLETE[this.highlightIndex]);
     }
 
     traverse(lambda) {
