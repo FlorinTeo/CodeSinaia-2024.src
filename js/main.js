@@ -63,7 +63,6 @@ repaint();
 // state variables to control UI actions
 let clickedNode = null;
 let ctrlClicked = false;
-let shiftClicked = false;
 let dragging = false;
 
 // #region - window/dialog event handlers
@@ -91,12 +90,10 @@ xferDialog.addCloseListener((event) => {
 // #region - key event handlers
 document.addEventListener('keydown', (event) => {
   ctrlClicked = isWindowsOS() ? event.ctrlKey : event.metaKey;
-  shiftClicked = event.shiftKey;
 });
 
 document.addEventListener('keyup', (event) => {
   ctrlClicked = isWindowsOS() ? event.ctrlKey : event.metaKey;
-  shiftClicked = event.shiftKey;
 });
 // #endregion - key event handlers
 
@@ -122,21 +119,12 @@ hCanvas.addEventListener('mousemove', (event) => {
     hNodeState.innerHTML = (hoverNode != null) ? hoverNode.toString(true) : '';
   } else if (clickedNode != null) {
     // in the middle of {drag} that started over a node (clickedNode)
-    if (ctrlClicked || shiftClicked) {
-      // {ctrl-drag} or {shift-drag} => draw an edge lead line since we may be creating/removing an edge.
+    if (ctrlClicked) {
+      // {ctrl-drag} => draw an edge lead line since we may be creating/removing an edge.
       repaint();
       if (hoverNode != null) {
-        if (shiftClicked) {
-          // {shift-drag} => draw a highlight lead line and an edge lead line as applicable
-          graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 6, HIGHLIGHT_PALLETE[1]);
-          if (clickedNode.hasEdge(hoverNode) || hoverNode.hasEdge(clickedNode)) {
-            graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 1, 'black');    
-          }
-        }
-        if (ctrlClicked) {
-          // {ctrl-drag} => draw an edge lead line
-          graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 1, 'black');
-        }
+        // {ctrl-drag} => draw an edge lead line
+        graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 1, 'black');
       } else {
         // not hovering over a node => draw a gray tracking line
         graphics.drawLine(clickedNode.x, clickedNode.y, x, y, RADIUS, 0, 1, '#CCCCCC');
@@ -165,15 +153,9 @@ hCanvas.addEventListener('mouseup', (event) => {
   if (dragging) {
     // dragging makes sense only if one node (clickedNode) is ctrl-dragged over another (droppedNode)
     // otherwise, clickedNode move was taken care of by the mousemove handler.
-    if (clickedNode != null && droppedNode != null) {
-      if (ctrlClicked) {
-        // {control-drag} over an existent node => reset edge from clickedNode to droppedNode
-        graph.resetEdge(clickedNode, droppedNode);
-      }
-      if (shiftClicked) {
-        // {shift-drag} over an existent node => reset highlight from clickedNode to droppedNode
-        graph.resetHighlight(clickedNode, droppedNode);
-      }
+    if (ctrlClicked && clickedNode != null && droppedNode != null) {
+      // {control-drag} over an existent node => reset edge from clickedNode to droppedNode
+      graph.resetEdge(clickedNode, droppedNode);
     }
     dragging = false;
   } else if (ctrlClicked) {

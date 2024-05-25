@@ -98,14 +98,9 @@ export class Graph {
             this.#highlights = this.#highlights.filter(h => !h.matches(fromNode, toNode));
         } else {
             fromNode.addEdge(toNode);
-        }
-    }
-
-    resetHighlight(fromNode, toNode) {
-        if (this.#highlights.some(h => h.matches(fromNode, toNode))) {
-            this.#highlights = this.#highlights.filter(h => !h.matches(fromNode, toNode));
-        } else if (fromNode.hasEdge(toNode) || toNode.hasEdge(fromNode)) {
-            this.#highlights.push(new Highlight(this.#graphics, fromNode, toNode));
+            if (!toNode.hasEdge(fromNode)) {
+                this.#highlights.push(new Highlight(this.#graphics, fromNode, toNode));
+            }
         }
     }
 
@@ -124,11 +119,13 @@ export class Graph {
 
     clear() {
         this.#nodes = [];
-        this.clearHighlights();
+        this.#highlights = [];
     }
 
     clearHighlights() {
-        this.#highlights = [];
+        for (const h of this.#highlights) {
+            h.toggleHighlight(-1);
+        }
     }
 
     countHighlights() {

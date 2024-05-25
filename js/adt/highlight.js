@@ -17,7 +17,7 @@ export class Highlight {
         this.#graphics = graphics;
         this.#fromNode = fromNode;
         this.#toNode = toNode;
-        this.#highlightIndex = 1;
+        this.#highlightIndex = 0;
     }
 
     repaint() {
@@ -62,6 +62,4 @@ export class Highlight {
         }
         return d;
     }
-
-
 }
