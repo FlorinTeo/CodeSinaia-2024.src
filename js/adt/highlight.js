@@ -50,8 +50,8 @@ export class Highlight {
         let x2 = this.#toNode.x;
         let y2 = this.#toNode.y;
         let d = undefined;
-        if (Math.sign(x-x1+HIGHLIGHT_SENSITIVITY) * Math.sign(x2+HIGHLIGHT_SENSITIVITY-x) != -1
-            && Math.sign(y-y1+HIGHLIGHT_SENSITIVITY) * Math.sign(y2+HIGHLIGHT_SENSITIVITY-y) != -1) {
+        if (x >= Math.min(x1,x2) && x <= Math.max(x1,x2)
+           && y >= Math.min(y1,y2) && y <= Math.max(y1, y2)) {
             let a = y2 - y1;
             let b = x1 - x2;
             let c = y1 * x2 - y2 * x1;

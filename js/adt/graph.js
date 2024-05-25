@@ -95,7 +95,9 @@ export class Graph {
     resetEdge(fromNode, toNode) {
         if (fromNode.hasEdge(toNode)) {
             fromNode.removeEdge(toNode);
-            this.#highlights = this.#highlights.filter(h => !h.matches(fromNode, toNode));
+            if (!toNode.hasEdge(fromNode)) {
+                this.#highlights = this.#highlights.filter(h => !h.matches(fromNode, toNode));
+            }
         } else {
             fromNode.addEdge(toNode);
             if (!toNode.hasEdge(fromNode)) {
