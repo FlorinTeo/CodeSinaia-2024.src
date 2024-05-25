@@ -35,4 +35,15 @@ export class Highlight {
     contains(node) {
         return (this.#fromNode === node || this.#toNode === node);
     }
+
+    getDistance(x, y) {
+        let x1 = this.#fromNode.x;
+        let y1 = this.#fromNode.y;
+        let x2 = this.#toNode.x;
+        let y2 = this.#toNode.y;
+        let a = y2 - y1;
+        let b = x1 - x2;
+        let c = y1 * x2 - y2 * x1;
+        return Math.abs((a * x + b * y + c) / Math.sqrt(a * a + b * b));
+    }
 }

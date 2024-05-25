@@ -205,11 +205,15 @@ hCanvas.addEventListener('wheel', (event) => {
       let newLabel = nextLabel(targetNode.label, Math.sign(event.deltaY));
       let prevLabel = graph.reLabel(targetNode, newLabel);
     } else {
-      targetNode.toggleFill(event.deltaY);
+      targetNode.toggleHighlight(event.deltaY);
     }
     repaint();
+  } else {
+    let targetHighlight = graph.getHighlight(x, y);
+    console.log(targetHighlight);
   }
-}, { passive: false });
+},
+{ passive: false });
 // #endregion - mouse event handlers
 
 // #region - context menu handlers

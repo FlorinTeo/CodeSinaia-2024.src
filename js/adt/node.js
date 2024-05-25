@@ -36,7 +36,7 @@ export class Node {
         return `<b>${this.label}</b>: ${this.state}`;
     }
 
-    toggleFill(deltaIndex) {
+    toggleHighlight(deltaIndex) {
         deltaIndex = Math.sign(deltaIndex);
         this.fillIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.fillIndex + deltaIndex) % HIGHLIGHT_PALLETE.length);
     }

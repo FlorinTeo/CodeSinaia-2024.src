@@ -63,6 +63,19 @@ export class Graph {
         return (node != undefined) ? node : null;
     }
 
+    getHighlight(x, y) {
+        let minD = Infinity;
+        let minHighlight = undefined;
+        for(const highlight of this.#highlights) {
+            let d = highlight.getDistance(x, y);
+            if (d < minD) {
+                minD = d;
+                minHighlight = highlight;
+            }
+        }
+        return minHighlight;
+    }
+
     addNode(label, x, y) {
         let node = new Node(this.#graphics, label, x, y);
         if (node )
