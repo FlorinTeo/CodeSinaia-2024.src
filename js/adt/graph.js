@@ -1,6 +1,8 @@
 import { Node } from "./node.js";
 import { Highlight } from "./highlight.js";
 
+export const HIGHLIGHT_PALLETE = ['#EBEBEB', '#FFFD55', '#6EFBFF', '#FFCACA', '#93FF2D', '#ECA4FF'];
+
 /**
  * Models the entire Graph
  */
@@ -61,6 +63,19 @@ export class Graph {
         return (node != undefined) ? node : null;
     }
 
+    getHighlight(x, y) {
+        let minD = Infinity;
+        let minHighlight = undefined;
+        for(const highlight of this.#highlights) {
+            let d = highlight.getDistance(x, y);
+            if (d && d < minD) {
+                minD = d;
+                minHighlight = highlight;
+            }
+        }
+        return minHighlight;
+    }
+
     addNode(label, x, y) {
         let node = new Node(this.#graphics, label, x, y);
         if (node )
@@ -80,17 +95,14 @@ export class Graph {
     resetEdge(fromNode, toNode) {
         if (fromNode.hasEdge(toNode)) {
             fromNode.removeEdge(toNode);
-            this.#highlights = this.#highlights.filter(h => !h.matches(fromNode, toNode));
+            if (!toNode.hasEdge(fromNode)) {
+                this.#highlights = this.#highlights.filter(h => !h.matches(fromNode, toNode));
+            }
         } else {
             fromNode.addEdge(toNode);
-        }
-    }
-
-    resetHighlight(fromNode, toNode) {
-        if (this.#highlights.some(h => h.matches(fromNode, toNode))) {
-            this.#highlights = this.#highlights.filter(h => !h.matches(fromNode, toNode));
-        } else if (fromNode.hasEdge(toNode) || toNode.hasEdge(fromNode)) {
-            this.#highlights.push(new Highlight(this.#graphics, fromNode, toNode));
+            if (!toNode.hasEdge(fromNode)) {
+                this.#highlights.push(new Highlight(this.#graphics, fromNode, toNode));
+            }
         }
     }
 
@@ -110,6 +122,16 @@ export class Graph {
     clear() {
         this.#nodes = [];
         this.#highlights = [];
+    }
+
+    clearHighlights() {
+        for (const h of this.#highlights) {
+            h.toggleHighlight(-1);
+        }
+    }
+
+    countHighlights() {
+        return this.#highlights.length;
     }
 
     toString(brief = false) {

@@ -1,11 +1,11 @@
 import { RADIUS } from "./adt/node.js"
+import { HIGHLIGHT_PALLETE } from "./adt/graph.js";
 import { Graph } from "./adt/graph.js"
 import { Queue } from "./adt/queue.js"
 import { Stack } from "./adt/stack.js"
 import { Graphics } from "./graphics.js"
 import { ContextMenu } from "./contextMenu.js"
 import { XferDialog } from "./xferDialog.js"
-import { HIGHLIGHT_COLOR } from "./adt/highlight.js"
 
 // html elements
 export let hDiv = document.getElementById("hMainDiv");
@@ -52,16 +52,20 @@ function alphaFirstCompare(a, b) {
   }
 }
 
+function isWindowsOS() {
+  return (navigator.userAgentData && navigator.userAgentData.platform == 'Windows')
+      || (navigator.platform == 'Win32');
+}
+
 // main entry point
 repaint();
 
-// #region - window/dialog event handlers
 // state variables to control UI actions
 let clickedNode = null;
 let ctrlClicked = false;
-let shiftClicked = false;
 let dragging = false;
 
+// #region - window/dialog event handlers
 // browser resize event handler
 const resizeObserver = new ResizeObserver(entries => {
   for (const entry of entries) {
@@ -83,6 +87,16 @@ xferDialog.addCloseListener((event) => {
 });
 // #endregion - window/dialog event handlers
 
+// #region - key event handlers
+document.addEventListener('keydown', (event) => {
+  ctrlClicked = isWindowsOS() ? event.ctrlKey : event.metaKey;
+});
+
+document.addEventListener('keyup', (event) => {
+  ctrlClicked = isWindowsOS() ? event.ctrlKey : event.metaKey;
+});
+// #endregion - key event handlers
+
 // #region - mouse event handlers
 // mouse down event handler
 // retain the target node (if any) at the beginning of a click or drag action
@@ -90,8 +104,6 @@ hCanvas.addEventListener('mousedown', (event) => {
   let x = event.clientX - hCanvas.offsetLeft;
   let y = event.clientY - hCanvas.offsetTop;
   clickedNode = graph.getNode(x, y);
-  ctrlClicked = event.ctrlKey;
-  shiftClicked = event.shiftKey;
 });
 
 // mouse move event handler
@@ -107,15 +119,14 @@ hCanvas.addEventListener('mousemove', (event) => {
     hNodeState.innerHTML = (hoverNode != null) ? hoverNode.toString(true) : '';
   } else if (clickedNode != null) {
     // in the middle of {drag} that started over a node (clickedNode)
-    if (ctrlClicked || shiftClicked) {
-      // {ctrl-drag} or {shift-drag} => draw a lead line since we may be creating/removing an edge.
+    if (ctrlClicked) {
+      // {ctrl-drag} => draw an edge lead line since we may be creating/removing an edge.
       repaint();
       if (hoverNode != null) {
-        if (shiftClicked) {
-          graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 6, HIGHLIGHT_COLOR);
-        }
+        // {ctrl-drag} => draw an edge lead line
         graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 1, 'black');
       } else {
+        // not hovering over a node => draw a gray tracking line
         graphics.drawLine(clickedNode.x, clickedNode.y, x, y, RADIUS, 0, 1, '#CCCCCC');
       }
     } else {
@@ -142,13 +153,9 @@ hCanvas.addEventListener('mouseup', (event) => {
   if (dragging) {
     // dragging makes sense only if one node (clickedNode) is ctrl-dragged over another (droppedNode)
     // otherwise, clickedNode move was taken care of by the mousemove handler.
-    if (clickedNode != null && droppedNode != null) {
+    if (ctrlClicked && clickedNode != null && droppedNode != null) {
       // {control-drag} over an existent node => reset edge from clickedNode to droppedNode
-      if (ctrlClicked) {
-        graph.resetEdge(clickedNode, droppedNode);
-      } else if (shiftClicked) {
-        graph.resetHighlight(clickedNode, droppedNode);
-      }
+      graph.resetEdge(clickedNode, droppedNode);
     }
     dragging = false;
   } else if (ctrlClicked) {
@@ -180,11 +187,17 @@ hCanvas.addEventListener('wheel', (event) => {
       let newLabel = nextLabel(targetNode.label, Math.sign(event.deltaY));
       let prevLabel = graph.reLabel(targetNode, newLabel);
     } else {
-      targetNode.toggleFill(event.deltaY);
+      targetNode.toggleHighlight(event.deltaY);
     }
-    repaint();
+  } else {
+    let targetHighlight = graph.getHighlight(x, y);
+    if (targetHighlight) {
+      targetHighlight.toggleHighlight(event.deltaY);
+    }
   }
-}, { passive: false });
+  repaint();
+},
+{ passive: false });
 // #endregion - mouse event handlers
 
 // #region - context menu handlers
@@ -208,7 +221,8 @@ hCanvas.addEventListener('contextmenu', (event) => {
     ctxMenuCanvas.setInput('hCtxMenuCanvas_ResetS', 0);
     ctxMenuCanvas.setVisible(new Map([
       ['hCtxMenuCanvas_ResetS', graph.size() > 0],
-      ['hCtxMenuCanvas_ResetC', graph.size() > 0 && !graph.matchAll((node) => { return node.fillIndex == 0; })],
+      ['hCtxMenuCanvas_ResetNh', !graph.matchAll((node) => { return node.highlightIndex == 0; })],
+      ['hCtxMenuCanvas_ResetEh', graph.countHighlights() > 0],
       ['hCtxMenuCanvas_ResetQ', queue.size() > 0],
       ['hCtxMenuCanvas_ResetT', stack.size() > 0],
       ['hCtxMenuCanvas_ResetG', graph.size() > 0],
@@ -222,8 +236,13 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetS', (_, value) => {
   graph.traverse((node) => { node.state = value; });
 });
 
-ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetC', () => {
-  graph.traverse((node) => { node.fillIndex = 0; });
+ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetNh', () => {
+  graph.traverse((node) => { node.highlightIndex = 0; });
+  repaint();
+});
+
+ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetEh', () => {
+  graph.clearHighlights();
   repaint();
 });
 
