@@ -2,7 +2,7 @@ import { RADIUS } from './node.js';
 import { HIGHLIGHT_PALLETE } from './graph.js';
 
 export const HIGHLIGHT_THICKNESS = 6;
-const HIGHLIGHT_SENSITIVITY = 12;
+const HIGHLIGHT_SENSITIVITY = 10;
 
 /**
  * Models the highlight line between two nodes
@@ -50,8 +50,8 @@ export class Highlight {
         let x2 = this.#toNode.x;
         let y2 = this.#toNode.y;
         let d = undefined;
-        if (x >= Math.min(x1,x2) && x <= Math.max(x1,x2)
-           && y >= Math.min(y1,y2) && y <= Math.max(y1, y2)) {
+        if (x >= Math.min(x1,x2) - HIGHLIGHT_SENSITIVITY && x <= Math.max(x1,x2) + HIGHLIGHT_SENSITIVITY
+           && y >= Math.min(y1,y2) - HIGHLIGHT_SENSITIVITY && y <= Math.max(y1, y2) + HIGHLIGHT_SENSITIVITY) {
             let a = y2 - y1;
             let b = x1 - x2;
             let c = y1 * x2 - y2 * x1;
