@@ -1,15 +1,34 @@
-.frame {
+body {
 	font-family:Helvetica, sans-serif;
     background-color: rgb(238, 235, 221);
-    margin: 20;
-}
+    width: 98%;
 
-.canvas {
-    border: 1px solid #000000;
-    height: 98%;
-    
-    .canvasStatus {
-        margin-top: 4px; 
+    table {
+        width: 100%;
+        height: 100%;
+        border-collapse: collapse;
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        td:nth-child(1) {
+            padding: 0px;
+            .canvas {
+                border: 1px solid #000000;
+            }
+        }
+        td:nth-child(2) {
+            width: 2%;
+        }
+        td:nth-child(3) {
+            width: 30%;
+        }
+    }
+
+    .status {
+        height: 40px;
+        margin: 0; 
+        padding: 0;
     }
 }
 
