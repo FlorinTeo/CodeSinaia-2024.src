@@ -168,7 +168,6 @@ hCanvas.addEventListener('mouseup', (event) => {
     if (ctrlClicked && clickedNode != null && droppedNode != null) {
       // {control-drag} over an existent node => reset edge from clickedNode to droppedNode
       graph.resetEdge(clickedNode, droppedNode);
-      consoleDialog.out("Edge reset");
     }
     dragging = false;
   } else if (ctrlClicked) {
@@ -181,7 +180,6 @@ hCanvas.addEventListener('mouseup', (event) => {
     } else {
       // {click} over an empty areay => add node
       graph.addNode(nextLabel(), x, y);
-      consoleDialog.out("Node added");
     }
   }
   repaint();
@@ -248,26 +246,31 @@ hCanvas.addEventListener('contextmenu', (event) => {
 // #region - Canvas context menu handlers
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetS', (_, value) => {
   graph.traverse((node) => { node.state = value; });
+  consoleDialog.out(`Graph states reset to \'${value}\'`);
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetNh', () => {
   graph.traverse((node) => { node.highlightIndex = 0; });
   repaint();
+  consoleDialog.out("Node highlights reset!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetEh', () => {
   graph.clearHighlights();
   repaint();
+  consoleDialog.out("Edge highlights reset!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetQ', () => {
   queue.clear();
   repaint();
+  consoleDialog.out("Queue reset!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetT', () => {
   stack.clear();
   repaint();
+  consoleDialog.out("Stack reset!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetG', () => {
@@ -275,6 +278,7 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetG', () => {
   queue.clear();
   stack.clear();
   repaint();
+  consoleDialog.out("Graph reset!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_XFer', () => {
