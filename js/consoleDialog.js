@@ -4,7 +4,10 @@ export class ConsoleDialog {
     #hConsoleClose;
     #hConsoleText;
     #hConsoleBtnClear;
+    #hConsoleBtnResize;
     #lambdaOnClose;
+    #width;
+
 
     constructor(graphics) {
         this.#lambdaOnClose = null;
@@ -12,17 +15,24 @@ export class ConsoleDialog {
         this.#hConsoleClose = document.getElementById('hConsoleClose');
         this.#hConsoleText = document.getElementById('hConsoleText');
         this.#hConsoleBtnClear = document.getElementById('hConsoleBtnClear');
-        this.#hConsoleBtnClear.addEventListener('click', () => { this.onBtnClearClick(); });
+        this.#hConsoleBtnResize = document.getElementById('hConsoleBtnResize');
+
         this.#hConsoleClose.addEventListener('click', () => { this.onBtnCloseClick(); });
+        this.#hConsoleBtnResize.addEventListener('click', () => { this.onBtnResize(); });
+        this.#hConsoleBtnClear.addEventListener('click', () => { this.onBtnClearClick(); });
+
+        this.#width = 32;
     }
 
     addCloseListener(lambdaOnClose) {
         this.#lambdaOnClose = lambdaOnClose;
     }
 
-    show(graph) {
+    show() {
         this.#hConsoleDialog.style.display="block";
         this.#hConsoleDialog.focus();
+        this.#hConsoleDialog.style.left = `${100-this.#width}%`;
+        this.#hConsoleDialog.style.width = `calc(${this.#width}% - 2px)`;
     }
 
     onBtnCloseClick(event = null) {
@@ -30,6 +40,11 @@ export class ConsoleDialog {
             this.#lambdaOnClose(event);
         }
         this.#hConsoleDialog.style.display="none";
+    }
+
+    onBtnResize(event = null) {
+        this.#width = Math.max(32, (this.#width + 8) % 72);
+        this.show();
     }
 
     onBtnClearClick(event = null) {
