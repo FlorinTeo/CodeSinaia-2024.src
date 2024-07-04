@@ -81,9 +81,19 @@
     </dialog>
 
     <div id="hConsoleDialog" class="console">
-        <div id="hConsoleTitleBar" class="textBar">
-            <img id="hConsoleClose" src="res/window-close.png" alt="Close" style="width:24px;height:24px;">
-        </div>
+        <table class="consoleTable">
+            <tr>
+                <td><img id="hConsoleClose" src="res/btnSlide.png" width="8"></td>
+                <td><textarea id="hConsoleText">This is where the console output goes.</textarea></td>
+            </tr>
+        </table>
+        <table class="statusTable">
+            <tr>
+                <td><!-- alignment area --></td>
+                <td><!-- left buttons area --></td>
+                <td><img id="hConsoleBtnClear" src="res/btnDelete.png" width="24"></td>
+            </tr>
+        </table>
     </div>
 </body>
 

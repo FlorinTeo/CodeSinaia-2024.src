@@ -62,6 +62,7 @@ function isWindowsOS() {
 }
 
 // main entry point
+consoleDialog.clear();
 repaint();
 
 // state variables to control UI actions
@@ -170,6 +171,7 @@ hCanvas.addEventListener('mouseup', (event) => {
     if (ctrlClicked && clickedNode != null && droppedNode != null) {
       // {control-drag} over an existent node => reset edge from clickedNode to droppedNode
       graph.resetEdge(clickedNode, droppedNode);
+      consoleDialog.out("Edge reset");
     }
     dragging = false;
   } else if (ctrlClicked) {
@@ -182,6 +184,7 @@ hCanvas.addEventListener('mouseup', (event) => {
     } else {
       // {click} over an empty areay => add node
       graph.addNode(nextLabel(), x, y);
+      consoleDialog.out("Node added");
     }
   }
   repaint();

@@ -101,13 +101,75 @@ body {
     
     .console {
         position: absolute;
-        background: rgb(226, 226, 226);
+        background: rgb(196, 196, 196);
         border: 1px solid rgb(0, 0, 0);
         top: 8px;
         left: 50%;
         width: calc(50% - 2px);
         height: calc(100% - 30px);
         display: none;
+
+        .consoleTable {
+            width: 100%;
+            height: calc(100% - 30px);
+            border-collapse: collapse;
+            td {
+                padding: 2px;
+                /* border: 1px solid #888; */
+            }
+            td:nth-child(1) {
+                vertical-align: middle;
+                white-space: nowrap;
+                padding-bottom: 2px;
+                width: 10px;
+            }
+            td:nth-child(2) {
+                vertical-align: middle;
+                white-space: nowrap;
+                padding-top: 10px;
+                textarea {
+                    height: 100%;
+                    width: calc(100% - 10px);
+                    padding:1%;
+                    border: 1px solid #131111;
+                    box-sizing: border-box;
+                    background: rgb(242, 242, 242);
+                    white-space: nowrap;
+                    font-family: Consolas, monospace;
+                    font-size:14px;
+                    font-weight: normal;
+                    resize: none;
+                }
+            }
+        }
+
+        .statusTable {
+            width: 100%;
+            height: 30px;
+            border-collapse: collapse;
+            td {
+                padding: 2px;
+                /* border: 1px solid #888; */
+            }
+            td:nth-child(1) {
+                vertical-align: middle;
+                white-space: nowrap;
+                padding-bottom: 2px;
+                width: 10px;
+            }
+            td:nth-child(2) {
+                vertical-align: middle;
+                text-align: left;
+                white-space: nowrap;
+                width: calc(50% - 5px);
+            }
+            td:nth-child(3) {
+                vertical-align: middle;
+                text-align: right;
+                white-space: nowrap;
+                padding-right: 10px;
+            }
+        }
     }
 }
 
