@@ -1,5 +1,4 @@
 import { RADIUS } from "./adt/node.js"
-import { HIGHLIGHT_PALLETE } from "./adt/graph.js";
 import { Graph } from "./adt/graph.js"
 import { Queue } from "./adt/queue.js"
 import { Stack } from "./adt/stack.js"
@@ -8,8 +7,11 @@ import { ContextMenu } from "./contextMenu.js"
 import { XferDialog } from "./xferDialog.js"
 
 // html elements
-export let hDiv = document.getElementById("hMainDiv");
+export let hTdCanvas = document.getElementById("hTdCanvas");
 export let hCanvas = document.getElementById("hMainCanvas");
+
+export let hTdBtn = document.getElementById("hTdBtn");
+export let hBtnConsole = document.getElementById("hBtnConsole");
 export let hNodeState = document.getElementById("hNodeState");
 
 // global objects
@@ -67,17 +69,19 @@ let dragging = false;
 
 // #region - window/dialog event handlers
 // browser resize event handler
+let pxButton = 14;
 const resizeObserver = new ResizeObserver(entries => {
-  for (const entry of entries) {
-    switch (entry.target.id) {
-      case hDiv.id:
-        graphics.resize(entry.contentRect.width-4, entry.contentRect.height-4);
-        //repaint();
-        return;
-    }
-  }
+  var canvasW = window.innerWidth - pxButton - 30;
+  hTdCanvas.style.width=`${canvasW})`;
+  hTdBtn.style.width = pxButton;
+  graphics.resize(canvasW, window.innerHeight - 50);
+  repaint();
 });
-resizeObserver.observe(hDiv);
+resizeObserver.observe(document.documentElement);
+
+hBtnConsole.addEventListener('click', (event) => {
+  console.log("this is where the console shows!");
+});
 
 xferDialog.addCloseListener((event) => {
   if (event != null && event == 'in') {
@@ -116,7 +120,7 @@ hCanvas.addEventListener('mousemove', (event) => {
 
   if (!dragging) {
     // if not dragging, just show the state of the node the mouse may be hovering over
-    hNodeState.innerHTML = (hoverNode != null) ? hoverNode.toString(true) : '';
+    hNodeState.innerHTML = (hoverNode != null) ? hoverNode.toString(true) : `(${x}, ${y})`;
   } else if (clickedNode != null) {
     // in the middle of {drag} that started over a node (clickedNode)
     if (ctrlClicked) {

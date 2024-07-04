@@ -1,7 +1,7 @@
 <head>
     <meta charset="utf-8">
     <title>Graph Visualizer</title>
-    <link rel="stylesheet" href="index.css?v=5">
+    <link rel="stylesheet" href="index.css?v=10">
     <script type="module" src="js/adt/node.js"></script>
     <script type="module" src="js/adt/graph.js"></script>
     <script type="module" src="js/adt/queue.js"></script>
@@ -12,16 +12,19 @@
     <script type="module" src="js/graphics.js"></script>
     <script type="module" src="js/contextMenu.js"></script>
 </head>
+
 <body>
-    <table>
+    <table class="canvasTable">
         <tr>
-            <td id="hMainDiv"><canvas id="hMainCanvas" class="canvas"></canvas></td>
-            <td>..</td>
-            <td>This is where the output content goes</td>
+            <td id="hTdCanvas"><canvas id="hMainCanvas" class="canvas"></canvas></td>
+            <td id="hTdBtn"><img id="hBtnConsole" src="res/btnSlide.png" width="8"></td>
         </tr>
+    </table>
+    <table class="statusTable">
         <tr>
-            <td id="hNodeState" class="status"></td>
-        </tr>
+            <td><div id="hNodeState" class="status"></div></td>
+            <td><!--This is where buttons will go--></td>
+        </tr> 
     </table>
 
     <div id="hCtxMenuCanvas" class="ctxmenu">
