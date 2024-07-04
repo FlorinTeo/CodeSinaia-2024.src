@@ -20,7 +20,7 @@ export let ctxMenuCanvas = new ContextMenu("hCtxMenuCanvas");
 export let ctxMenuNode = new ContextMenu("hCtxMenuNode");
 export let graphics = new Graphics(hCanvas);
 export let xferDialog = new XferDialog(graphics);
-export let consoleDialog = new ConsoleDialog(graphics);
+export let console = new ConsoleDialog(graphics);
 export let graph = new Graph(graphics);
 export let queue = new Queue(graphics);
 export let stack = new Stack(graphics);
@@ -62,7 +62,7 @@ function isWindowsOS() {
 }
 
 // main entry point
-consoleDialog.clear();
+console.clear();
 repaint();
 
 // state variables to control UI actions
@@ -81,7 +81,7 @@ const resizeObserver = new ResizeObserver(entries => {
 resizeObserver.observe(document.documentElement);
 
 hBtnConsole.addEventListener('click', (event) => {
-  consoleDialog.show(graph);
+  console.show(graph);
 });
 
 xferDialog.addCloseListener((event) => {
@@ -91,7 +91,7 @@ xferDialog.addCloseListener((event) => {
   }
 });
 
-consoleDialog.addCloseListener((event) => {
+console.addCloseListener((event) => {
   if (event != null && event == 'in') {
     queue.clear();
     repaint();
@@ -246,31 +246,31 @@ hCanvas.addEventListener('contextmenu', (event) => {
 // #region - Canvas context menu handlers
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetS', (_, value) => {
   graph.traverse((node) => { node.state = value; });
-  consoleDialog.out(`Graph states reset to \'${value}\'`);
+  console.out(`Graph states reset to \'${value}\'`);
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetNh', () => {
   graph.traverse((node) => { node.highlightIndex = 0; });
   repaint();
-  consoleDialog.out("Node highlights reset!");
+  console.out("Node highlights reset!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetEh', () => {
   graph.clearHighlights();
   repaint();
-  consoleDialog.out("Edge highlights reset!");
+  console.out("Edge highlights reset!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetQ', () => {
   queue.clear();
   repaint();
-  consoleDialog.out("Queue reset!");
+  console.out("Queue reset!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetT', () => {
   stack.clear();
   repaint();
-  consoleDialog.out("Stack reset!");
+  console.out("Stack reset!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetG', () => {
@@ -278,7 +278,8 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetG', () => {
   queue.clear();
   stack.clear();
   repaint();
-  consoleDialog.out("Graph reset!");
+  console.out("Graph reset!");
+  window.console.log("hey!!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_XFer', () => {
