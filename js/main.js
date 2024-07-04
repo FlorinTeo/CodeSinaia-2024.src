@@ -128,7 +128,7 @@ hCanvas.addEventListener('mousemove', (event) => {
 
   if (!dragging) {
     // if not dragging, just show the state of the node the mouse may be hovering over
-    hNodeState.innerHTML = (hoverNode != null) ? hoverNode.toString(true) : `(${x}, ${y})`;
+    hNodeState.innerHTML = (hoverNode != null) ? hoverNode.toString(true) : "";
   } else if (clickedNode != null) {
     // in the middle of {drag} that started over a node (clickedNode)
     if (ctrlClicked) {

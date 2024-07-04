@@ -23,7 +23,7 @@ export class Stack {
 
     repaint() {
         if (this.#size > 0) {
-            let crtX = this.#graphics.width - 10;
+            let crtX = 20 + this.#maxTextW;
             let crtY = this.#graphics.height - 10;
             let [_, h] = this.#graphics.drawHMargin(crtX, crtY, this.#maxTextW + 8, 'black');
             crtY -= h + this.#maxTextH - 2;
