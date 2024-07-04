@@ -25,6 +25,7 @@ body {
             vertical-align: middle;
             white-space: nowrap;
             padding-left: 0px;
+            width: 14;
         }
     }
 
@@ -104,8 +105,8 @@ body {
         background: rgb(196, 196, 196);
         border: 1px solid rgb(0, 0, 0);
         top: 8px;
-        left: 50%;
-        width: calc(50% - 2px);
+        left: 60%;
+        width: calc(40% - 2px);
         height: calc(100% - 30px);
         display: none;
 

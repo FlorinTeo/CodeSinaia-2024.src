@@ -72,18 +72,15 @@ let dragging = false;
 
 // #region - window/dialog event handlers
 // browser resize event handler
-let pxButton = 14;
 const resizeObserver = new ResizeObserver(entries => {
-  var canvasW = window.innerWidth - pxButton - 30;
+  var canvasW = window.innerWidth - 44;
   hTdCanvas.style.width=`${canvasW})`;
-  hTdBtn.style.width = pxButton;
-  graphics.resize(canvasW, window.innerHeight - 50);
+  graphics.resize(canvasW, window.innerHeight - 44);
   repaint();
 });
 resizeObserver.observe(document.documentElement);
 
 hBtnConsole.addEventListener('click', (event) => {
-  console.log("this is where the console shows!");
   consoleDialog.show(graph);
 });
 
