@@ -91,6 +91,7 @@ export class ContextMenu {
         this.hCtxMenu.style.left = x;
         this.hCtxMenu.style.top = y;
         this.hCtxMenu.style.display = 'block';
+        this.hCtxMenu.style.zIndex = "1";
         this.fOnClose = fOnClose;
     }
 

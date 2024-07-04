@@ -1,7 +1,8 @@
 body {
 	font-family:Helvetica, sans-serif;
     background-color: rgb(238, 235, 221);
-    margin: 0px;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
 
     .canvasTable {
         width: 100%;
@@ -49,7 +50,65 @@ body {
             width: 240px;
             text-align: right;
         }
-    }    
+    }
+
+    .xfer {
+        position: absolute;
+        background: gray;
+        border: 1px solid rgb(0, 0, 0);
+        width:50%;
+        height: 50%;
+        padding: 0px;
+        resize: both;
+        min-width: 320px;
+        min-height: 180px;
+    
+        .textBar {
+            width: calc(100% - 0px);
+            padding: 0px;
+            display: flex;
+            justify-content: right;
+        }
+    
+        .text {
+            height: calc(100% - 64px);
+            width: calc(100% - 16px);
+            padding: 0px 8px 8px 8px;
+    
+            textarea {
+                height: 100%;
+                width: 100%;
+                padding:1%;
+                border: 1px solid #131111;
+                box-sizing: border-box;
+                background: lightgray;
+                white-space: nowrap;
+                font-family:'Courier New', Courier, monospace;
+                font-size:18px;
+                font-weight: bold;
+                resize: none;
+            }
+        }
+    
+        .buttons {
+            width: calc(100% - 16px);
+            height: 20px;
+            padding: 0px 8px 8px 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+    
+    .console {
+        position: absolute;
+        background: rgb(226, 226, 226);
+        border: 1px solid rgb(0, 0, 0);
+        top: 8px;
+        left: 50%;
+        width: calc(50% - 2px);
+        height: calc(100% - 30px);
+        display: none;
+    }
 }
 
 .ctxmenu {
@@ -91,49 +150,3 @@ body {
 
 }
 
-.dialog {
-    position: absolute;
-    background: gray;
-    border: 1px solid rgb(0, 0, 0);
-    width:50%;
-    height: 50%;
-    padding: 0px;
-    resize: both;
-    min-width: 320px;
-    min-height: 180px;
-
-    .textBar {
-        width: calc(100% - 0px);
-        padding: 0px;
-        display: flex;
-        justify-content: right;
-    }
-
-    .text {
-        height: calc(100% - 64px);
-        width: calc(100% - 16px);
-        padding: 0px 8px 8px 8px;
-
-        textarea {
-            height: 100%;
-            width: 100%;
-            padding:1%;
-            border: 1px solid #131111;
-            box-sizing: border-box;
-            background: lightgray;
-            white-space: nowrap;
-            font-family:'Courier New', Courier, monospace;
-            font-size:18px;
-            font-weight: bold;
-            resize: none;
-        }
-    }
-
-    .textStatus {
-        width: calc(100% - 16px);
-        height: 20px;
-        padding: 0px 8px 8px 8px;
-        display: flex;
-        justify-content: space-between;
-    }
-}

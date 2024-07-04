@@ -5,6 +5,7 @@ import { Stack } from "./adt/stack.js"
 import { Graphics } from "./graphics.js"
 import { ContextMenu } from "./contextMenu.js"
 import { XferDialog } from "./xferDialog.js"
+import { ConsoleDialog } from "./consoleDialog.js"
 
 // html elements
 export let hTdCanvas = document.getElementById("hTdCanvas");
@@ -19,6 +20,7 @@ export let ctxMenuCanvas = new ContextMenu("hCtxMenuCanvas");
 export let ctxMenuNode = new ContextMenu("hCtxMenuNode");
 export let graphics = new Graphics(hCanvas);
 export let xferDialog = new XferDialog(graphics);
+export let consoleDialog = new ConsoleDialog(graphics);
 export let graph = new Graph(graphics);
 export let queue = new Queue(graphics);
 export let stack = new Stack(graphics);
@@ -81,9 +83,17 @@ resizeObserver.observe(document.documentElement);
 
 hBtnConsole.addEventListener('click', (event) => {
   console.log("this is where the console shows!");
+  consoleDialog.show(graph);
 });
 
 xferDialog.addCloseListener((event) => {
+  if (event != null && event == 'in') {
+    queue.clear();
+    repaint();
+  }
+});
+
+consoleDialog.addCloseListener((event) => {
   if (event != null && event == 'in') {
     queue.clear();
     repaint();

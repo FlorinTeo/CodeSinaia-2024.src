@@ -20,6 +20,7 @@
             <td id="hTdBtn"><img id="hBtnConsole" src="res/btnSlide.png" width="8"></td>
         </tr>
     </table>
+
     <table class="statusTable">
         <tr>
             <td><div id="hNodeState" class="status"></div></td>
@@ -59,14 +60,14 @@
         <p id="hCtxMenuNode_Pop">Pop</p>
     </div>
 
-    <dialog id="hXferDialog" class="dialog">
+    <dialog id="hXferDialog" class="xfer">
         <div id="hXferTitleBar" class="textBar">
             <img id="hXferClose" src="res/window-close.png" alt="Close" style="width:24px;height:24px;">
         </div>
         <div class="text">
             <textarea id="hXferText">This is where the graph goes.</textarea>
         </div>
-        <div class="textStatus">
+        <div class="buttons">
             <div>
                 <input id="hXferBtn_Copy" type="image" src="res/clip-copy.png" title="Copy" alt="Copy" style="width:24px;height:24px;">
                 <input id="hXferBtn_Refresh" type="image" src="res/refresh.png" title="Refresh" alt="Refresh" style="width:24px;height:24px;">
@@ -78,4 +79,11 @@
             </div>
         </div>
     </dialog>
+
+    <div id="hConsoleDialog" class="console">
+        <div id="hConsoleTitleBar" class="textBar">
+            <img id="hConsoleClose" src="res/window-close.png" alt="Close" style="width:24px;height:24px;">
+        </div>
+    </div>
 </body>
+
