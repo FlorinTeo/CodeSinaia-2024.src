@@ -23,20 +23,18 @@ export class Stack {
 
     repaint() {
         if (this.#size > 0) {
-            let crtX = 20 + this.#maxTextW;
+            let crtX = 10;
             let crtY = this.#graphics.height - 10;
             let [_, h] = this.#graphics.drawHMargin(crtX, crtY, this.#maxTextW + 8, 'black');
-            crtY -= h + this.#maxTextH - 2;
             let crtItem = this.#head.prev;
             while(crtItem != this.#head) {
-                [_, h] = this.#graphics.drawHText(crtX - 4, crtY, crtItem.node.label);
-                crtY -= h;
+                [_, h] = this.#graphics.drawText(crtX + 4, crtY, crtItem.node.label);
+                crtY -= h + 8;
                 [_, h] = this.#graphics.drawHMargin(crtX, crtY, this.#maxTextW + 8, 'gray');
-                crtY -= h + this.#maxTextH - 2;
                 crtItem = crtItem.prev;
             }
-            [_, h] = this.#graphics.drawHText(crtX - 4, crtY, this.#head.node.label);
-            crtY -= h;
+            [_, h] = this.#graphics.drawText(crtX + 4, crtY, this.#head.node.label);
+            crtY -= h + 8;
             [_, h] = this.#graphics.drawHMargin(crtX, crtY, this.#maxTextW + 8, 'lightgray');
         }
     }
