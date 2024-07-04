@@ -1,7 +1,7 @@
 <head>
     <meta charset="utf-8">
     <title>Graph Visualizer</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="index.css?v=10">
     <script type="module" src="js/adt/node.js"></script>
     <script type="module" src="js/adt/graph.js"></script>
     <script type="module" src="js/adt/queue.js"></script>
@@ -12,11 +12,21 @@
     <script type="module" src="js/graphics.js"></script>
     <script type="module" src="js/contextMenu.js"></script>
 </head>
-<body  class="frame">
-    <div id="hMainDiv" class="canvas">
-        <canvas id="hMainCanvas"></canvas>
-        <div id="hNodeState" class="canvasStatus"></div>
-    </div>
+
+<body>
+    <table class="canvasTable">
+        <tr>
+            <td id="hTdCanvas"><canvas id="hMainCanvas" class="canvas"></canvas></td>
+            <td id="hTdBtn"><img id="hBtnConsole" src="res/btnSlide.png" width="8"></td>
+        </tr>
+    </table>
+
+    <table class="statusTable">
+        <tr>
+            <td><div id="hNodeState" class="status"></div></td>
+            <td><!--This is where buttons will go--></td>
+        </tr> 
+    </table>
 
     <div id="hCtxMenuCanvas" class="ctxmenu">
         <p id="hCtxMenuCanvas_ResetS">
@@ -50,14 +60,14 @@
         <p id="hCtxMenuNode_Pop">Pop</p>
     </div>
 
-    <dialog id="hXferDialog" class="dialog">
+    <dialog id="hXferDialog" class="xfer">
         <div id="hXferTitleBar" class="textBar">
             <img id="hXferClose" src="res/window-close.png" alt="Close" style="width:24px;height:24px;">
         </div>
         <div class="text">
             <textarea id="hXferText">This is where the graph goes.</textarea>
         </div>
-        <div class="textStatus">
+        <div class="buttons">
             <div>
                 <input id="hXferBtn_Copy" type="image" src="res/clip-copy.png" title="Copy" alt="Copy" style="width:24px;height:24px;">
                 <input id="hXferBtn_Refresh" type="image" src="res/refresh.png" title="Refresh" alt="Refresh" style="width:24px;height:24px;">
@@ -69,4 +79,21 @@
             </div>
         </div>
     </dialog>
+
+    <div id="hConsoleDialog" class="console">
+        <table class="consoleTable">
+            <tr>
+                <td><img id="hConsoleClose" src="res/btnSlide.png" width="8"></td>
+                <td><textarea id="hConsoleText">This is where the console output goes.</textarea></td>
+            </tr>
+        </table>
+        <table class="statusTable">
+            <tr>
+                <td><img id="hConsoleBtnResize" src="res/console-resize.png" width="24"></td>
+                <td><!-- left buttons area --></td>
+                <td><img id="hConsoleBtnClear" src="res/btnDelete.png" width="24"></td>
+            </tr>
+        </table>
+    </div>
 </body>
+

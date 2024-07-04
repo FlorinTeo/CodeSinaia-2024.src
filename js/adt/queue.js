@@ -19,22 +19,20 @@ export class Queue {
 
     repaint() {
         if (this.#size > 0) {
-            let crtX = this.#graphics.width - 10;
+            let crtX = 10;
             let crtY = 10;
-            let [w, _] = this.#graphics.drawVMargin(crtX, crtY, 18, 'black');
-            crtX -= w + 4;
-            let crtItem = this.#head.prev;
+            let crtItem = this.#head;
+            let [w, _] = this.#graphics.drawVMargin(crtX, crtY, 18, 'lightgray');
+            [w, _] = this.#graphics.drawText(crtX, crtY + 14, this.#head.node.label);
+            crtX += w + 8;
+            crtItem = crtItem.next;            
             while(crtItem != this.#head) {
-                [w, _] = this.#graphics.drawHText(crtX, crtY + 4, crtItem.node.label);
-                crtX -= w;
                 [w, _] = this.#graphics.drawVMargin(crtX, crtY, 18, 'gray');
-                crtX -= w + 4;
-                crtItem = crtItem.prev;
+                [w, _] = this.#graphics.drawText(crtX, crtY + 14, crtItem.node.label);
+                crtX += w + 8;
+                crtItem = crtItem.next;
             }
-            [w, _] = this.#graphics.drawHText(crtX, crtY + 4, this.#head.node.label);
-            crtX -= w;
-            [w, _] = this.#graphics.drawVMargin(crtX, crtY, 18, 'black');
-            crtX -= w + 4;
+            [w, _] = this.#graphics.drawVMargin(crtX, crtY, 18, 'lightgray');
         }
     }
 

@@ -122,8 +122,8 @@ export class Graphics {
         context.lineWidth = 1;
         context.moveTo(fromX, fromY);
         context.lineTo(fromX, fromY + 4);
-        context.lineTo(fromX - width, fromY + 4);
-        context.lineTo(fromX - width, fromY);
+        context.lineTo(fromX + width, fromY + 4);
+        context.lineTo(fromX + width, fromY);
         context.stroke();
         return [width, 4];
     }
@@ -153,16 +153,13 @@ export class Graphics {
      * @param {*} text the text to be drawn
      * @returns the width and height of the drawn area
      */
-    drawHText(fromX, fromY, text) {
+    drawText(fromX, fromY, text) {
         let [w, h] = this.measureText(text);
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
         context.font = '12px Arial';
         context.textAlign = 'left';
         context.fillStyle = 'black';
-        let textMetrics = context.measureText(text);
-        fromX -= w;
-        fromY += h;
         context.fillText(text, fromX, fromY);
         context.stroke();
         return [w, h];
