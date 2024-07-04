@@ -66,8 +66,10 @@ console.clear();
 repaint();
 
 // state variables to control UI actions
+let hoverNode = null;
 let clickedNode = null;
 let ctrlClicked = false;
+let keyPressed = false;
 let dragging = false;
 
 // #region - window/dialog event handlers
@@ -100,12 +102,40 @@ console.addCloseListener((event) => {
 // #endregion - window/dialog event handlers
 
 // #region - key event handlers
+
 document.addEventListener('keydown', (event) => {
   ctrlClicked = isWindowsOS() ? event.ctrlKey : event.metaKey;
+  if (!keyPressed && hoverNode != null) {
+    switch(event.key.toUpperCase()) {
+      case 'E': // enqueue
+        queue.enqueue(hoverNode);
+        repaint();
+        break;
+      case 'D': // dequeue
+        if (hoverNode == queue.peek()) {
+          queue.dequeue();
+          repaint();
+        }
+        break;
+      case 'P': // push
+        stack.push(hoverNode);
+        repaint();
+        break;
+      case 'O': // pop
+        if (hoverNode == stack.peek(hoverNode)) {
+          stack.pop();
+          repaint();
+        }
+        break;
+    }
+  }
+
+  keyPressed = true;
 });
 
 document.addEventListener('keyup', (event) => {
   ctrlClicked = isWindowsOS() ? event.ctrlKey : event.metaKey;
+  keyPressed = false;
 });
 // #endregion - key event handlers
 
@@ -123,7 +153,7 @@ hCanvas.addEventListener('mousedown', (event) => {
 hCanvas.addEventListener('mousemove', (event) => {
   let x = event.clientX - hCanvas.offsetLeft;
   let y = event.clientY - hCanvas.offsetTop;
-  let hoverNode = graph.getNode(x, y);
+  hoverNode = graph.getNode(x, y);
   dragging = (event.button == 0) && (clickedNode != null);
 
   if (!dragging) {
