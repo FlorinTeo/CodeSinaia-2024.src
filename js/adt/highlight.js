@@ -40,6 +40,10 @@ export class Highlight {
             || (this.#fromNode === toNode && this.#toNode == fromNode);
     }
 
+    matches(highlightIndex) {
+        return this.#highlightIndex == highlightIndex;
+    }
+
     contains(node) {
         return (this.#fromNode === node || this.#toNode === node);
     }

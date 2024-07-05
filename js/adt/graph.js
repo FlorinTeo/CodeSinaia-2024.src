@@ -131,7 +131,7 @@ export class Graph {
     }
 
     countHighlights() {
-        return this.#highlights.length;
+        return this.#highlights.filter(h => !h.matches(0)).length;
     }
 
     toString(brief = false) {
