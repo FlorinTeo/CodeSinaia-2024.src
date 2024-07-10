@@ -1,0 +1,36 @@
+body {
+    font-family:helvetica, sans-serif;
+    font-size: 12pt;
+    padding: 4px;
+    background-color: rgb(238, 235, 221);
+    table {
+        width: 100%;
+        height: 100%;
+        td {
+            vertical-align: top;
+            border: 1px solid lightgray;
+            textarea {
+                font-family: inherit;
+                font-size: inherit;
+                width: 100%;
+                height: 100%;
+                resize: none;
+                padding: 10px;
+            }
+            div {
+                border: 1px solid black;
+                background-color: rgb(242, 242, 242);
+                width: 100%;
+                height: calc(100% - 40px);
+                padding: 10px;
+                box-sizing: border-box;
+            }
+            input {
+                margin: 10px 0 0 0;
+            }
+        }
+        td:nth-child(1) {
+            width: 50%;
+        }
+    }
+}
