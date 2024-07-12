@@ -6,4 +6,4 @@
 
 rm -rf build
 mkdir build/
-cp -r *.html *.css js/* res/* build/
+cp -r GraphVisualizer/*.html GraphVisualizer/*.css GraphVisualizer/js GraphVisualizer/res build/
