@@ -1,4 +1,4 @@
-import { console } from './main.js'
+import { repaint } from "./main.js";
 
 export class Sync {
 
@@ -15,6 +15,7 @@ export class Sync {
         } else {
             this.#nextStep();
         }
+        repaint();
     }
 
     async step() {
@@ -32,11 +33,6 @@ export class Sync {
     }
     
     async myCustomCode() {
-        console.out('Running your custom code 1!');
-        await this.step();
-        console.out('Running your custom code 2!');
-        await this.step();
-        console.out('Running your custom code final!');
-        this.done();
+        alert('myCustomCode?');
     }
 }
