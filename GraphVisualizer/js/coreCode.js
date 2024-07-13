@@ -9,11 +9,11 @@ export class CoreCode {
         this.#hConsoleBtnRunStep = null;
     }
 
-    async run(hConsoleBtnRunStep) {
+    async execute(hConsoleBtnRunStep) {
         if (this.#hConsoleBtnRunStep == null) {
             this.#hConsoleBtnRunStep = hConsoleBtnRunStep;
             this.#hConsoleBtnRunStep.src = "res/btnStep.png";
-            await this.myCustomCode();
+            this.runWrapper();
         } else {
             this.#nextStep();
         }
@@ -34,7 +34,12 @@ export class CoreCode {
         }
     }
     
-    async myCustomCode() {
+    async runWrapper() {
+        await this.run();
+        this.done();
+    }
+
+    async run() {
         alert('myCustomCode?');
     }
 }

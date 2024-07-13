@@ -52,7 +52,7 @@ export class ConsoleDialog {
         this.show();
     }
     async onBtnRunStepClick(event = null) {
-        await this.#code.run(this.#hConsoleBtnRunStep);
+        await this.#code.execute(this.#hConsoleBtnRunStep);
     }
 
     onBtnClearClick(event = null) {
