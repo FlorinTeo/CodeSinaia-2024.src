@@ -1,16 +1,24 @@
-export let nextStep;
-export let tracing = false;
 
-export async function step() {
-    tracing = true;
-    const promise = new Promise((resolve) => {
-        nextStep = resolve;
-    });
+export class Sync {
+    /*
+    tracing - booloean tracking if during tracing or not
+    nextStep - synchronization lambda linking promise with resolve
+    */
+    constructor () {
+        this.tracing = false;
+    }
 
-    // Wait for the promise to resolve
-    await promise;
-}
+    async step() {
+        this.tracing = true;
+        const promise = new Promise((resolve) => {
+            this.nextStep = resolve;
+        });
 
-export function done() {
-    tracing = false;
+        // Wait for the promise to resolve
+        await promise;
+    }
+
+    done() {
+        this.tracing = false;
+    }
 }

@@ -1,4 +1,4 @@
-import { tracing, nextStep, step, done } from "./sync.js"
+import { Sync } from "./sync.js"
 
 export class ConsoleDialog {
 
@@ -10,9 +10,11 @@ export class ConsoleDialog {
     #hConsoleBtnResize;
     #lambdaOnClose;
     #width;
+    #sync
 
 
-    constructor(graphics) {
+    constructor() {
+        this.#sync = new Sync();
         this.#lambdaOnClose = null;
         this.#hConsoleDialog = document.getElementById('hConsoleDialog');
         this.#hConsoleClose = document.getElementById('hConsoleClose');
@@ -57,20 +59,20 @@ export class ConsoleDialog {
     }
 
     async onBtnRunClick(event = null) {
-        if (!tracing) {
+        if (!this.#sync.tracing) {
             await this.myCustomCode();
         } else {
-            nextStep();
+            this.#sync.nextStep();
         }
     }
 
     async myCustomCode() {
         this.out('Running your custom code 1!');
-        await step();
+        await this.#sync.step();
         this.out('Running your custom code 2!');
-        await step();
+        await this.#sync.step();
         this.out('Running your custom code final!');
-        done();
+        this.#sync.done();
     }
 
     out(message) {
