@@ -1,4 +1,4 @@
-import { CoreCode } from "./coreCode.js";
+import { CoreCode } from "./core/coreCode.js";
 import { console } from "./main.js";
 
 export class UserCode extends CoreCode {

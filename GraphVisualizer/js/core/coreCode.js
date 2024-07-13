@@ -1,4 +1,4 @@
-import { repaint } from "./main.js";
+import { repaint } from "../main.js";
 
 export class CoreCode {
 

@@ -2,10 +2,10 @@ import { RADIUS } from "./adt/node.js";
 import { Graph } from "./adt/graph.js";
 import { Queue } from "./adt/queue.js";
 import { Stack } from "./adt/stack.js";
-import { Graphics } from "./graphics.js";
-import { ContextMenu } from "./contextMenu.js";
-import { XferDialog } from "./xferDialog.js";
-import { ConsoleDialog } from "./consoleDialog.js";
+import { Graphics } from "./core/graphics.js";
+import { ContextMenu } from "./core/contextMenu.js";
+import { XferDialog } from "./core/xferDialog.js";
+import { ConsoleDialog } from "./core/consoleDialog.js";
 import { UserCode } from "./userCode.js";
 
 // html elements
