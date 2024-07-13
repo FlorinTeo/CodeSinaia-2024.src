@@ -8,11 +8,11 @@ export class ConsoleDialog {
     #hConsoleBtnResize;
     #lambdaOnClose;
     #width;
-    #sync
+    #code
 
 
-    constructor(sync) {
-        this.#sync = sync;
+    constructor(code) {
+        this.#code = code;
         this.#lambdaOnClose = null;
         this.#hConsoleDialog = document.getElementById('hConsoleDialog');
         this.#hConsoleClose = document.getElementById('hConsoleClose');
@@ -52,11 +52,11 @@ export class ConsoleDialog {
         this.show();
     }
     async onBtnRunStepClick(event = null) {
-        await this.#sync.run(this.#hConsoleBtnRunStep);
+        await this.#code.run(this.#hConsoleBtnRunStep);
     }
 
     onBtnClearClick(event = null) {
-        this.#sync.done();
+        this.#code.done();
         this.clear();
     }
 

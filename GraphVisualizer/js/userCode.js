@@ -1,7 +1,7 @@
-import { Sync } from "./sync.js";
+import { CoreCode } from "./coreCode.js";
 import { console } from "./main.js";
 
-export class UserCode extends Sync {
+export class UserCode extends CoreCode {
 
     async myCustomCode() {
         console.out('Running your custom code 1!');

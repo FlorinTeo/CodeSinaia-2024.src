@@ -1,6 +1,6 @@
 import { repaint } from "./main.js";
 
-export class Sync {
+export class CoreCode {
 
     #hConsoleBtnRunStep; // Run/Step html button
     #nextStep // synchronization lambda linking promise with resolve
