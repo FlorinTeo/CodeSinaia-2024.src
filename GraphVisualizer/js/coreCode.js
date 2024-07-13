@@ -17,29 +17,30 @@ export class CoreCode {
         } else {
             this.#nextStep();
         }
-        repaint();
     }
 
     async step() {
         if (this.#hConsoleBtnRunStep != null) {
+            repaint();
             const promise = new Promise((resolve) => { this.#nextStep = resolve; });
             await promise;
         }
     }
 
-    done() {
-        if (this.#hConsoleBtnRunStep != null) {
-            this.#hConsoleBtnRunStep.src = "res/btnRun.png";
-            this.#hConsoleBtnRunStep = null;
-        }
-    }
-    
     async runWrapper() {
         await this.run();
         this.done();
     }
 
+    done() {
+        if (this.#hConsoleBtnRunStep != null) {
+            repaint();
+            this.#hConsoleBtnRunStep.src = "res/btnRun.png";
+            this.#hConsoleBtnRunStep = null;
+        }
+    }
+    
     async run() {
-        alert('myCustomCode?');
+        alert('##Error##: Attempting to run no-op CoreCode.');
     }
 }
