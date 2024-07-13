@@ -1,20 +1,34 @@
 import { console } from './main.js'
 
 export class Sync {
-    /*
-    tracing - booloean tracking if during tracing or not
-    nextStep - synchronization lambda linking promise with resolve
-    */
+
+    #tracing; // booloean tracking if during tracing or not
+    #nextStep // synchronization lambda linking promise with resolve
+
     constructor () {
-        this.tracing = false;
+        this.#tracing = false;
     }
 
     async run() {
-        if (!this.tracing) {
+        if (!this.#tracing) {
             await this.myCustomCode();
         } else {
-            this.nextStep();
+            this.#nextStep();
         }
+    }
+
+    async step() {
+        this.#tracing = true;
+        const promise = new Promise((resolve) => {
+            this.#nextStep = resolve;
+        });
+
+        // Wait for the promise to resolve
+        await promise;
+    }
+
+    done() {
+        this.#tracing = false;
     }
     
     async myCustomCode() {
@@ -24,19 +38,5 @@ export class Sync {
         await this.step();
         console.out('Running your custom code final!');
         this.done();
-    }
-
-    async step() {
-        this.tracing = true;
-        const promise = new Promise((resolve) => {
-            this.nextStep = resolve;
-        });
-
-        // Wait for the promise to resolve
-        await promise;
-    }
-
-    done() {
-        this.tracing = false;
     }
 }
