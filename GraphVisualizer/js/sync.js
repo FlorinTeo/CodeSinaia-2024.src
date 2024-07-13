@@ -2,15 +2,17 @@ import { repaint } from "./main.js";
 
 export class Sync {
 
-    #tracing; // booloean tracking if during tracing or not
+    #hConsoleBtnRunStep; // Run/Step html button
     #nextStep // synchronization lambda linking promise with resolve
 
     constructor () {
-        this.#tracing = false;
+        this.#hConsoleBtnRunStep = null;
     }
 
-    async run() {
-        if (!this.#tracing) {
+    async run(hConsoleBtnRunStep) {
+        if (this.#hConsoleBtnRunStep == null) {
+            this.#hConsoleBtnRunStep = hConsoleBtnRunStep;
+            this.#hConsoleBtnRunStep.src = "res/btnStep.png";
             await this.myCustomCode();
         } else {
             this.#nextStep();
@@ -19,17 +21,17 @@ export class Sync {
     }
 
     async step() {
-        this.#tracing = true;
-        const promise = new Promise((resolve) => {
-            this.#nextStep = resolve;
-        });
-
-        // Wait for the promise to resolve
-        await promise;
+        if (this.#hConsoleBtnRunStep != null) {
+            const promise = new Promise((resolve) => { this.#nextStep = resolve; });
+            await promise;
+        }
     }
 
     done() {
-        this.#tracing = false;
+        if (this.#hConsoleBtnRunStep != null) {
+            this.#hConsoleBtnRunStep.src = "res/btnRun.png";
+            this.#hConsoleBtnRunStep = null;
+        }
     }
     
     async myCustomCode() {

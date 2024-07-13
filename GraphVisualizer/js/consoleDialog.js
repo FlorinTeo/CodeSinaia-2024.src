@@ -4,7 +4,7 @@ export class ConsoleDialog {
     #hConsoleClose;
     #hConsoleText;
     #hConsoleBtnClear;
-    #hConsoleBtnRun;
+    #hConsoleBtnRunStep;
     #hConsoleBtnResize;
     #lambdaOnClose;
     #width;
@@ -18,13 +18,13 @@ export class ConsoleDialog {
         this.#hConsoleClose = document.getElementById('hConsoleClose');
         this.#hConsoleText = document.getElementById('hConsoleText');
         this.#hConsoleBtnClear = document.getElementById('hConsoleBtnClear');
-        this.#hConsoleBtnRun = document.getElementById('hConsoleBtnRun');
+        this.#hConsoleBtnRunStep = document.getElementById('hConsoleBtnRun');
         this.#hConsoleBtnResize = document.getElementById('hConsoleBtnResize');
 
         this.#hConsoleClose.addEventListener('click', () => { this.onBtnCloseClick(); });
         this.#hConsoleBtnResize.addEventListener('click', () => { this.onBtnResize(); });
         this.#hConsoleBtnClear.addEventListener('click', () => { this.onBtnClearClick(); });
-        this.#hConsoleBtnRun.addEventListener('click', () => { this.onBtnRunClick(); })
+        this.#hConsoleBtnRunStep.addEventListener('click', () => { this.onBtnRunStepClick(); })
 
         this.#width = 32;
     }
@@ -51,13 +51,13 @@ export class ConsoleDialog {
         this.#width = Math.max(32, (this.#width + 8) % 72);
         this.show();
     }
-
-    onBtnClearClick(event = null) {
-        this.clear();
+    async onBtnRunStepClick(event = null) {
+        await this.#sync.run(this.#hConsoleBtnRunStep);
     }
 
-    async onBtnRunClick(event = null) {
-        await this.#sync.run();
+    onBtnClearClick(event = null) {
+        this.#sync.done();
+        this.clear();
     }
 
     out(message) {
