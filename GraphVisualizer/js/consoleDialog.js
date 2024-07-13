@@ -57,20 +57,7 @@ export class ConsoleDialog {
     }
 
     async onBtnRunClick(event = null) {
-        if (!this.#sync.tracing) {
-            await this.myCustomCode();
-        } else {
-            this.#sync.nextStep();
-        }
-    }
-
-    async myCustomCode() {
-        this.out('Running your custom code 1!');
-        await this.#sync.step();
-        this.out('Running your custom code 2!');
-        await this.#sync.step();
-        this.out('Running your custom code final!');
-        this.#sync.done();
+        await this.#sync.run();
     }
 
     out(message) {

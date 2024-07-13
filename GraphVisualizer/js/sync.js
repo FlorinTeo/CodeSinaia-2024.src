@@ -1,3 +1,4 @@
+import { console } from './main.js'
 
 export class Sync {
     /*
@@ -6,6 +7,23 @@ export class Sync {
     */
     constructor () {
         this.tracing = false;
+    }
+
+    async run() {
+        if (!this.tracing) {
+            await this.myCustomCode();
+        } else {
+            this.nextStep();
+        }
+    }
+    
+    async myCustomCode() {
+        console.out('Running your custom code 1!');
+        await this.step();
+        console.out('Running your custom code 2!');
+        await this.step();
+        console.out('Running your custom code final!');
+        this.done();
     }
 
     async step() {
