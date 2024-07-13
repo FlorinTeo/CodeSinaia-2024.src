@@ -6,6 +6,7 @@ import { Graphics } from "./graphics.js"
 import { ContextMenu } from "./contextMenu.js"
 import { XferDialog } from "./xferDialog.js"
 import { ConsoleDialog } from "./consoleDialog.js"
+import { Sync } from "./sync.js"
 
 // html elements
 export let hTdCanvas = document.getElementById("hTdCanvas");
@@ -20,7 +21,10 @@ export let ctxMenuCanvas = new ContextMenu("hCtxMenuCanvas");
 export let ctxMenuNode = new ContextMenu("hCtxMenuNode");
 export let graphics = new Graphics(hCanvas);
 export let xferDialog = new XferDialog(graphics);
-export let console = new ConsoleDialog();
+export let sync = new Sync();
+export let console = new ConsoleDialog(sync);
+
+// global adt objects
 export let graph = new Graph(graphics);
 export let queue = new Queue(graphics);
 export let stack = new Stack(graphics);

@@ -1,5 +1,3 @@
-import { Sync } from "./sync.js"
-
 export class ConsoleDialog {
 
     #hConsoleDialog;
@@ -13,8 +11,8 @@ export class ConsoleDialog {
     #sync
 
 
-    constructor() {
-        this.#sync = new Sync();
+    constructor(sync) {
+        this.#sync = sync;
         this.#lambdaOnClose = null;
         this.#hConsoleDialog = document.getElementById('hConsoleDialog');
         this.#hConsoleClose = document.getElementById('hConsoleClose');
