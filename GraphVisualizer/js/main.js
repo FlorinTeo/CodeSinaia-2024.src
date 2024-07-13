@@ -1,11 +1,12 @@
-import { RADIUS } from "./adt/node.js"
-import { Graph } from "./adt/graph.js"
-import { Queue } from "./adt/queue.js"
-import { Stack } from "./adt/stack.js"
-import { Graphics } from "./graphics.js"
-import { ContextMenu } from "./contextMenu.js"
-import { XferDialog } from "./xferDialog.js"
-import { ConsoleDialog } from "./consoleDialog.js"
+import { RADIUS } from "./adt/node.js";
+import { Graph } from "./adt/graph.js";
+import { Queue } from "./adt/queue.js";
+import { Stack } from "./adt/stack.js";
+import { Graphics } from "./core/graphics.js";
+import { ContextMenu } from "./core/contextMenu.js";
+import { XferDialog } from "./core/xferDialog.js";
+import { ConsoleDialog } from "./core/consoleDialog.js";
+import { UserCode } from "./userCode.js";
 
 // html elements
 export let hTdCanvas = document.getElementById("hTdCanvas");
@@ -20,7 +21,10 @@ export let ctxMenuCanvas = new ContextMenu("hCtxMenuCanvas");
 export let ctxMenuNode = new ContextMenu("hCtxMenuNode");
 export let graphics = new Graphics(hCanvas);
 export let xferDialog = new XferDialog(graphics);
-export let console = new ConsoleDialog(graphics);
+export let userCode = new UserCode();
+export let console = new ConsoleDialog(userCode);
+
+// global adt objects
 export let graph = new Graph(graphics);
 export let queue = new Queue(graphics);
 export let stack = new Stack(graphics);
