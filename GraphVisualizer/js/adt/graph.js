@@ -128,7 +128,7 @@ export class Graph {
 
     clearHighlights() {
         for (const h of this.highlights) {
-            h.toggleHighlight(-1);
+            h.toggleColor(-1);
         }
     }
 

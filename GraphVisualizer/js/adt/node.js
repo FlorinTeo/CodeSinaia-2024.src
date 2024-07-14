@@ -8,18 +8,17 @@ export const ARROW_WIDTH = 5;
 export const ARROW_LENGTH = 8;
 
 export class Node {
+    // Private class members
+    #graphics;  // the graphics engine
 
-    /*
-    Class members:
-        graphics    - the graphics engine
-        x, y        - coordinates of the center of this node
-        label       - text to be printed inside the node
-        state       - public state holder for this node
-        neigbhors   - list of neighboring nodes
-        highlightIndex   - index of the last custom filling color used
-        marker      - internal state holder for this node 
-    */
-    #graphics;
+    // Public class members
+    x;          // x coordinate of the center of this node
+    y;          // y coordinate of the center of this node
+    label;      // text to be printed inside the node
+    state;      // public state holder for this node
+    neigbhors;  // array of Node object, the neighbors of this node
+    colorIndex; // color index of this node in the HIGHLIGHT_PALLETE array
+    marker;     // internal state holder for this node 
 
     constructor(graphics, label, x, y) {
         this.#graphics = graphics;
@@ -28,7 +27,8 @@ export class Node {
         this.label = label;
         this.state = 0;
         this.neighbors = [];
-        this.highlightIndex = 0;
+        this.neighbors = [];
+        this.colorIndex = 0;
         this.marker = 0;
     }
 
@@ -36,9 +36,9 @@ export class Node {
         return `<b>${this.label}</b>: ${this.state}`;
     }
 
-    toggleHighlight(deltaIndex) {
+    toggleColor(deltaIndex) {
         deltaIndex = Math.sign(deltaIndex);
-        this.highlightIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.highlightIndex + deltaIndex) % HIGHLIGHT_PALLETE.length);
+        this.colorIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.colorIndex + deltaIndex) % HIGHLIGHT_PALLETE.length);
     }
 
     repaint() {
@@ -48,7 +48,7 @@ export class Node {
             }
             this.#graphics.drawArrow(this.x, this.y, neighbor.x, neighbor.y, RADIUS, ARROW_LENGTH, ARROW_WIDTH, 'black');
         }
-        this.#graphics.drawNode(this.label,this.x, this.y, RADIUS, HIGHLIGHT_PALLETE[this.highlightIndex]);
+        this.#graphics.drawNode(this.label,this.x, this.y, RADIUS, HIGHLIGHT_PALLETE[this.colorIndex]);
     }
 
     traverse(lambda) {

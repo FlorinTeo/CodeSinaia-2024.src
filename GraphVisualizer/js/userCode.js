@@ -13,7 +13,7 @@ export class UserCode extends CoreCode {
         }
         console.out('Done!');
         for(const node of graph.nodes) {
-            node.toggleHighlight(1);
+            node.toggleColor(1);
             await this.step();
         }
     }

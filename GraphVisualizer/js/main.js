@@ -226,7 +226,7 @@ hCanvas.addEventListener('wheel', (event) => {
       let newLabel = nextLabel(targetNode.label, Math.sign(event.deltaY));
       let prevLabel = graph.reLabel(targetNode, newLabel);
     } else {
-      targetNode.toggleHighlight(event.deltaY);
+      targetNode.toggleColor(event.deltaY);
     }
   } else {
     let targetHighlight = graph.getHighlight(x, y);
@@ -260,7 +260,7 @@ hCanvas.addEventListener('contextmenu', (event) => {
     ctxMenuCanvas.setInput('hCtxMenuCanvas_ResetS', 0);
     ctxMenuCanvas.setVisible(new Map([
       ['hCtxMenuCanvas_ResetS', graph.size() > 0],
-      ['hCtxMenuCanvas_ResetNh', !graph.matchAll((node) => { return node.highlightIndex == 0; })],
+      ['hCtxMenuCanvas_ResetNh', !graph.matchAll((node) => { return node.colorIndex == 0; })],
       ['hCtxMenuCanvas_ResetEh', graph.countHighlights() > 0],
       ['hCtxMenuCanvas_ResetQ', queue.size() > 0],
       ['hCtxMenuCanvas_ResetT', stack.size() > 0],
@@ -277,7 +277,7 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetS', (_, value) => {
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetNh', () => {
-  graph.traverse((node) => { node.highlightIndex = 0; });
+  graph.traverse((node) => { node.colorIndex = 0; });
   repaint();
   // console.out("Node highlights reset!");
 });
