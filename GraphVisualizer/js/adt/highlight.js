@@ -35,12 +35,12 @@ export class Highlight {
         this.#highlightIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.#highlightIndex + deltaIndex) % HIGHLIGHT_PALLETE.length);
     }
 
-    matches(fromNode, toNode) {
+    matchesNodes(fromNode, toNode) {
         return (this.#fromNode === fromNode && this.#toNode === toNode)
-            || (this.#fromNode === toNode && this.#toNode == fromNode);
+            || (this.#fromNode === toNode && this.#toNode === fromNode);
     }
 
-    matches(highlightIndex) {
+    matchesIndex(highlightIndex) {
         return this.#highlightIndex == highlightIndex;
     }
 

@@ -96,7 +96,7 @@ export class Graph {
         if (fromNode.hasEdge(toNode)) {
             fromNode.removeEdge(toNode);
             if (!toNode.hasEdge(fromNode)) {
-                this.#highlights = this.#highlights.filter(h => !h.matches(fromNode, toNode));
+                this.#highlights = this.#highlights.filter(h => !h.matchesNodes(fromNode, toNode));
             }
         } else {
             fromNode.addEdge(toNode);
@@ -131,7 +131,7 @@ export class Graph {
     }
 
     countHighlights() {
-        return this.#highlights.filter(h => !h.matches(0)).length;
+        return this.#highlights.filter(h => !h.matchesIndex(0)).length;
     }
 
     toString(brief = false) {
