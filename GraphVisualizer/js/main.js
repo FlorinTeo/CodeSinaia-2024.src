@@ -231,7 +231,7 @@ hCanvas.addEventListener('wheel', (event) => {
   } else {
     let targetHighlight = graph.getHighlight(x, y);
     if (targetHighlight) {
-      targetHighlight.toggleHighlight(event.deltaY);
+      targetHighlight.toggleColor(event.deltaY);
     }
   }
   repaint();

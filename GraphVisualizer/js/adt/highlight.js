@@ -20,26 +20,26 @@ export class Highlight {
     #graphics;   // the graphics engine
 
     // Public class members
-    node1;           // first Node
-    node2;           // second Node
-    direction;       // the Direction of the edge
-    hightlightIndex; // highlight color index
+    node1;      // first Node
+    node2;      // second Node
+    direction;  // the Direction of the edge
+    colorIndex; // color index in the HIGHLIGHT_PALLETE array
 
     constructor(graphics, fromNode, toNode) {
         this.#graphics = graphics;
         this.node1 = fromNode;
         this.node2 = toNode;
-        this.hightlightIndex = 0;
+        this.colorIndex = 0;
         this.direction = Direction.Fwd;
     }
 
     repaint() {
-        if (this.hightlightIndex != 0) {
+        if (this.colorIndex != 0) {
             this.#graphics.drawLine(
                 this.node1.x, this.node1.y,
                 this.node2.x, this.node2.y,
                 RADIUS, RADIUS,
-                HIGHLIGHT_THICKNESS, HIGHLIGHT_PALLETE[this.hightlightIndex]);
+                HIGHLIGHT_THICKNESS, HIGHLIGHT_PALLETE[this.colorIndex]);
         }
     }
 
@@ -59,9 +59,9 @@ export class Highlight {
         }
     }
 
-    toggleHighlight(deltaIndex) {
+    toggleColor(deltaIndex) {
         deltaIndex = Math.sign(deltaIndex);
-        this.hightlightIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.hightlightIndex + deltaIndex) % HIGHLIGHT_PALLETE.length);
+        this.colorIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.colorIndex + deltaIndex) % HIGHLIGHT_PALLETE.length);
     }
 
     matchesNodes(fromNode, toNode) {
@@ -69,8 +69,8 @@ export class Highlight {
             || (this.node1 === toNode && this.node2 === fromNode);
     }
 
-    matchesIndex(highlightIndex) {
-        return this.hightlightIndex == highlightIndex;
+    matchesIndex(colorIndex) {
+        return this.colorIndex == colorIndex;
     }
 
     contains(node) {
