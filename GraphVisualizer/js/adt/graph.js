@@ -100,7 +100,7 @@ export class Graph {
             }
         } else {
             fromNode.addEdge(toNode);
-            if (!toNode.hasEdge(fromNode)) {
+            if (highlight == null) {
                 this.highlights.push(new Highlight(this.#graphics, fromNode, toNode));
             } else {
                 highlight.addDirection(fromNode, toNode);
