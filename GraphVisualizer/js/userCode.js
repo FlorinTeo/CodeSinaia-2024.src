@@ -1,5 +1,6 @@
 import { CoreCode } from "./core/coreCode.js";
 import { console } from "./main.js";
+import { graph } from "./main.js";
 
 export class UserCode extends CoreCode {
 
@@ -11,5 +12,9 @@ export class UserCode extends CoreCode {
             await this.step();
         }
         console.out('Done!');
+        for(const node of graph.nodes) {
+            node.toggleHighlight(1);
+            await this.step();
+        }
     }
 }
