@@ -12,17 +12,26 @@ export class Graph {
     #graphics;  // the graphics engine
 
     // Public class members
-    nodes;      // array of Node objects
-    highlights; // array of Highlight objects
+    nodes; // array of Node objects
+    edges; // array of Edge objects
 
     constructor(graphics) {
         this.#graphics = graphics;
         this.clear();
     }
 
+    clear() {
+        this.nodes = [];
+        this.edges = [];
+    }
+
+    size() {
+        return this.nodes.length;
+    }
+
     repaint() {
-        for(const highlight of this.highlights) {
-            highlight.repaint();
+        for(const edge of this.edges) {
+            edge.repaint();
         }
         this.traverse((node)=>{
             node.repaint();
@@ -61,19 +70,6 @@ export class Graph {
         return (node != undefined) ? node : null;
     }
 
-    getHighlight(x, y) {
-        let minD = Infinity;
-        let minHighlight = undefined;
-        for(const highlight of this.highlights) {
-            let d = highlight.getDistance(x, y);
-            if (d && d < minD) {
-                minD = d;
-                minHighlight = highlight;
-            }
-        }
-        return minHighlight;
-    }
-
     addNode(label, x, y) {
         let node = new Node(this.#graphics, label, x, y);
         if (node )
@@ -87,53 +83,47 @@ export class Graph {
             }
         }
         this.nodes = this.nodes.filter(n => !(n === node));
-        this.highlights = this.highlights.filter(h => !h.contains(node));
+        this.edges = this.edges.filter(e => !e.contains(node));
+    }
+
+    hasNodeHighlights() {
+        let hNodes = this.nodes.filter(n => n.colorIndex != 0);
+        return hNodes.length > 0;
+    }
+
+    getEdge(x, y) {
+        let minD = Infinity;
+        let minEdge = undefined;
+        for(const edge of this.edges) {
+            let d = edge.getDistance(x, y);
+            if (d && d < minD) {
+                minD = d;
+                minEdge = edge;
+            }
+        }
+        return minEdge;
     }
 
     resetEdge(fromNode, toNode) {
-        let highlight = this.highlights.filter(h => h.matchesNodes(fromNode, toNode))[0];
+        let edge = this.edges.filter(e => e.matchesNodes(fromNode, toNode))[0];
         if (fromNode.hasEdge(toNode)) {
             fromNode.removeEdge(toNode);
-            highlight.removeDirection(fromNode, toNode);
-            if (highlight.direction == Direction.None) {
-                this.highlights = this.highlights.filter(h => !h.matchesNodes(fromNode, toNode));
+            edge.removeDirection(fromNode, toNode);
+            if (edge.direction == Direction.None) {
+                this.edges = this.edges.filter(e => !e.matchesNodes(fromNode, toNode));
             }
         } else {
             fromNode.addEdge(toNode);
-            if (highlight == null) {
-                this.highlights.push(new Highlight(this.#graphics, fromNode, toNode));
+            if (edge == null) {
+                this.edges.push(new Highlight(this.#graphics, fromNode, toNode));
             } else {
-                highlight.addDirection(fromNode, toNode);
+                edge.addDirection(fromNode, toNode);
             }
         }
     }
 
-    matchAll(fMatch) {
-        for(const node of this.nodes) {
-            if (!fMatch(node)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    size() {
-        return this.nodes.length;
-    }
-
-    clear() {
-        this.nodes = [];
-        this.highlights = [];
-    }
-
-    clearHighlights() {
-        for (const h of this.highlights) {
-            h.toggleColor(-1);
-        }
-    }
-
-    countHighlights() {
-        return this.highlights.filter(h => !h.matchesIndex(0)).length;
+    hasEdgeHighlights() {
+        return (this.edges.filter(e => !e.matchesIndex(0)).length) > 0;
     }
 
     toString(brief = false) {
