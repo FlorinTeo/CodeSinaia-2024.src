@@ -12,9 +12,9 @@ export const Direction = {
 };
 
 /**
- * Models the highlight line between two nodes
+ * Models an edge between two Nodes
  */
-export class Highlight {
+export class Edge {
 
     // Private class members
     #graphics;   // the graphics engine

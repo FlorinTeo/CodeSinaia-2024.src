@@ -1,6 +1,6 @@
 import { Node } from "./node.js";
-import { Highlight } from "./highlight.js";
-import { Direction } from "./highlight.js";
+import { Edge } from "./edge.js";
+import { Direction } from "./edge.js";
 
 export const HIGHLIGHT_PALLETE = ['#EBEBEB', '#FFFD55', '#6EFBFF', '#FFCACA', '#93FF2D', '#ECA4FF'];
 
@@ -115,7 +115,7 @@ export class Graph {
         } else {
             fromNode.addEdge(toNode);
             if (edge == null) {
-                this.edges.push(new Highlight(this.#graphics, fromNode, toNode));
+                this.edges.push(new Edge(this.#graphics, fromNode, toNode));
             } else {
                 edge.addDirection(fromNode, toNode);
             }
