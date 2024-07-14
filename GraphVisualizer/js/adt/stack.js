@@ -1,17 +1,12 @@
 import { Item } from "./item.js"
 
 export class Stack {
-    /*
-    Class members:
-        graphics  - the graphics engine
-        head    - the head item in the Queue double linked list (or null if queue is empty)
-        size    - the number of items in the queue
-    */
-    #graphics;
-    #head;
-    #size;
-    #maxTextH;
-    #maxTextW;
+    // Private class members
+    #graphics;  // the graphics engine
+    #head;      // the head Item in the Stack double linked list (or null if Stack is empty)
+    #size;      // the number of Items in the Stack
+    #maxTextH;  // maximum text height of each of the Node labels in the Stack
+    #maxTextW;  // maximum text width of each of the Node labels in the Stack
     
     constructor(graphics) {
         this.#graphics = graphics;

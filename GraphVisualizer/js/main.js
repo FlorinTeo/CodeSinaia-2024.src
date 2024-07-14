@@ -226,12 +226,12 @@ hCanvas.addEventListener('wheel', (event) => {
       let newLabel = nextLabel(targetNode.label, Math.sign(event.deltaY));
       let prevLabel = graph.reLabel(targetNode, newLabel);
     } else {
-      targetNode.toggleHighlight(event.deltaY);
+      targetNode.toggleColor(event.deltaY);
     }
   } else {
-    let targetHighlight = graph.getHighlight(x, y);
-    if (targetHighlight) {
-      targetHighlight.toggleHighlight(event.deltaY);
+    let targetEdge = graph.getEdge(x, y);
+    if (targetEdge) {
+      targetEdge.toggleColor(event.deltaY);
     }
   }
   repaint();
@@ -260,8 +260,8 @@ hCanvas.addEventListener('contextmenu', (event) => {
     ctxMenuCanvas.setInput('hCtxMenuCanvas_ResetS', 0);
     ctxMenuCanvas.setVisible(new Map([
       ['hCtxMenuCanvas_ResetS', graph.size() > 0],
-      ['hCtxMenuCanvas_ResetNh', !graph.matchAll((node) => { return node.highlightIndex == 0; })],
-      ['hCtxMenuCanvas_ResetEh', graph.countHighlights() > 0],
+      ['hCtxMenuCanvas_ResetNh', graph.hasNodeHighlights()],
+      ['hCtxMenuCanvas_ResetEh', graph.hasEdgeHighlights()],
       ['hCtxMenuCanvas_ResetQ', queue.size() > 0],
       ['hCtxMenuCanvas_ResetT', stack.size() > 0],
       ['hCtxMenuCanvas_ResetG', graph.size() > 0],
@@ -277,27 +277,23 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetS', (_, value) => {
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetNh', () => {
-  graph.traverse((node) => { node.highlightIndex = 0; });
+  graph.traverse((node) => { node.colorIndex = 0; });
   repaint();
-  // console.out("Node highlights reset!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetEh', () => {
-  graph.clearHighlights();
+  graph.edges.forEach((edge) => { edge.toggleColor(-1); });
   repaint();
-  // console.out("Edge highlights reset!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetQ', () => {
   queue.clear();
   repaint();
-  // console.out("Queue reset!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetT', () => {
   stack.clear();
   repaint();
-  // console.out("Stack reset!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetG', () => {
@@ -305,7 +301,6 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetG', () => {
   queue.clear();
   stack.clear();
   repaint();
-  // console.out("Graph reset!");
   window.console.log("hey!!");
 });
 

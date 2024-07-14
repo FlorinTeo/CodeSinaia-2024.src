@@ -1,15 +1,10 @@
 import { Item } from "./item.js"
 
 export class Queue {
-    /*
-    Class members:
-        graphics  - the graphics engine
-        head    - the head item in the Queue double linked list (or null if queue is empty)
-        size    - the number of items in the queue
-    */
-    #graphics;
-    #head;
-    #size;
+    // Private class members
+    #graphics;  // the graphics engine
+    #head;      // the head Item in the Queue double linked list (or null if Queue is empty)
+    #size;      // the number of Items in the queue
     
     constructor(graphics) {
         this.#graphics = graphics;
