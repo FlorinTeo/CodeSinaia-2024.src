@@ -1,4 +1,6 @@
-import { RADIUS } from "./adt/node.js";
+import {SCALE} from "./adt/graph.js";
+import { RADIUS } from "./adt/graph.js";
+import { LINE_WIDTH } from "./adt/graph.js";
 import { Graph } from "./adt/graph.js";
 import { Queue } from "./adt/queue.js";
 import { Stack } from "./adt/stack.js";
@@ -163,10 +165,20 @@ hCanvas.addEventListener('mousemove', (event) => {
       repaint();
       if (hoverNode != null) {
         // {ctrl-drag} => draw an edge lead line
-        graphics.drawLine(clickedNode.x, clickedNode.y, hoverNode.x, hoverNode.y, RADIUS, RADIUS, 1, 'black');
+        graphics.drawLine(
+            clickedNode.x, clickedNode.y,
+            hoverNode.x, hoverNode.y,
+            RADIUS[SCALE], RADIUS[SCALE],
+            LINE_WIDTH[SCALE],
+            'black');
       } else {
         // not hovering over a node => draw a gray tracking line
-        graphics.drawLine(clickedNode.x, clickedNode.y, x, y, RADIUS, 0, 1, '#CCCCCC');
+        graphics.drawLine(
+            clickedNode.x, clickedNode.y,
+            x, y,
+            RADIUS[SCALE], 0,
+            LINE_WIDTH[SCALE],
+            '#CCCCCC');
       }
     } else {
       // simple {drag} => just move the node following the mouse

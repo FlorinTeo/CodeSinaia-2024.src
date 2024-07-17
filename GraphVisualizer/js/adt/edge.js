@@ -1,8 +1,9 @@
-import { RADIUS } from './node.js';
-import { HIGHLIGHT_PALLETE } from './graph.js';
 
-export const HIGHLIGHT_THICKNESS = 6;
-const HIGHLIGHT_SENSITIVITY = 10;
+import { SCALE } from "./graph.js"
+import { RADIUS } from "./graph.js";
+import { HIGHLIGHT_PALLETE } from "./graph.js";
+import { HIGHLIGHT_THICKNESS } from "./graph.js";
+import { HIGHLIGHT_SENSITIVITY } from "./graph.js";
 
 export const Direction = {
     None: 0,
@@ -38,8 +39,8 @@ export class Edge {
             this.#graphics.drawLine(
                 this.node1.x, this.node1.y,
                 this.node2.x, this.node2.y,
-                RADIUS, RADIUS,
-                HIGHLIGHT_THICKNESS, HIGHLIGHT_PALLETE[this.colorIndex]);
+                RADIUS[SCALE], RADIUS[SCALE],
+                HIGHLIGHT_THICKNESS[SCALE], HIGHLIGHT_PALLETE[this.colorIndex]);
         }
     }
 
@@ -83,13 +84,15 @@ export class Edge {
         let x2 = this.node2.x;
         let y2 = this.node2.y;
         let d = undefined;
-        if (x >= Math.min(x1,x2) - HIGHLIGHT_SENSITIVITY && x <= Math.max(x1,x2) + HIGHLIGHT_SENSITIVITY
-           && y >= Math.min(y1,y2) - HIGHLIGHT_SENSITIVITY && y <= Math.max(y1, y2) + HIGHLIGHT_SENSITIVITY) {
+        if (x >= Math.min(x1,x2) - HIGHLIGHT_SENSITIVITY[SCALE] 
+           && x <= Math.max(x1,x2) + HIGHLIGHT_SENSITIVITY[SCALE]
+           && y >= Math.min(y1,y2) - HIGHLIGHT_SENSITIVITY[SCALE]
+           && y <= Math.max(y1, y2) + HIGHLIGHT_SENSITIVITY[SCALE]) {
             let a = y2 - y1;
             let b = x1 - x2;
             let c = y1 * x2 - y2 * x1;
             d = Math.abs((a * x + b * y + c) / Math.sqrt(a * a + b * b));
-            if (d > HIGHLIGHT_SENSITIVITY) {
+            if (d > HIGHLIGHT_SENSITIVITY[SCALE]) {
                 d = undefined;
             }
         }
