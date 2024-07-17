@@ -2,7 +2,25 @@ import { Node } from "./node.js";
 import { Edge } from "./edge.js";
 import { Direction } from "./edge.js";
 
+export let SCALE = 0;
+export const LINE_WIDTH = [1, 0.6, 0.5];
+export const RADIUS = [16, 10, 6];
+export const FONT = ["bold 12px Arial", "10px Arial", null]
+export const ARROW_WIDTH = [5, 3, 2];
+export const ARROW_LENGTH = [8, 5, 3];
+export const HIGHLIGHT_THICKNESS = [6, 5, 4];
+export const HIGHLIGHT_SENSITIVITY = [10, 8, 6];
 export const HIGHLIGHT_PALLETE = ['#EBEBEB', '#FFFD55', '#6EFBFF', '#FFCACA', '#93FF2D', '#ECA4FF'];
+
+function adjustScale(nNodes) {
+    if (nNodes <= 15) {
+        SCALE = 0;
+    } else if (nNodes <= 35) {
+        SCALE = 1;
+    } else {
+        SCALE = 2;
+    }
+}
 
 /**
  * Models the entire Graph
@@ -23,6 +41,7 @@ export class Graph {
     clear() {
         this.nodes = [];
         this.edges = [];
+        adjustScale(0);
     }
 
     size() {
@@ -72,8 +91,10 @@ export class Graph {
 
     addNode(label, x, y) {
         let node = new Node(this.#graphics, label, x, y);
-        if (node )
-        this.nodes.push(node);
+        if (node ) {
+            this.nodes.push(node);
+            adjustScale(this.nodes.length);
+        }
     }
 
     removeNode(node) {
@@ -84,6 +105,7 @@ export class Graph {
         }
         this.nodes = this.nodes.filter(n => !(n === node));
         this.edges = this.edges.filter(e => !e.contains(node));
+        adjustScale(this.nodes.length);
     }
 
     hasNodeHighlights() {
