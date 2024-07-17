@@ -192,7 +192,7 @@ hCanvas.addEventListener('mouseup', (event) => {
   if (dragging) {
     // dragging makes sense only if one node (clickedNode) is ctrl-dragged over another (droppedNode)
     // otherwise, clickedNode move was taken care of by the mousemove handler.
-    if (ctrlClicked && clickedNode != null && droppedNode != null) {
+    if (ctrlClicked && clickedNode != null && clickedNode != droppedNode) {
       // {control-drag} over an existent node => reset edge from clickedNode to droppedNode
       graph.resetEdge(clickedNode, droppedNode);
     }
