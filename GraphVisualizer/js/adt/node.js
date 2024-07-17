@@ -1,12 +1,14 @@
 import { HIGHLIGHT_PALLETE } from "./graph.js";
+import { SCALE } from "./graph.js";
+import { LINE_WIDTH } from "./graph.js";
+import { RADIUS } from "./graph.js";
+import { FONT } from "./graph.js";
+import { ARROW_WIDTH } from "./graph.js";
+import { ARROW_LENGTH } from "./graph.js";
 
 /**
  * Models a node in the Graph
  */
-export const RADIUS = 16;
-export const ARROW_WIDTH = 5;
-export const ARROW_LENGTH = 8;
-
 export class Node {
     // Private class members
     #graphics;  // the graphics engine
@@ -44,11 +46,30 @@ export class Node {
     repaint() {
         for(const neighbor of this.neighbors) {
             if (neighbor.marker == 0 || !neighbor.hasEdge(this)) {
-                this.#graphics.drawLine(this.x, this.y, neighbor.x, neighbor.y, RADIUS, RADIUS, 1, 'black');
+                this.#graphics.drawLine(
+                    this.x, this.y,
+                    neighbor.x, neighbor.y,
+                    RADIUS[SCALE],
+                    RADIUS[SCALE],
+                    LINE_WIDTH[SCALE],
+                    'black');
             }
-            this.#graphics.drawArrow(this.x, this.y, neighbor.x, neighbor.y, RADIUS, ARROW_LENGTH, ARROW_WIDTH, 'black');
+            this.#graphics.drawArrow(
+                this.x, this.y,
+                neighbor.x, neighbor.y,
+                RADIUS[SCALE],
+                ARROW_LENGTH[SCALE],
+                ARROW_WIDTH[SCALE],
+                LINE_WIDTH[SCALE],
+                'black');
         }
-        this.#graphics.drawNode(this.label,this.x, this.y, RADIUS, HIGHLIGHT_PALLETE[this.colorIndex]);
+        this.#graphics.drawNode(
+            this.label,
+            this.x, this.y,
+            RADIUS[SCALE],
+            LINE_WIDTH[SCALE],
+            FONT[SCALE],
+            HIGHLIGHT_PALLETE[this.colorIndex]);
     }
 
     traverse(lambda) {
@@ -63,7 +84,7 @@ export class Node {
 
     isTarget(x, y) {
         let d = Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2));
-        return d <= RADIUS;
+        return d <= RADIUS[SCALE];
     }
 
     hasEdge(node) {
