@@ -1,6 +1,8 @@
 import { CoreCode } from "./core/coreCode.js";
 import { console } from "./main.js";
 import { graph } from "./main.js";
+import { queue } from "./main.js";
+import { stack } from "./main.js";
 
 export class UserCode extends CoreCode {
 
@@ -10,7 +12,7 @@ export class UserCode extends CoreCode {
         graph.nodes.forEach((n) => { n.state = 0; n.toggleColor(-1); })
 
         // compute the count of incoming edges into each node
-        //console.out("2. Compute in-degrees.");
+        //console.outln("2. Compute in-degrees.");
         graph.nodes.forEach((n) => {
             n.neighbors.forEach((neighbor) => { neighbor.state++; });
         });
@@ -96,22 +98,76 @@ export class UserCode extends CoreCode {
         return pass;
     }
 
+    async bfsTraverse() {
+        let root = graph.nodes.filter(n => n.colorIndex != 0)[0];
+        if (root == null) {
+            console.outln("Root node could not be found!");
+            return;
+        }
+        queue.clear();
+        queue.enqueue(root);
+        await this.step();
+        while(queue.size() != 0) {
+            let node = queue.dequeue();
+            node.toggleColor(1);
+            console.out(node.label);
+            await this.step();
+            for(const n of node.neighbors) {
+                queue.enqueue(n);
+            }
+            if (node.neighbors.length > 0) {
+                await this.step();   
+            }
+        }
+        console.outln();
+    }
+
+    async dfsTraverse() {
+        let root = graph.nodes.filter(n => n.colorIndex != 0)[0];
+        if (root == null) {
+            console.outln("Root node could not be found!");
+            return;
+        }
+        stack.clear();
+        stack.push(root);
+        await this.step();
+        while(stack.size() != 0) {
+            let node = stack.pop();
+            node.toggleColor(1);
+            console.out(node.label);
+            await this.step();
+            for(const n of node.neighbors) {
+                stack.push(n);
+            }
+            if (node.neighbors.length > 0) {
+                await this.step();   
+            }
+        }
+        console.outln();
+    }
+
     /**
      * Entry point for user-defined code.
      */
     async run() {
-        console.out("Starting user-defined code!");
+        console.outln("Starting user-defined code!");
 
-        // linked list check
-        console.out("Linked-list check..");
-        let pass = await this.isList(graph);
-        console.out(pass ? "Graph IS a linked list!" : "Graph is NOT a linked list!");
+        // // linked list check
+        // console.outln("Linked-list check..");
+        // let pass = await this.isList(graph);
+        // console.outln(pass ? "Graph IS a linked list!" : "Graph is NOT a linked list!");
 
-        // tree check
-        console.out("Binary tree check..");
-        pass = await this.isBinaryTree(graph);
-        console.out(pass ? "Graph IS a binary tree!" : "Graph is NOT a binary tree!");
+        // // tree check
+        // console.outln("Binary tree check..");
+        // pass = await this.isBinaryTree(graph);
+        // console.outln(pass ? "Graph IS a binary tree!" : "Graph is NOT a binary tree!");
 
-        console.out("User-defined code ended!");
+        console.outln("Breath-first tree traversal:");
+        await this.bfsTraverse();
+
+        console.outln("Depth-first tree traversal:");
+        await this.dfsTraverse();
+
+        console.outln("User-defined code ended!");
     }
 }
