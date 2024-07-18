@@ -126,20 +126,25 @@ export class Graph {
         return minEdge;
     }
 
-    resetEdge(fromNode, toNode) {
-        let edge = this.edges.filter(e => e.matchesNodes(fromNode, toNode))[0];
-        if (fromNode.hasEdge(toNode)) {
-            fromNode.removeEdge(toNode);
-            edge.removeDirection(fromNode, toNode);
-            if (edge.direction == Direction.None) {
-                this.edges = this.edges.filter(e => !e.matchesNodes(fromNode, toNode));
-            }
-        } else {
+    addEdge(fromNode, toNode) {
+        if (!fromNode.hasEdge(toNode)) {
             fromNode.addEdge(toNode);
+            let edge = this.edges.filter(e => e.matchesNodes(fromNode, toNode))[0];
             if (edge == null) {
                 this.edges.push(new Edge(this.#graphics, fromNode, toNode));
             } else {
                 edge.addDirection(fromNode, toNode);
+            }
+        }
+    }
+
+    removeEdge(fromNode, toNode) {
+        if (fromNode.hasEdge(toNode)) {
+            fromNode.removeEdge(toNode);
+            let edge = this.edges.filter(e => e.matchesNodes(fromNode, toNode))[0];
+            edge.removeDirection(fromNode, toNode);
+            if (edge.direction == Direction.None) {
+                this.edges = this.edges.filter(e => !e.matchesNodes(fromNode, toNode));
             }
         }
     }
@@ -179,11 +184,13 @@ export class Graph {
                     alert(`Invalid target in edge ${fromLabel} > ${toLabel}`);
                     return false;
                 }
-                this.resetEdge(newGraph.get(fromLabel), newGraph.get(toLabel));
+                this.addEdge(newGraph.get(fromLabel), newGraph.get(toLabel));
             }
         }
 
         this.nodes = Array.from(newGraph.values());
+        adjustScale(this.nodes.length);
+
         return true;
     }
 }

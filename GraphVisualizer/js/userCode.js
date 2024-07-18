@@ -3,7 +3,6 @@ import { console } from "./main.js";
 import { graph } from "./main.js";
 import { queue } from "./main.js";
 import { stack } from "./main.js";
-import { Stack } from "./adt/stack.js";
 
 export class UserCode extends CoreCode {
 
