@@ -17,6 +17,7 @@ export class Node {
     x;          // x coordinate of the center of this node
     y;          // y coordinate of the center of this node
     label;      // text to be printed inside the node
+    version;    // 0 if label is unique in the graph, 1, 2, ... if labels clash
     state;      // public state holder for this node
     neigbhors;  // array of Node object, the neighbors of this node
     colorIndex; // color index of this node in the HIGHLIGHT_PALLETE array
@@ -27,6 +28,7 @@ export class Node {
         this.x = x;
         this.y = y;
         this.label = label;
+        this.version = 0;
         this.state = 0;
         this.neighbors = [];
         this.neighbors = [];
@@ -105,8 +107,21 @@ export class Node {
         this.neighbors.sort((n1, n2) => n1.x < n2.x ? -1 : n1.x > n2.x ? 1 : 0);
     }
 
-    toString(brief = false) {
-        let output = `${this.label} : `;
+    toString(brief = false, spacing = 20) {
+        let output = `${this.label}`;
+        
+        // add version, if a non default one is set
+        if (this.version != 0) {
+            output += `#${this.version}`;
+        }
+        
+        // add spacing as needed
+        if (output.length < spacing) {
+            output += " ".repeat(spacing - output.length);
+        }
+        output += ":";
+
+        // add either the State or the position and neighbors, as needed
         if (brief) {
             output += `State___ ${this.state}`;
         } else {

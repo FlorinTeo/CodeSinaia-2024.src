@@ -33,6 +33,17 @@ export class Graph {
     nodes; // array of Node objects
     edges; // array of Edge objects
 
+    #checkAndAdjustVersions(label) {
+        let clashingNodes = this.nodes.filter(n => n.label == label);
+        let maxVersion = clashingNodes.reduce((accumulator, n) => Math.max(accumulator, n.version), 0);
+        if (clashingNodes.length > 1) {
+            clashingNodes.filter(n => n.version == 0).forEach((n) => { n.version = ++maxVersion; });
+        } else if (clashingNodes.length == 1) {
+            clashingNodes[0].version = 0;
+        }
+        return maxVersion;
+    }
+
     constructor(graphics) {
         this.#graphics = graphics;
         this.clear();
@@ -81,6 +92,8 @@ export class Graph {
     reLabel(node, newLabel) {
         let prevLabel = node.label;
         node.label = newLabel;
+        this.#checkAndAdjustVersions(prevLabel);
+        this.#checkAndAdjustVersions(newLabel);
         return prevLabel;
     }
 
@@ -93,8 +106,10 @@ export class Graph {
         let node = new Node(this.#graphics, label, x, y);
         if (node ) {
             this.nodes.push(node);
+            this.#checkAndAdjustVersions(node.label);
             adjustScale(this.nodes.length);
         }
+        return node;
     }
 
     removeNode(node) {
@@ -106,6 +121,8 @@ export class Graph {
         this.nodes = this.nodes.filter(n => !(n === node));
         this.edges = this.edges.filter(e => !e.contains(node));
         adjustScale(this.nodes.length);
+        this.#checkAndAdjustVersions(node.label);
+        return node;
     }
 
     hasNodeHighlights() {
