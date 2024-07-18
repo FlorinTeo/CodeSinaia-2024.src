@@ -141,7 +141,7 @@ export class Graphics {
         context.textAlign = 'left';
         context.fillStyle = 'black';
         let textMetrics = context.measureText(text);
-        return [textMetrics.width, textMetrics.actualBoundingBoxAscent + textMetrics.actualBoundingBoxDescent];
+        return [textMetrics.width, textMetrics.fontBoundingBoxAscent + textMetrics.fontBoundingBoxDescent];
     }
 
     /**
