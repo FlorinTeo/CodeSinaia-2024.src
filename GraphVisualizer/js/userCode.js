@@ -150,7 +150,7 @@ export class UserCode extends CoreCode {
      * Entry point for user-defined code.
      */
     async run() {
-        console.outln("Starting user-defined code!");
+        console.outln("---- Starting user-defined code! ----");
 
         // // linked list check
         // console.outln("Linked-list check..");
@@ -165,9 +165,9 @@ export class UserCode extends CoreCode {
         console.outln("Breath-first tree traversal:");
         await this.bfsTraverse();
 
-        console.outln("Depth-first tree traversal:");
+        console.outln("\nDepth-first tree traversal:");
         await this.dfsTraverse();
 
-        console.outln("User-defined code ended!");
+        console.outln("---- User-defined code ended! ----");
     }
 }
