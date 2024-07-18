@@ -24,12 +24,12 @@ export class Stack {
             let crtItem = this.#head.prev;
             while(crtItem != this.#head) {
                 [_, h] = this.#graphics.drawText(crtX + 4, crtY, crtItem.node.label);
-                crtY -= h + 8;
+                crtY -= h;
                 [_, h] = this.#graphics.drawHMargin(crtX, crtY, this.#maxTextW + 8, 'gray');
                 crtItem = crtItem.prev;
             }
             [_, h] = this.#graphics.drawText(crtX + 4, crtY, this.#head.node.label);
-            crtY -= h + 8;
+            crtY -= h;
             [_, h] = this.#graphics.drawHMargin(crtX, crtY, this.#maxTextW + 8, 'lightgray');
         }
     }
