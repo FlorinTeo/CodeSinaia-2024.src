@@ -137,7 +137,7 @@ export class Graphics {
      */
     measureText(text) {
         let context = this.hCanvas.getContext("2d");
-        context.font = '12px Arial';
+        context.font = '14px Consolas';
         context.textAlign = 'left';
         context.fillStyle = 'black';
         let textMetrics = context.measureText(text);
@@ -159,7 +159,7 @@ export class Graphics {
         let [w, h] = this.measureText(text);
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
-        context.font = '12px Arial';
+        context.font = '14px Consolas';
         context.textAlign = 'left';
         context.fillStyle = 'black';
         context.fillText(text, fromX, fromY);
