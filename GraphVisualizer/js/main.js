@@ -202,11 +202,18 @@ hCanvas.addEventListener('mouseup', (event) => {
 
   // check if this is the end of a {drag} or a {click} event
   if (dragging) {
-    // dragging makes sense only if one node (clickedNode) is ctrl-dragged over another (droppedNode)
-    // otherwise, clickedNode move was taken care of by the mousemove handler.
+    // if {control-drag}, meaning control pressed, started on a node and ended on a different node)...
     if (ctrlClicked && clickedNode != null && droppedNode != null && clickedNode != droppedNode) {
-      // {control-drag} over an existent node => reset edge from clickedNode to droppedNode
-      graph.resetEdge(clickedNode, droppedNode);
+      // => reset edge from clickedNode to droppedNode
+      if (!clickedNode.hasEdge(droppedNode)) {
+        graph.addEdge(clickedNode, droppedNode);
+      } else {
+        graph.removeEdge(clickedNode, droppedNode);
+      }
+    } else if (clickedNode != null) {
+      // otherwise, if drag was just moving a node, need to resort all edges across all nodes
+      // such that nodes with smaller x coordinate are ahead in neighbors lists (to model trees deterministically)
+      graph.traverse((node) => { node.resortEdges(); });
     }
     dragging = false;
   } else if (ctrlClicked) {

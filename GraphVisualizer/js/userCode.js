@@ -28,15 +28,18 @@ export class UserCode extends CoreCode {
      * Entry point for user-defined code.
      */
     async run() {
-        console.outln("Starting to toggle node colors!");
-        await this.toggleNodes();
-        console.outln("Done!");
+        console.outln("---- Starting user-defined code! ----");
 
+        console.out("Toggling nodes color ... ");
+        await this.toggleNodes();
+        console.outln("DONE");
         await this.step();
-        console.outln("Starting to toggle edge colors!");
-        
+
+        console.out("Toggling edges color ... ");
         await this.toggleEdges();
-        console.outln("Done and finish!");
-        console.outln();
+        console.outln("DONE");
+        await this.step();
+
+        console.outln("---- User-defined code ended! ----");
     }
 }
