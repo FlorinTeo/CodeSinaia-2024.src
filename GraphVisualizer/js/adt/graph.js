@@ -33,6 +33,17 @@ export class Graph {
     nodes; // array of Node objects
     edges; // array of Edge objects
 
+    #checkAndAdjustVersions(label) {
+        let clashingNodes = this.nodes.filter(n => n.label == label);
+        let maxVersion = clashingNodes.reduce((accumulator, n) => Math.max(accumulator, n.version), 0);
+        if (clashingNodes.length > 1) {
+            clashingNodes.filter(n => n.version == 0).forEach((n) => { n.version = ++maxVersion; });
+        } else if (clashingNodes.length == 1) {
+            clashingNodes[0].version = 0;
+        }
+        return maxVersion;
+    }
+
     constructor(graphics) {
         this.#graphics = graphics;
         this.clear();
@@ -81,6 +92,8 @@ export class Graph {
     reLabel(node, newLabel) {
         let prevLabel = node.label;
         node.label = newLabel;
+        this.#checkAndAdjustVersions(prevLabel);
+        this.#checkAndAdjustVersions(newLabel);
         return prevLabel;
     }
 
@@ -93,8 +106,10 @@ export class Graph {
         let node = new Node(this.#graphics, label, x, y);
         if (node ) {
             this.nodes.push(node);
+            this.#checkAndAdjustVersions(node.label);
             adjustScale(this.nodes.length);
         }
+        return node;
     }
 
     removeNode(node) {
@@ -106,6 +121,8 @@ export class Graph {
         this.nodes = this.nodes.filter(n => !(n === node));
         this.edges = this.edges.filter(e => !e.contains(node));
         adjustScale(this.nodes.length);
+        this.#checkAndAdjustVersions(node.label);
+        return node;
     }
 
     hasNodeHighlights() {
@@ -155,8 +172,11 @@ export class Graph {
 
     toString(brief = false) {
         let output = '';
+        let maxLabel = this.nodes.reduce(
+            (maxLabel, n) => Math.max(maxLabel, (n.version == 0 ? `${n.label}`.length : `${n.label}#${n.version}`.length), 0),
+            0);
         for(const node of this.nodes) {
-            output += node.toString(brief);
+            output += node.toString(brief, maxLabel + 1);
             output += '\n';
         }
         return output;
@@ -169,22 +189,23 @@ export class Graph {
             if (line.trim().length === 0) {
                 continue;
             }
-            const {success, label, x, y, toLabels} = Node.fromString(line);
+            const {success, label, version, x, y, toVersionedLabels} = Node.fromString(line);
             if (!success) {
                 alert("Input is not a serialized graph!");
                 return false;
             }
-            newGraph.set(label, new Node(this.#graphics, label, x, y));
-            newEdges.set(label, toLabels);
+            let fromVersionedLabel = version ? `${label}#${version}` : `${label}`;
+            newGraph.set(fromVersionedLabel, new Node(this.#graphics, label, x, y, version));
+            newEdges.set(fromVersionedLabel, toVersionedLabels);
         }
 
-        for(const [fromLabel, toLabels] of newEdges) {
-            for(const toLabel of toLabels) {
-                if (!newGraph.has(toLabel)) {
-                    alert(`Invalid target in edge ${fromLabel} > ${toLabel}`);
+        for(const [fromVersionedLabel, toVersionedLabels] of newEdges) {
+            for(const toVersionedLabel of toVersionedLabels) {
+                if (!newGraph.has(toVersionedLabel)) {
+                    alert(`Invalid target in edge ${fromVersionedLabel} > ${toVersionedLabel}`);
                     return false;
                 }
-                this.addEdge(newGraph.get(fromLabel), newGraph.get(toLabel));
+                this.addEdge(newGraph.get(fromVersionedLabel), newGraph.get(toVersionedLabel));
             }
         }
 

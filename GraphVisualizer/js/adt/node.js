@@ -17,16 +17,18 @@ export class Node {
     x;          // x coordinate of the center of this node
     y;          // y coordinate of the center of this node
     label;      // text to be printed inside the node
+    version;    // 0 if label is unique in the graph, 1, 2, ... if labels clash
     state;      // public state holder for this node
     neigbhors;  // array of Node object, the neighbors of this node
     colorIndex; // color index of this node in the HIGHLIGHT_PALLETE array
     marker;     // internal state holder for this node 
 
-    constructor(graphics, label, x, y) {
+    constructor(graphics, label, x, y, version) {
         this.#graphics = graphics;
         this.x = x;
         this.y = y;
         this.label = label;
+        this.version = version ? version : 0;
         this.state = 0;
         this.neighbors = [];
         this.neighbors = [];
@@ -105,14 +107,30 @@ export class Node {
         this.neighbors.sort((n1, n2) => n1.x < n2.x ? -1 : n1.x > n2.x ? 1 : 0);
     }
 
-    toString(brief = false) {
-        let output = `${this.label} : `;
+    toString(brief = false, spacing = 0) {
+        let output = `${this.label}`;
+        
+        // add version, if a non default one is set
+        if (this.version != 0) {
+            output += `#${this.version}`;
+        }
+        
+        // add spacing as needed
+        if (output.length < spacing) {
+            output += " ".repeat(spacing - output.length);
+        }
+        output += ": ";
+
+        // add either the State or the position and neighbors, as needed
         if (brief) {
             output += `State___ ${this.state}`;
         } else {
             output += `${this.x},${this.y}\t>`;
             for(const neighbor of this.neighbors) {
                 output += ` ${neighbor.label}`;
+                if (neighbor.version != 0) {
+                    output += `#${neighbor.version}`;
+                }
             }
         }
         return output;
@@ -129,12 +147,14 @@ export class Node {
             success = (strCoords.length == 2) && !isNaN(strCoords[0]) && !isNaN(strCoords[1]);
         }
         if (success) {
+            let [label, version] = strParts[0].split("#");
             return {
                 success: true,
-                label: strParts[0],
+                label: label,
+                version: version,
                 x: Number(strCoords[0]),
                 y: Number(strCoords[1]),
-                toLabels: (strParts.length) > 4 ? strParts.slice(4) : [],
+                toVersionedLabels: (strParts.length) > 4 ? strParts.slice(4) : [],
             };
         }
         return {success: false};
