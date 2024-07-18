@@ -3,6 +3,7 @@ import { console } from "./main.js";
 import { graph } from "./main.js";
 import { queue } from "./main.js";
 import { stack } from "./main.js";
+import { Stack } from "./adt/stack.js";
 
 export class UserCode extends CoreCode {
 
@@ -136,12 +137,71 @@ export class UserCode extends CoreCode {
             node.toggleColor(1);
             console.out(node.label);
             await this.step();
-            for(const n of node.neighbors) {
-                stack.push(n);
+            for(let i = node.neighbors.length - 1; i >=0; i--) {
+                stack.push(node.neighbors[i]);
             }
             if (node.neighbors.length > 0) {
                 await this.step();   
             }
+        }
+        console.outln();
+    }
+
+    async postfixExpression() {
+        let root = graph.nodes.filter(n => n.colorIndex != 0)[0];
+        if (root == null) {
+            console.outln("Root node could not be found!");
+            return;
+        }
+        stack.clear();
+        queue.clear();
+        root.toggleColor(-1);
+        await this.step();
+        stack.push(root);
+        while(stack.size() > 0) {
+            let node = stack.pop();
+            if (node.colorIndex != 0) {
+                queue.enqueue(node);
+            } else {
+                node.toggleColor(1);
+                for(const n of node.neighbors) {
+                    stack.push(n);
+                }
+                stack.push(node);
+            }
+            await this.step();
+        }
+        while(queue.size() > 0) {
+            stack.push(queue.dequeue())
+        }
+        while(stack.size() > 0) {
+            console.out(stack.pop().label);
+        }
+        console.outln();
+    }
+
+    async prefixExpression() {
+        let root = graph.nodes.filter(n => n.colorIndex != 0)[0];
+        if (root == null) {
+            console.outln("Root node could not be found!");
+            return;
+        }
+        stack.clear();
+        queue.clear();
+        root.toggleColor(-1);
+        await this.step();
+        stack.push(root);
+        while(stack.size() > 0) {
+            let node = stack.pop();
+            node.toggleColor(1);
+            for(let i = node.neighbors.length - 1; i >= 0; i--) {
+                stack.push(node.neighbors[i]);
+            }
+            queue.enqueue(node);
+            await this.step();
+        }
+        while(queue.size() > 0) {
+            console.out(queue.dequeue().label);
         }
         console.outln();
     }
@@ -162,11 +222,17 @@ export class UserCode extends CoreCode {
         // pass = await this.isBinaryTree(graph);
         // console.outln(pass ? "Graph IS a binary tree!" : "Graph is NOT a binary tree!");
 
-        console.outln("Breath-first tree traversal:");
-        await this.bfsTraverse();
+        // console.outln("Breath-first tree traversal:");
+        // await this.bfsTraverse();
 
-        console.outln("\nDepth-first tree traversal:");
-        await this.dfsTraverse();
+        // console.outln("\nDepth-first tree traversal:");
+        // await this.dfsTraverse();
+
+        // console.outln("Postfix Expression!")
+        // await this.postfixExpression();
+
+        console.outln("Prefix Expression!")
+        await this.prefixExpression();
 
         console.outln("---- User-defined code ended! ----");
     }
