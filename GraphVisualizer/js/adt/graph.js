@@ -189,22 +189,23 @@ export class Graph {
             if (line.trim().length === 0) {
                 continue;
             }
-            const {success, label, x, y, toLabels} = Node.fromString(line);
+            const {success, label, version, x, y, toVersionedLabels} = Node.fromString(line);
             if (!success) {
                 alert("Input is not a serialized graph!");
                 return false;
             }
-            newGraph.set(label, new Node(this.#graphics, label, x, y));
-            newEdges.set(label, toLabels);
+            let fromVersionedLabel = version ? `${label}#${version}` : `${label}`;
+            newGraph.set(fromVersionedLabel, new Node(this.#graphics, label, x, y, version));
+            newEdges.set(fromVersionedLabel, toVersionedLabels);
         }
 
-        for(const [fromLabel, toLabels] of newEdges) {
-            for(const toLabel of toLabels) {
-                if (!newGraph.has(toLabel)) {
-                    alert(`Invalid target in edge ${fromLabel} > ${toLabel}`);
+        for(const [fromVersionedLabel, toVersionedLabels] of newEdges) {
+            for(const toVersionedLabel of toVersionedLabels) {
+                if (!newGraph.has(toVersionedLabel)) {
+                    alert(`Invalid target in edge ${fromVersionedLabel} > ${toVersionedLabel}`);
                     return false;
                 }
-                this.addEdge(newGraph.get(fromLabel), newGraph.get(toLabel));
+                this.addEdge(newGraph.get(fromVersionedLabel), newGraph.get(toVersionedLabel));
             }
         }
 
