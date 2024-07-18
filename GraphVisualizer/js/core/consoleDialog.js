@@ -60,12 +60,18 @@ export class ConsoleDialog {
         this.clear();
     }
 
-    out(message) {
+    outln(message) {
+        this.out(message, "\n");
+    }
+
+    out(message, delim) {
         var crtText = this.#hConsoleText.value;
-        if (crtText != "") {
-            crtText += "\n";
+        if (message != null) {
+            crtText += message;            
         }
-        crtText += message;
+        if (delim != null) {
+            crtText += delim;
+        }
         this.#hConsoleText.value = crtText;
         this.#hConsoleText.scrollTop = this.#hConsoleText.scrollHeight;
     }

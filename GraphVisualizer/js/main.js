@@ -285,7 +285,6 @@ hCanvas.addEventListener('contextmenu', (event) => {
 // #region - Canvas context menu handlers
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetS', (_, value) => {
   graph.traverse((node) => { node.state = value; });
-  // console.out(`Graph states reset to \'${value}\'`);
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetNh', () => {
