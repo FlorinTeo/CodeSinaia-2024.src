@@ -107,7 +107,7 @@ export class Node {
         this.neighbors.sort((n1, n2) => n1.x < n2.x ? -1 : n1.x > n2.x ? 1 : 0);
     }
 
-    toString(brief = false, spacing = 20) {
+    toString(brief = false, spacing = 0) {
         let output = `${this.label}`;
         
         // add version, if a non default one is set
@@ -119,7 +119,7 @@ export class Node {
         if (output.length < spacing) {
             output += " ".repeat(spacing - output.length);
         }
-        output += ":";
+        output += ": ";
 
         // add either the State or the position and neighbors, as needed
         if (brief) {

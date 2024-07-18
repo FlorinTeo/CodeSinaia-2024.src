@@ -172,8 +172,11 @@ export class Graph {
 
     toString(brief = false) {
         let output = '';
+        let maxLabel = this.nodes.reduce(
+            (maxLabel, n) => Math.max(maxLabel, (n.version == 0 ? `${n.label}`.length : `${n.label}#${n.version}`.length), 0),
+            0);
         for(const node of this.nodes) {
-            output += node.toString(brief);
+            output += node.toString(brief, maxLabel + 1);
             output += '\n';
         }
         return output;
