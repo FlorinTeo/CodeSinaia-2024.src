@@ -93,10 +93,16 @@ export class Node {
 
     addEdge(node) {
         this.neighbors.push(node);
+        this.resortEdges();
     }
 
     removeEdge(node) {
         this.neighbors = this.neighbors.filter(n => !(n === node));
+        this.resortEdges();
+    }
+
+    resortEdges() {
+        this.neighbors.sort((n1, n2) => n1.x < n2.x ? -1 : n1.x > n2.x ? 1 : 0);
     }
 
     toString(brief = false) {
