@@ -5,7 +5,7 @@ import { Direction } from "./edge.js";
 export let SCALE = 0;
 export const LINE_WIDTH = [1, 0.6, 0.5];
 export const RADIUS = [16, 10, 6];
-export const FONT = ["bold 12px Arial", "10px Arial", null]
+export const FONT = ["bold 14px Consolas", "12px Consolas", null]
 export const ARROW_WIDTH = [5, 3, 2];
 export const ARROW_LENGTH = [8, 5, 3];
 export const HIGHLIGHT_THICKNESS = [6, 5, 4];
