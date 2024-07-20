@@ -12,11 +12,10 @@ export class UserCode extends CoreCode {
      */
     async spanningTree(startNode) {
         // reset algorithm state
-        graph.nodes.forEach((n) => { n.state = 0; n.toggleColor(-1); });
+        graph.nodes.forEach((n) => { n.state = 0; });
         queue.clear();
        
         // prime queue with the starting node
-        startNode.toggleColor(1);
         startNode.state = 1;
         queue.enqueue(startNode);
 
@@ -65,12 +64,12 @@ export class UserCode extends CoreCode {
     async runSpanningTree() {
         console.outln("Determine the graph spanning tree!");
         // determine the starting node
-        let startNode = graph.nodes.filter(n => n.colorIndex != 0)[0];
-        if (startNode == null) {
-            console.outln("Starting node can not be found!");
+        let markedNodes = graph.nodes.filter(n => n.colorIndex != 0);
+        if (markedNodes.length != 1) {
+            console.outln("Unique starting node cannot be determined!");
             return;
         }
-        await this.spanningTree(startNode);
+        await this.spanningTree(markedNodes[0]);
         console.outln("Extracting spanning tree edges.");
         await this.spanningTreeExtract();
     }
