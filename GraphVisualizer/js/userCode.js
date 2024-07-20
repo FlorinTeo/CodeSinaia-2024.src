@@ -5,6 +5,10 @@ import { queue } from "./main.js";
 import { Direction } from "./adt/edge.js";
 import { ColorIndex } from "./adt/graph.js";
 
+function distance(n1, n2) {
+    return Math.sqrt(Math.pow(n2.x - n1.x, 2) + Math.pow(n2.y - n1.y, 2))
+}
+
 export class UserCode extends CoreCode {
 
     //#region -- Spanning tree
@@ -116,9 +120,7 @@ export class UserCode extends CoreCode {
         }
     }
 
-    /**
-     * FirstPath entry point.
-     */
+    // FirstPath entry point.
     async runFirstPath() {
         console.outln("Find first path between two nodes!");
         // determine the starting node
@@ -131,9 +133,75 @@ export class UserCode extends CoreCode {
         await this.firstPath(markedNodes[0], markedNodes[1]);
         console.outln(`Highlighting the path`);
         await this.firstPathExtract(markedNodes[0], markedNodes[1]);
-
     }
     //#endregion -- FirstPath
+
+    //#region -- Dijkstra
+    // Dijkstra algorithm to find the shortest (distance) path from startNode to endNode.
+    async dijkstra(startNode, endNode) {
+        // reset algorithm state
+        graph.nodes.forEach((n) => { n.state = null; n.cost = Number.MAX_VALUE; });
+        queue.clear();
+       
+        // prime queue with the starting node
+        startNode.state = startNode;
+        startNode.cost = 0;
+        queue.enqueue(startNode);
+
+        // loop until the working queue is drained out
+        while(queue.size() != 0) {
+            let node = queue.dequeue();
+            // mark the working node
+            if (node != startNode && node != endNode) {
+                node.colorIndex = ColorIndex.Magenta;
+            }
+            for(const n of node.neighbors) {
+                let edge = graph.edges.filter(e => e.matchesNodes(node, n))[0];
+                edge.colorIndex = ColorIndex.Yellow;
+                let cost = node.cost + distance(node, n);
+                // check if the new cost is better than what we already have for the node
+                if (n.cost > cost) {
+                    if (n != endNode) {
+                        n.colorIndex = ColorIndex.Red;
+                    }
+                    n.state = node;
+                    n.cost = cost;
+                    queue.enqueue(n);
+                    await this.step();
+                }
+            }
+            if (node != startNode && node != endNode) {
+                node.colorIndex = ColorIndex.Yellow;
+            }
+        }
+    }
+
+    // Highlights the first path from startNode to endNode
+    async dijkstraExtract(startNode, endNode) {
+        let endColor = endNode.colorIndex;
+        while(endNode != startNode) {
+            endNode.colorIndex = endColor;
+            graph.edges.filter(e => e.matchesNodes(endNode, endNode.state))[0].colorIndex = endColor;
+            await this.step();
+            endNode = endNode.state;
+        }
+    }
+
+    // Dijkstra entry point.
+    async runDijkstra() {
+        console.outln("Find path between two nodes by Dijkstra algorithm!");
+        // determine the starting node
+        let markedNodes = graph.nodes.filter(n => n.colorIndex != 0).sort((n1, n2) => Math.sign(n1.colorIndex - n2.colorIndex));
+        if (markedNodes.length != 2) {
+            console.outln("Unique start and end nodes cannot be determined!");
+            return;
+        }
+        console.outln(`Finding path from ${markedNodes[0].label} to ${markedNodes[1].label}`);
+        await this.dijkstra(markedNodes[0], markedNodes[1]);
+        console.outln(`Found the shortest path, with distance: ${markedNodes[1].cost}`);
+        await this.dijkstraExtract(markedNodes[0], markedNodes[1]);
+    }
+    //#endregion -- Dijkstra
 
     /**
      * Entry point for user-defined code.
@@ -141,8 +209,8 @@ export class UserCode extends CoreCode {
     async run() {
         console.outln("---- Starting user-defined code! ----");
         //await this.runSpanningTree();
-        await this.runFirstPath();
+        //await this.runFirstPath();
+        await this.runDijkstra();
         console.outln("---- User-defined code ended! ----");
-
     }
 }
