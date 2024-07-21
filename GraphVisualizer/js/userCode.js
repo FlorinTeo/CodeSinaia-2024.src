@@ -88,9 +88,9 @@ export class UserCode extends CoreCode {
         }
     }
     
-    //#region -- FirstPath
-    // Calculates the first path from startNode to endNode in the graph
-    async firstPath(startNode, endNode) {
+    //#region -- BFS
+    // Calculates the first path from startNode to endNode in the graph via Breadth-First Search
+    async bfs(startNode, endNode) {
         // reset algorithm state
         graph.nodes.forEach((n) => { n.state = null; });
         queue.clear();
@@ -128,9 +128,9 @@ export class UserCode extends CoreCode {
         return {success: false, iterations};
     }
 
-    // FirstPath entry point.
-    async runFirstPath() {
-        console.outln("Find first path between two nodes!");
+    // BFS entry point.
+    async runBFS() {
+        console.outln("Find first path between two nodes via BFS!");
         // determine the starting node
         let markedNodes = graph.nodes.filter(n => n.colorIndex != 0).sort((n1, n2) => Math.sign(n1.colorIndex - n2.colorIndex));
         if (markedNodes.length != 2) {
@@ -138,12 +138,12 @@ export class UserCode extends CoreCode {
             return;
         }
         console.outln(`Finding path from ${markedNodes[0].label} to ${markedNodes[1].label}`);
-        let {success, iterations} = await this.firstPath(markedNodes[0], markedNodes[1]);
+        let {success, iterations} = await this.bfs(markedNodes[0], markedNodes[1]);
         if (!success) {
             console.outln(`Could not find the shortest path!`);
             return;
         }
-        console.outln(`FirstPath algorithm: Distance=${markedNodes[1].cost}, Steps=${iterations}.`);
+        console.outln(`BFS algorithm: Distance=${markedNodes[1].cost}, Steps=${iterations}.`);
         await this.pathExtract(markedNodes[0], markedNodes[1]);
     }
     //#endregion -- FirstPath
@@ -280,15 +280,15 @@ export class UserCode extends CoreCode {
         console.outln("---- Starting user-defined code! ----");
         //await this.runSpanningTree();
 
-        console.outln(">>>> Please reset state for FirstPath...\n");
+        console.outln(">>>> Please reset state for BFS run...\n");
         await this.step();
-        await this.runFirstPath();
+        await this.runBFS();
 
-        console.outln(">>>> Please reset state for Dijkstra...\n");
+        console.outln(">>>> Please reset state for Dijkstra's run...\n");
         await this.step();
         await this.runDijkstra();
 
-        console.outln(">>>> Please reset state for A*...\n");
+        console.outln(">>>> Please reset state for A* run...\n");
         await this.step();
         await this.runAStar();
         console.outln("---- User-defined code ended! ----");
