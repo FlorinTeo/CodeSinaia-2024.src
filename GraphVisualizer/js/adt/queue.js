@@ -31,7 +31,7 @@ export class Queue {
         }
     }
 
-    enqueue(node) {
+    enqueue(node, priorityFn) {
         let item = new Item(this.#graphics, node);
 
         if (this.#head == null) {
@@ -39,10 +39,21 @@ export class Queue {
             item.prev = item;
             this.#head = item;
         } else {
-            item.next = this.#head;
-            item.prev = this.#head.prev;
+            let successor = this.#head;
+            if (priorityFn) {
+                let size = this.#size;
+                while(size > 0 && priorityFn(successor.node) < priorityFn(node)) {
+                    successor = successor.next;
+                    size--;
+                }
+            }
+            item.next = successor;
+            item.prev = successor.prev;
             item.next.prev = item;
             item.prev.next = item;
+            if (priorityFn != null && priorityFn(this.#head.node) > priorityFn(this.#head.prev.node)) {
+                this.#head = this.#head.prev;
+            }
         }
         this.#size++;
     }

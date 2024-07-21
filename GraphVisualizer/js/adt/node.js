@@ -123,7 +123,14 @@ export class Node {
 
         // add either the State or the position and neighbors, as needed
         if (brief) {
-            output += `State___ ${this.state}`;
+            if (this.state instanceof Node) {
+                output += `State__> ${this.state.label}`;
+            } else {
+                output += `State___ ${this.state}`;
+            }
+            if (this.cost != null) {
+                output += ` | Cost___ ${this.cost}`;
+            }
         } else {
             output += `${this.x},${this.y}\t>`;
             for(const neighbor of this.neighbors) {
