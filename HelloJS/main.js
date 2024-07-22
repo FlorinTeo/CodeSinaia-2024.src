@@ -4,6 +4,7 @@ let hBtnApp = document.getElementById("btnRun");
 let hBtnClear = document.getElementById("btnClear");
 let hBtnTrans = document.getElementById("btnTrans");
 let hBtnPrim = document.getElementById("btnPrim");
+let hBtnCnt = document.getElementById("btnCnt");
 
 hBtnApp.addEventListener('click', (event) => {
     var crtOutput = hDivOutput.innerHTML;
@@ -14,7 +15,7 @@ hBtnApp.addEventListener('click', (event) => {
         hDivOutput.innerHTML = crtInput;
     }
 });
-
+let counter=0;
 hBtnClear.addEventListener('click', (event) => {
     hDivOutput.innerHTML = '';
 });
@@ -30,8 +31,11 @@ hBtnPrim.addEventListener('click',(event)=> {
         for (let i=2; i*i<=n&&ok==1; i++) {
             if(n%i==0) ok=0;
     }
-        if(ok==1) hDivOutput.innerHTML="Prim";
+        if(ok==1) {hDivOutput.innerHTML="Prim";counter++;}
         else hDivOutput.innerHTML="Compus";
     }
 }
 );
+hBtnCnt.addEventListener('click',(event)=>{
+    hDivOutput.innerHTML=counter;
+});
