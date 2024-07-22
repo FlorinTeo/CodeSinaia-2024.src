@@ -5,5 +5,5 @@ let hBtnRun = document.getElementById("btnRun");
 hBtnRun.addEventListener('click', (event) => {
     var crtOutput = hDivOutput.innerHTML;
     var crtInput = hTextInput.value;
-    hDivOutput.innerHTML = `${crtOutput}<br>${crtInput}`;
+    hDivOutput.textContent = `${crtOutput}\r\n${crtInput}`;
 });
