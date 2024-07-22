@@ -26,10 +26,10 @@ hBtnPrim.addEventListener('click',(event)=> {
     let n=hTextInput.value;
     let ok=1;
     if(n<2) hDivOutput.innerHTML="Compus";
-    else for (let i=2; i*i<=n&&ok==1; i++) {
+    else {for (let i=2; i*i<=n&&ok==1; i++) {
             if(n%i==0) ok=0;
     }
     if(ok==1) hDivOutput.innerHTML="Prim";
-    else hDivOutput.innerHTML="Compus";
+    else hDivOutput.innerHTML="Compus";}
 }
 );
