@@ -34,3 +34,6 @@ body {
         }
     }
 }
+#divoutput{
+    white-space: pre;
+}
