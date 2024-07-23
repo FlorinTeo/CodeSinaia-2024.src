@@ -103,7 +103,9 @@ xferDialog.addCloseListener((event) => {
 // #region - key event handlers
 
 document.addEventListener('keydown', (event) => {
-  ctrlClicked = isWindowsOS() ? event.ctrlKey : event.metaKey;
+  ctrlClicked = event.ctrlKey;
+  if(ctrlClicked === null) ctrlClicked = event.metaKey;
+  
   if (!keyPressed && hoverNode != null) {
     switch(event.key.toUpperCase()) {
       case 'E': // enqueue
@@ -133,7 +135,8 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.addEventListener('keyup', (event) => {
-  ctrlClicked = isWindowsOS() ? event.ctrlKey : event.metaKey;
+  ctrlClicked = event.ctrlKey;
+  if(ctrlClicked === null) ctrlClicked = event.metaKey;
   keyPressed = false;
 });
 // #endregion - key event handlers
