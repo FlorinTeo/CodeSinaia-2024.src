@@ -103,8 +103,7 @@ xferDialog.addCloseListener((event) => {
 // #region - key event handlers
 
 document.addEventListener('keydown', (event) => {
-  ctrlClicked = event.ctrlKey;
-  if(ctrlClicked === null) ctrlClicked = event.metaKey;
+  ctrlClicked = event.ctrlKey || event.metaKey;
   
   if (!keyPressed && hoverNode != null) {
     switch(event.key.toUpperCase()) {
@@ -135,8 +134,8 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.addEventListener('keyup', (event) => {
-  ctrlClicked = event.ctrlKey;
-  if(ctrlClicked === null) ctrlClicked = event.metaKey;
+  ctrlClicked = event.ctrlKey || event.metaKey;
+
   keyPressed = false;
 });
 // #endregion - key event handlers
