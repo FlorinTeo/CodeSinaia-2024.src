@@ -210,7 +210,6 @@ export class Graph {
         }
         this.nodes = Array.from(newGraph.values());
         adjustScale(this.nodes.length);
-        return true;
+        return true;   
     }
-    
 }
