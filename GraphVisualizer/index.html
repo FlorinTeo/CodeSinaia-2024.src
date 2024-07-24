@@ -13,15 +13,34 @@
     <script type="module" src="js/core/graphics.js"></script>
     <script type="module" src="js/core/contextMenu.js"></script>
 </head>
-
+<style>
+    .draggable {
+        position: relative; /* Changed to relative for better control */
+        cursor: ew-resize;
+    }
+    #hCtxMenuConsole {
+        display: none;
+        position: absolute;
+        top: 40px; /* Adjust as needed */
+        left: 0;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        z-index: 1000;
+    }
+</style>
 <body>
     <table class="canvasTable">
         <tr>
             <td id="hTdCanvas"><canvas id="hMainCanvas" class="canvas"></canvas></td>
-            <td id="hTdBtn"><img id="hBtnConsole" src="res/btnSlide.png" width="8"></td>
+            <td id="hTdBtn">
+                <div id="draggableContainer" class="draggable">
+                    <img id="hBtnConsole" src="res/btnSlide.png" width="8">
+                </div>
+            </td>
         </tr>
     </table>
-
+    <script src="drag.js"></script>
     <table class="statusTable">
         <tr>
             <td><div id="hNodeState" class="status"></div></td>

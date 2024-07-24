@@ -11,7 +11,14 @@ export const ARROW_LENGTH = [8, 5, 3];
 export const HIGHLIGHT_THICKNESS = [6, 5, 4];
 export const HIGHLIGHT_SENSITIVITY = [10, 8, 6];
 export const HIGHLIGHT_PALLETE = ['#EBEBEB', '#FFFD55', '#6EFBFF', '#FFCACA', '#93FF2D', '#ECA4FF'];
-
+export const ColorIndex = {
+    Gray: 0,
+    Yellow: 1,
+    Blue: 2,
+    Red: 3,
+    Green: 4,
+    Magenta: 5
+};
 function adjustScale(nNodes) {
     if (nNodes <= 15) {
         SCALE = 0;
@@ -191,7 +198,7 @@ export class Graph {
             }
             const {success, label, version, x, y, toVersionedLabels} = Node.fromString(line);
             if (!success) {
-                alert("Input is not a serialized graph!");
+                alert("Input is not a graph!");
                 return false;
             }
             let fromVersionedLabel = version ? `${label}#${version}` : `${label}`;
