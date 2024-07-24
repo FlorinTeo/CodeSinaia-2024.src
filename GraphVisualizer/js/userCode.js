@@ -17,7 +17,6 @@ export class UserCode extends CoreCode {
         for (const node of graph.nodes) {
             previousNodes.set(node, null);
         }
-        
         let currentNode = startNode;
         unvisitedNodes.delete(currentNode);
 
@@ -30,7 +29,6 @@ export class UserCode extends CoreCode {
                     }
                 }
             }
-            
             // Find the next node to visit
             currentNode = null;
             for (const node of unvisitedNodes) {
@@ -41,20 +39,16 @@ export class UserCode extends CoreCode {
             
             if (currentNode === null) {
                 break;
-            }
-            
+            }    
             unvisitedNodes.delete(currentNode);
         }
-        
         // Trace the shortest path back from the end node
         let path = [];
         currentNode = endNode;
-        
         while (currentNode !== null) {
             path.push(currentNode);
             currentNode = previousNodes.get(currentNode);
         }
-        
         path.reverse();
         return path;
     }
@@ -116,16 +110,13 @@ export class UserCode extends CoreCode {
                 }
             }
             node.colorIndex=ColorIndex.Yellow;
-        }
-        
-        let noncoloreEdges = graph.edges.filter(e => e.colorIndex == ColorIndex.Gray)
-        for(const e of noncoloreEdges){
+        }    
+        let noncoloredEdges = graph.edges.filter(e => e.colorIndex == ColorIndex.Gray)
+        for(const e of noncoloredEdges){
             graph.removeEdge(e.node1, e.node2);
             graph.removeEdge(e.node2, e.node1);
         }
-
     }
-
     async run() {
         console.outln("---- Starting user-defined code! ----");
         // await this.colorShortestPath();
