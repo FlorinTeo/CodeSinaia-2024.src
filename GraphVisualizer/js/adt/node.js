@@ -19,7 +19,7 @@ export class Node {
     label;      // text to be printed inside the node
     version;    // 0 if label is unique in the graph, 1, 2, ... if labels clash
     state;      // public state holder for this node
-    neigbhors;  // array of Node object, the neighbors of this node
+    neighbors;  // array of Node object, the neighbors of this node
     colorIndex; // color index of this node in the HIGHLIGHT_PALLETE array
     marker;     // internal state holder for this node 
 
@@ -30,7 +30,6 @@ export class Node {
         this.label = label;
         this.version = version ? version : 0;
         this.state = 0;
-        this.neighbors = [];
         this.neighbors = [];
         this.colorIndex = 0;
         this.marker = 0;

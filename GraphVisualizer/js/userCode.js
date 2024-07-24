@@ -1,7 +1,6 @@
 import { CoreCode } from "./core/coreCode.js";
 import { console } from "./main.js";
-import { graph } from "./main.js";
-import { queue } from "./main.js";
+import { graph, queue, stack } from "./main.js";
 import { Direction } from "./adt/edge.js";
 import { ColorIndex } from "./adt/graph.js";
 

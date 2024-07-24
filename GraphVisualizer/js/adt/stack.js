@@ -17,7 +17,7 @@ export class Stack {
     }
 
     repaint() {
-        if (this.#size > 0) {
+        if (this.#graphics != null && this.#size > 0) {
             let crtX = 10;
             let crtY = this.#graphics.height - 10;
             let [_, h] = this.#graphics.drawHMargin(crtX, crtY, this.#maxTextW + 8, 'black');
@@ -53,6 +53,9 @@ export class Stack {
     }
 
     measureWidth(text) {
+        if (this.#graphics == null) {
+            return;
+        }
         if (text) {
             let[w, h] = this.#graphics.measureText(text);
             this.#maxTextW = Math.max(this.#maxTextW, w);
