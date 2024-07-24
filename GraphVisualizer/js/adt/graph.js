@@ -208,10 +208,8 @@ export class Graph {
                 this.addEdge(newGraph.get(fromVersionedLabel), newGraph.get(toVersionedLabel));
             }
         }
-
         this.nodes = Array.from(newGraph.values());
         adjustScale(this.nodes.length);
-
-        return true;
+        return true;   
     }
 }
