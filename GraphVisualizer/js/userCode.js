@@ -59,7 +59,7 @@ export class UserCode extends CoreCode {
         let root = graph.nodes.filter(n => n.state == 0)[0];
 
         // verify the root exists, it is a binary tree, and there were no nodes left unchecked.
-        pass = (root != null) 
+        pass = (root != null)
             && await this.isBinaryTreeHelper(root)
             && graph.nodes.filter(n => n.colorIndex != 0).length == graph.nodes.length;
 
@@ -79,7 +79,7 @@ export class UserCode extends CoreCode {
         // assume test is passing and update this assumption based
         // on the number of descendant nodes.
         let pass = true;
-        switch(node.neighbors.length) {
+        switch (node.neighbors.length) {
             case 0:
                 // no descendents => test is passing
                 break;
@@ -110,16 +110,16 @@ export class UserCode extends CoreCode {
         queue.clear();
         queue.enqueue(root);
         await this.step();
-        while(queue.size() != 0) {
+        while (queue.size() != 0) {
             let node = queue.dequeue();
             node.toggleColor(1);
             console.out(node.label);
             await this.step();
-            for(const n of node.neighbors) {
+            for (const n of node.neighbors) {
                 queue.enqueue(n);
             }
             if (node.neighbors.length > 0) {
-                await this.step();   
+                await this.step();
             }
         }
         console.outln();
@@ -134,16 +134,16 @@ export class UserCode extends CoreCode {
         stack.clear();
         stack.push(root);
         await this.step();
-        while(stack.size() != 0) {
+        while (stack.size() != 0) {
             let node = stack.pop();
             node.toggleColor(1);
             console.out(node.label);
             await this.step();
-            for(let i = node.neighbors.length - 1; i >=0; i--) {
+            for (let i = node.neighbors.length - 1; i >= 0; i--) {
                 stack.push(node.neighbors[i]);
             }
             if (node.neighbors.length > 0) {
-                await this.step();   
+                await this.step();
             }
         }
         console.outln();
@@ -160,23 +160,23 @@ export class UserCode extends CoreCode {
         root.toggleColor(-1);
         await this.step();
         stack.push(root);
-        while(stack.size() > 0) {
+        while (stack.size() > 0) {
             let node = stack.pop();
             if (node.colorIndex != 0) {
                 queue.enqueue(node);
             } else {
                 node.toggleColor(1);
-                for(const n of node.neighbors) {
+                for (const n of node.neighbors) {
                     stack.push(n);
                 }
                 stack.push(node);
             }
             await this.step();
         }
-        while(queue.size() > 0) {
+        while (queue.size() > 0) {
             stack.push(queue.dequeue())
         }
-        while(stack.size() > 0) {
+        while (stack.size() > 0) {
             console.out(stack.pop().label);
         }
         console.outln();
@@ -193,16 +193,16 @@ export class UserCode extends CoreCode {
         root.toggleColor(-1);
         await this.step();
         stack.push(root);
-        while(stack.size() > 0) {
+        while (stack.size() > 0) {
             let node = stack.pop();
             node.toggleColor(1);
-            for(let i = node.neighbors.length - 1; i >= 0; i--) {
+            for (let i = node.neighbors.length - 1; i >= 0; i--) {
                 stack.push(node.neighbors[i]);
             }
             queue.enqueue(node);
             await this.step();
         }
-        while(queue.size() > 0) {
+        while (queue.size() > 0) {
             console.out(queue.dequeue().label);
         }
         console.outln();
@@ -210,8 +210,8 @@ export class UserCode extends CoreCode {
 
     async isSinglyLinkedList() {
         console.outln("Testing singly linked list");
-        for(const node of graph.nodes) {
-            for(const n of node.neighbors) {
+        for (const node of graph.nodes) {
+            for (const n of node.neighbors) {
                 //n.state = n.state+1;
                 n.state++;
             }
@@ -250,8 +250,8 @@ export class UserCode extends CoreCode {
         // console.outln("Postfix Expression!")
         // await this.postfixExpression();
 
-        console.outln("Prefix Expression!")
-        await this.prefixExpression();
+        // console.outln("Prefix Expression!")
+        // await this.prefixExpression();
 
         console.outln("---- User-defined code ended! ----");
     }
