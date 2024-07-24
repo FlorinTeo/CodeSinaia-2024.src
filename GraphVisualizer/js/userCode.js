@@ -5,48 +5,97 @@ import { graph } from "./main.js";
 export class UserCode extends CoreCode {
 
     /**
-     * Toggles the colors of each node, if any
+     * Implements a simplified Dijkstra-like algorithm to find the shortest path
+     * between a start and end node without calculating distances.
      */
-    async toggleNodes() {
-        for(const node of graph.nodes) {
-            await this.step();
-            node.toggleColor(1);
+    async findShortestPath(startNode, endNode) {
+        let previousNodes = new Map();
+        let unvisitedNodes = new Set(graph.nodes);
+        
+        // Initialize previous nodes
+        for (const node of graph.nodes) {
+            previousNodes.set(node, null);
         }
-    }
+        
+        let currentNode = startNode;
+        unvisitedNodes.delete(currentNode);
 
-    /**
-     * Toggles the colors of each edge, if any
-     */
-    async toggleEdges() {
-        for(let i=0; i < graph.edges.length; i++) {
-            await this.step();
-            graph.edges[i].toggleColor(1);
+        while (currentNode !== endNode && unvisitedNodes.size > 0) {
+            for (const neighbor of currentNode.neighbors) {
+                if (unvisitedNodes.has(neighbor)) {
+                    // Update previous node without distance calculation
+                    if (previousNodes.get(neighbor) === null) {
+                        previousNodes.set(neighbor, currentNode);
+                    }
+                }
+            }
+            
+            // Find the next node to visit
+            currentNode = null;
+            for (const node of unvisitedNodes) {
+                if (currentNode === null || (previousNodes.get(node) !== null && previousNodes.get(currentNode) === null)) {
+                    currentNode = node;
+                }
+            }
+            
+            if (currentNode === null) {
+                break;
+            }
+            
+            unvisitedNodes.delete(currentNode);
         }
+        
+        // Trace the shortest path back from the end node
+        let path = [];
+        currentNode = endNode;
+        
+        while (currentNode !== null) {
+            path.push(currentNode);
+            currentNode = previousNodes.get(currentNode);
+        }
+        
+        path.reverse();
+        return path;
     }
     
-    async isSinglyLinkedList(){
-        console.outln("--- Checking if it is a singly linked list ---");
-        for(const node of graph.nodes) {
-            
-            for(const n of node.neighbors){
-                //if(node.neighbors != [])
-                    n.state += 1;
-            }
+    /**
+     * Colors the shortest path between the nodes colored #93FF2D and #ECA4FF.
+     */
+    async colorShortestPath() {
+        let ends = graph.nodes.filter(n => n.colorIndex !== 0);
+        if (ends.length < 2) {
+            console.outln("Start or end node not found.");
+            return;
         }
-        let heads = graph.nodes.filter(n => n.state == 0) //filter all nodes with indegree = 0
-        if(heads.length>1){
-            return false;
-        }
-        let tails = graph.nodes.filter(n => n.neighbors == []) //filter all nodes with outdegree = 0
-        if(tails.length > 1){
-            return false;
-        }     
-        let double_linked = graph.nodes.filter(n => n.state>=2)
-        if(double_linked.length > 0){
-            return false;
-        } 
-        return true;
         
+        let startNode = ends[0];
+        let endNode = ends[1];
+        console.outln(`Start Node: ${startNode}, End Node: ${endNode}`);
+        
+        // Find the shortest path using the simplified algorithm
+        let path = await this.findShortestPath(startNode, endNode);
+        console.outln(`Path: ${path.map(node => node.toString()).join(" -> ")}`);
+        
+        // Color the nodes and edges in the path
+        for (let i = 0; i < path.length - 1; i++) {
+            let node = path[i];
+            let nextNode = path[i + 1];
+            node.toggleColor(1); // Color the node
+            
+            // Find and color the edge between node and nextNode
+            let edge = node.neighbors.find(neighbor => neighbor === nextNode);
+            if (edge) {
+                edge.toggleColor(1); // Color the edge
+            }
+            await this.step();
+        }
+        
+        // Color the last node
+        if (path.length > 0) {
+            path[path.length - 1].toggleColor(1);
+            await this.step();
+        }
+        console.outln(path.length-1);
     }
 
     /**
@@ -54,96 +103,8 @@ export class UserCode extends CoreCode {
      */
     async run() {
         console.outln("---- Starting user-defined code! ----");
-        /*
-
-        console.out("Toggling nodes color ... ");
-        await this.toggleNodes();
-        console.outln("DONE");
-        await this.step();
-
-        console.out("Toggling edges color ... ");
-        await this.toggleEdges();
-        console.outln("DONE");
-        await this.step();
-
-        console.outln("---- User-defined code ended! ----");*/
-        let success =  await this.isSinglyLinkedList();
-        if(success){
-            console.outln("yes it is a singly linked list")
-        }else{
-            console.outln("no it is not a singly linked list")
-        }
-        for(const node of graph.nodes) {
-            
-            for(const n of node.neighbors){
-                //if(node.neighbors != [])
-                    n.state =0;
-            }
-        }
+        
+        await this.colorShortestPath();
+        console.outln("---- User-defined code ended! ----");
     }
 }
-
-
-// import { CoreCode } from "./core/coreCode.js";
-// import { console } from "./main.js";
-// import { graph } from "./main.js";
-
-// export class UserCode extends CoreCode {
-
-//     /**
-//      * Toggles the colors of each node, if any
-//      */
-//     async toggleNodes() {
-//         for (const node of graph.nodes) {
-//             await this.step();
-//             node.toggleColor(1);
-//         }
-//     }
-
-//     /**
-//      * Toggles the colors of each edge, if any
-//      */
-//     async toggleEdges() {
-//         for (let i = 0; i < graph.edges.length; i++) {
-//             await this.step();
-//             graph.edges[i].toggleColor(1);
-//         }
-//     }
-//     async isSinglyLinkedList(){
-//         for(const node of graph.nodes)
-//         {
-//             for(const n of node.neighbors)
-//             {
-//                 n.state++;
-//             }
-//         }
-//         let heads = graph.nodes.filter(n => n.state==0); //filter all nodes with in-degree 0
-//         // let tail = 
-//         if(heads.length!=1) return false; 
-//         return true;
-//     }
-//     /**
-//      * Entry point for user-defined code.
-//      */
-//     async run() {
-//         console.outln("---- Starting user-defined code! ----");
-
-//         if (await this.isSinglyLinkedList()) {
-//             console.outln("The graph is a singly linked list.");
-//         } else {
-//             console.outln("The graph is NOT a singly linked list.");
-//         }
-
-//         // Uncomment to toggle nodes and edges
-//         // console.out("Toggling nodes color ... ");
-//         // await this.toggleNodes();
-//         // console.outln("DONE");
-//         // await this.step();
-
-//         // console.out("Toggling edges color ... ");
-//         // await this.toggleEdges();
-//         // console.outln("DONE");
-//         // await this.step();
-//         // console.outln("---- User-defined code ended! ----");
-//     }
-// }

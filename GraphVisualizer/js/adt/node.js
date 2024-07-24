@@ -35,7 +35,19 @@ export class Node {
         this.colorIndex = 0;
         this.marker = 0;
     }
-
+    getEdgeWeight(neighbor) {
+        // Assuming you have access to the graph object or edges directly
+        // Find the edge between this node and the neighbor node
+        const edge = this.neighbors.find(e => e.toNode === neighbor || e.fromNode === neighbor);
+        
+        // If you have edges stored separately, you might need to adapt this
+        if (edge) {
+            return edge.weight; // Return the weight of the edge
+        }
+        
+        // Handle case where no edge is found
+        return Infinity;
+    }
     toString() {
         return `<b>${this.label}</b>: ${this.state}`;
     }
