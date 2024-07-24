@@ -81,21 +81,13 @@ export class UserCode extends CoreCode {
             let node = path[i];
             let nextNode = path[i + 1];
             node.toggleColor(1); // Color the node
-            
-            // Find and color the edge between node and nextNode
-            let edge = node.neighbors.find(neighbor => neighbor === nextNode);
-            if (edge) {
-                edge.toggleColor(1); // Color the edge
-            }
-            // await this.step();
         }
         
         // Color the last node
         if (path.length > 0) {
             path[path.length - 1].toggleColor(1);
-            // await this.step();
+            await this.step();
         }
-        console.outln(path.length-1);
     }
 
     /**
