@@ -77,25 +77,23 @@ export class UserCode extends CoreCode {
         console.outln(`Path: ${path.map(node => node.toString()).join(" -> ")}`);
         
         // Color the nodes and edges in the path
-        for (let i = 0; i < path.length - 1; i++) {
+        for (let i = 0; i < path.length; i++) {
             let node = path[i];
-            let nextNode = path[i + 1];
+            // let nextNode = path[i + 1];
             node.toggleColor(1); // Color the node
         }
-        
+        console.outln(path.length-1);
         // Color the last node
-        if (path.length > 0) {
-            path[path.length - 1].toggleColor(1);
-            await this.step();
-        }
+        // if (path.length > 0) {
+        //     path[path.length - 1].toggleColor(1);
+        //     await this.step();
+        // }
     }
-
     /**
      * Entry point for user-defined code.
      */
     async run() {
         console.outln("---- Starting user-defined code! ----");
-        
         await this.colorShortestPath();
         console.outln("---- User-defined code ended! ----");
     }
