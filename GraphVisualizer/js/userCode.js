@@ -37,8 +37,11 @@ export class UserCode extends CoreCode {
             // move to the next node
             head = head.neighbors[0];
         }
-
-        // return the final result
+        // for(let i = 0; i < graph.nodes.length; i++) {
+        //     let node = graph.nodes[i];
+        //     await this.step();
+        //     node.toggleColor(1); 
+        // }
         return pass;
     }
 
@@ -203,6 +206,24 @@ export class UserCode extends CoreCode {
             console.out(queue.dequeue().label);
         }
         console.outln();
+    }
+
+
+    async isSinglyLinkedList() {
+        console.outln("Testing singly linked list");
+        for(const node of graph.nodes) {
+            for(const n of node.neighbors) {
+                //n.state = n.state+1;
+                n.state++;
+            }
+        }
+
+        let heads = graph.nodes.filter(n => n.state == 0); // filter all nodes with in-degree 0
+        if (heads.length != 1) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
