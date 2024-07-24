@@ -103,7 +103,8 @@ xferDialog.addCloseListener((event) => {
 // #region - key event handlers
 
 document.addEventListener('keydown', (event) => {
-  ctrlClicked = isWindowsOS() ? event.ctrlKey : event.metaKey;
+  ctrlClicked = event.ctrlKey || event.metaKey;
+  
   if (!keyPressed && hoverNode != null) {
     switch(event.key.toUpperCase()) {
       case 'E': // enqueue
@@ -133,7 +134,8 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.addEventListener('keyup', (event) => {
-  ctrlClicked = isWindowsOS() ? event.ctrlKey : event.metaKey;
+  ctrlClicked = event.ctrlKey || event.metaKey;
+
   keyPressed = false;
 });
 // #endregion - key event handlers
@@ -319,7 +321,6 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetG', () => {
   queue.clear();
   stack.clear();
   repaint();
-  window.console.log("hey!!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_XFer', () => {
