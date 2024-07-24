@@ -1,5 +1,6 @@
+import { ColorIndex } from "./adt/graph.js";
 import { CoreCode } from "./core/coreCode.js";
-import { console } from "./main.js";
+import { console, queue } from "./main.js";
 import { graph } from "./main.js";
 
 export class UserCode extends CoreCode {
@@ -92,9 +93,43 @@ export class UserCode extends CoreCode {
     /**
      * Entry point for user-defined code.
      */
+    async spanningTree(){
+        let coloredNodes = graph.nodes.filter(n => n.colorIndex !=0 );
+        
+        if(coloredNodes.length != 1){
+            console.outln("No root!")
+            return
+        }
+        let root = coloredNodes[0];
+        root.toggleColor(1);
+        queue.clear();
+        queue.enqueue(root);
+        while(queue.size() != 0){
+            let node = queue.dequeue();
+            node.colorIndex=ColorIndex.Red;
+            for(const n of node.neighbors){
+                if(n.colorIndex == ColorIndex.Gray){
+                    n.colorIndex = ColorIndex.Green;
+                    let edge = graph.getEdge(node, n);
+                    edge.colorIndex = ColorIndex.Yellow;
+                    queue.enqueue(n);
+                }
+            }
+            node.colorIndex=ColorIndex.Yellow;
+        }
+        
+        let noncoloreEdges = graph.edges.filter(e => e.colorIndex == ColorIndex.Gray)
+        for(const e of noncoloreEdges){
+            graph.removeEdge(e.node1, e.node2);
+            graph.removeEdge(e.node2, e.node1);
+        }
+
+    }
+
     async run() {
         console.outln("---- Starting user-defined code! ----");
-        await this.colorShortestPath();
+        // await this.colorShortestPath();
+        await this.spanningTree();
         console.outln("---- User-defined code ended! ----");
     }
 }

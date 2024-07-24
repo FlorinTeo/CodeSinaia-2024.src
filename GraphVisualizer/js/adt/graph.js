@@ -138,16 +138,25 @@ export class Graph {
     }
 
     getEdge(x, y) {
-        let minD = Infinity;
-        let minEdge = undefined;
-        for(const edge of this.edges) {
-            let d = edge.getDistance(x, y);
-            if (d && d < minD) {
-                minD = d;
-                minEdge = edge;
+        let edge = undefined;
+        if (x instanceof Node) {
+            let fromNode = x;
+            let toNode = y;
+            edge = this.edges.filter(e => e.matchesNodes(fromNode, toNode))[0];
+        } else {
+            let minD = Infinity;
+            let minEdge = undefined;
+            for (const edge of this.edges) {
+                let d = edge.getDistance(x, y);
+                if (d && d < minD) {
+                    minD = d;
+                    minEdge = edge;
+                }
             }
+            edge = minEdge;
         }
-        return minEdge;
+        
+        return edge;
     }
 
     addEdge(fromNode, toNode) {
