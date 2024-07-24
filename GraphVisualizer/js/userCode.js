@@ -87,13 +87,13 @@ export class UserCode extends CoreCode {
             if (edge) {
                 edge.toggleColor(1); // Color the edge
             }
-            await this.step();
+            // await this.step();
         }
         
         // Color the last node
         if (path.length > 0) {
             path[path.length - 1].toggleColor(1);
-            await this.step();
+            // await this.step();
         }
         console.outln(path.length-1);
     }
