@@ -208,7 +208,6 @@ export class UserCode extends CoreCode {
         console.outln();
     }
 
-
     async isSinglyLinkedList() {
         console.outln("Testing singly linked list");
         for(const node of graph.nodes) {
