@@ -321,7 +321,6 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetG', () => {
   queue.clear();
   stack.clear();
   repaint();
-  window.console.log("hey!!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_XFer', () => {
