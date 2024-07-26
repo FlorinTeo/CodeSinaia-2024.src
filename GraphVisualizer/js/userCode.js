@@ -207,24 +207,7 @@ export class UserCode extends CoreCode {
         }
         console.outln();
     }
-
-    async isSinglyLinkedList() {
-        console.outln("Testing singly linked list");
-        for (const node of graph.nodes) {
-            for (const n of node.neighbors) {
-                //n.state = n.state+1;
-                n.state++;
-            }
-        }
-
-        let heads = graph.nodes.filter(n => n.state == 0); // filter all nodes with in-degree 0
-        if (heads.length != 1) {
-            return false;
-        }
-
-        return true;
-    }
-
+    
     /**
      * Entry point for user-defined code.
      */
