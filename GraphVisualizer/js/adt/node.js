@@ -140,11 +140,11 @@ export class Node {
         if (brief) {
             if (this.state instanceof Node) {
                 output += `State___ ${this.state.label}`;
-                if (this.state.cost != null) {
-                    output += `; Cost___ ${this.cost.toFixed(1)}`;
-                }
             } else {
                 output += `State___ ${this.state}`;
+            }
+            if (this.cost != null) {
+                output += `; Cost___ ${this.cost.toFixed(1)}`;
             }
         } else {
             output += `${this.x},${this.y}\t>`;
