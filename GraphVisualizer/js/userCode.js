@@ -3,6 +3,7 @@ import { console } from "./main.js";
 import { graph } from "./main.js";
 import { queue } from "./main.js";
 import { stack } from "./main.js";
+import { ColorIndex } from "./adt/graph.js";
 
 export class UserCode extends CoreCode {
 
@@ -208,6 +209,72 @@ export class UserCode extends CoreCode {
         console.outln();
     }
     
+    async runDijkstra() {
+        // collect the input
+        let markedNodes = graph.nodes
+            .filter(n => n.colorIndex != 0)
+            .sort((n1, n2) => Math.sign(n1.colorIndex - n2.colorIndex));
+
+        if (markedNodes.length != 2) {
+            console.outln("Unique start and end nodes cannot be determined!");
+            return;
+        }
+        let startNode = markedNodes[0];
+        let endNode = markedNodes[1];
+        console.outln(`Finding path from ${startNode.label} to ${endNode.label}`);
+
+        // reset algorithm state
+        graph.nodes.forEach((n) => { n.state = null; n.cost = Number.MAX_VALUE; });
+        startNode.state = null;
+        startNode.cost = 0;
+        queue.clear();
+        queue.enqueue(startNode);
+
+        await this.step();
+
+        // loop until the working queue is drained out
+        while(queue.size() != 0) {
+            let node = queue.dequeue();
+            if (node != startNode && node != endNode) {
+                node.colorIndex = ColorIndex.Magenta;
+            }
+
+            await this.step();
+
+            for(const n of node.neighbors) {
+                let edge = graph.getEdge(node, n);
+                edge.colorIndex = ColorIndex.Yellow;
+                let cost = node.cost + node.distance(n);
+                if (cost < n.cost) {
+                    n.cost = cost;
+                    n.state = node;
+                    if (n != endNode) {
+                        n.colorIndex = ColorIndex.Red;
+                    }
+                    queue.enqueue(n);
+
+                    await this.step();
+                }
+            }
+
+            if (node != startNode && node != endNode) {
+                node.colorIndex = ColorIndex.Yellow;
+            }
+        }
+
+        let node = endNode;
+        while(node != startNode) {
+            if (node != startNode && node != endNode) {
+                node.colorIndex = ColorIndex.Green;
+            }
+            let edge = graph.getEdge(node, node.state);
+            edge.colorIndex = ColorIndex.Green;
+            node = node.state;
+
+            await this.step();
+        }
+    }
+
     /**
      * Entry point for user-defined code.
      */
@@ -235,6 +302,9 @@ export class UserCode extends CoreCode {
 
         // console.outln("Prefix Expression!")
         // await this.prefixExpression();
+
+        console.outln("Calculate path in graph via Dijkstra's algorithm");
+        await this.runDijkstra();
 
         console.outln("---- User-defined code ended! ----");
     }
