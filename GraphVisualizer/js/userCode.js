@@ -509,6 +509,14 @@ export class UserCode extends CoreCode {
             crtNode = crtNode.state;
         }
     }
+    async reset(){
+        await this.step(1000);
+        for(const n of graph.nodes)
+            if(n.colorIndex==ColorIndex.Yellow||n.colorIndex==ColorIndex.Green) n.colorIndex=ColorIndex.Gray;
+        await this.step(1000);
+        for(const n of graph.edges)
+            if(n.colorIndex==ColorIndex.Yellow||n.colorIndex==ColorIndex.Green) n.colorIndex=ColorIndex.Gray;
+    }
 
     /**
      * Entry point for user-defined code.
@@ -543,14 +551,12 @@ export class UserCode extends CoreCode {
 
         // await this.step();
 
-        // console.outln("Run Path Finding algo via Dijkstra.");
-        // await this.runDijkstra();
-
-        // await this.step();
-        
+        console.outln("Run Path Finding algo via Dijkstra.");
+        await this.runDijkstra();
+        await this.reset()
         console.outln("Run Path Finding algo via A*.");
         await this.runAStar();
-
+        await this.reset();
         console.outln("---- User-defined code ended! ----");
     }
 }
