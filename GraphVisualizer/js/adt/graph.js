@@ -209,7 +209,7 @@ export class Graph {
             }
             const { success, label, version, x, y, toVersionedLabels } = Node.fromString(line);
             if (!success) {
-                alert("Input is not a serialized graph!");
+                alert("Input is not a graph!");
                 return false;
             }
             let fromVersionedLabel = version ? `${label}#${version}` : `${label}`;
@@ -226,10 +226,8 @@ export class Graph {
                 this.addEdge(newGraph.get(fromVersionedLabel), newGraph.get(toVersionedLabel));
             }
         }
-
         this.nodes = Array.from(newGraph.values());
         adjustScale(this.nodes.length);
-
-        return true;
+        return true;   
     }
 }
