@@ -6,6 +6,7 @@ import { ColorIndex } from "./adt/graph.js";
 
 export class UserCode extends CoreCode {
 
+    //#region previous work
     async findShortestPath(startNode, endNode) {
         let previousNodes = new Map();
         let unvisitedNodes = new Set(graph.nodes);
@@ -325,6 +326,7 @@ export class UserCode extends CoreCode {
         }
         console.outln();
     }
+    //#endregion - previous work
     
     async runBFS() {
         // pick up inputs in the algo
