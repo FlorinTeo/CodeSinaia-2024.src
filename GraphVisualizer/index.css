@@ -1,215 +1,305 @@
 body {
-	font-family:Helvetica, sans-serif;
-    background-color: rgb(238, 235, 221);
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
 
-    .canvasTable {
-        width: 100%;
-        height: calc(100% - 30px);
-        border-collapse: collapse;
-        td {
-            padding: 10px;
-            /* border: 1px solid #ddd; */
-        }
-        td:nth-child(1) {
-            vertical-align: middle;
-            white-space: nowrap;
-            padding-bottom: 2px;
-            .canvas {
-                border: 1px solid #000000;
-                display: inline-block;
-            }
-        }
-        td:nth-child(2) {
-            vertical-align: middle;
-            white-space: nowrap;
-            padding-left: 0px;
-            width: 14;
-        }
-    }
+.canvasTable {
+    width: 100%;
+    height: calc(100% - 30px);
+    border-collapse: collapse;
+    animation: fadeIn 1s ease-in-out;
+    z-index: 99;
+    min-width: 30px;
+}
 
-    .statusTable {
-        width: 100%;
-        height: 24px;
-        border-collapse: collapse;
-        td {
-            padding: 0px;
-            /* border: 1px solid #ddd; */
-        }
-        td:nth-child(1) {
-            vertical-align: top;
-            white-space: nowrap;
-            .status {
-                padding-left: 10px; 
-                vertical-align: middle;
-            }
-        }
-        td:nth-child(2) {
-            vertical-align: top;
-            white-space: nowrap;
-            width: 240px;
-            text-align: right;
-        }
-    }
+.canvasTable td {
+    padding: 15px;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease;
+}
 
-    .xfer {
-        position: absolute;
-        background: gray;
-        border: 1px solid rgb(0, 0, 0);
-        width:50%;
-        height: 50%;
-        padding: 0px;
-        resize: both;
-        min-width: 320px;
-        min-height: 180px;
-    
-        .textBar {
-            width: calc(100% - 0px);
-            padding: 0px;
-            display: flex;
-            justify-content: right;
-        }
-    
-        .text {
-            height: calc(100% - 64px);
-            width: calc(100% - 16px);
-            padding: 0px 8px 8px 8px;
-    
-            textarea {
-                height: 100%;
-                width: 100%;
-                padding:1%;
-                border: 1px solid #131111;
-                box-sizing: border-box;
-                background: lightgray;
-                white-space: nowrap;
-                font-family:'Courier New', Courier, monospace;
-                font-size:18px;
-                font-weight: bold;
-                resize: none;
-            }
-        }
-    
-        .buttons {
-            width: calc(100% - 16px);
-            height: 20px;
-            padding: 0px 8px 8px 8px;
-            display: flex;
-            justify-content: space-between;
-        }
-    }
-    
-    .console {
-        position: absolute;
-        background: rgb(196, 196, 196);
-        border: 1px solid rgb(0, 0, 0);
-        top: 8px;
-        left: 60%;
-        width: calc(40% - 2px);
-        height: calc(100% - 30px);
-        display: none;
+.canvasTable td:hover {
+    background-color: #f0f0f0;
+}
 
-        .consoleTable {
-            width: 100%;
-            height: calc(100% - 30px);
-            border-collapse: collapse;
-            td {
-                padding: 2px;
-                /* border: 1px solid #888; */
-            }
-            td:nth-child(1) {
-                vertical-align: middle;
-                white-space: nowrap;
-                padding-bottom: 2px;
-                width: 10px;
-            }
-            td:nth-child(2) {
-                vertical-align: middle;
-                white-space: nowrap;
-                padding-top: 10px;
-                textarea {
-                    height: 100%;
-                    width: calc(100% - 10px);
-                    padding:1%;
-                    border: 1px solid #131111;
-                    box-sizing: border-box;
-                    background: rgb(242, 242, 242);
-                    white-space: nowrap;
-                    font-family: Consolas, monospace;
-                    font-size:14px;
-                    font-weight: normal;
-                    resize: none;
-                }
-            }
-        }
+.canvasTable td:nth-child(1) {
+    vertical-align: middle;
+    white-space: nowrap;
+    padding-bottom: 5px;
+}
 
-        .statusTable {
-            width: 100%;
-            height: 30px;
-            border-collapse: collapse;
-            td {
-                padding: 2px;
-                /* border: 1px solid #888; */
-            }
-            td:nth-child(1) {
-                vertical-align: middle;
-                white-space: nowrap;
-                padding-bottom: 2px;
-                width: 10px;
-            }
-            td:nth-child(2) {
-                vertical-align: middle;
-                text-align: left;
-                white-space: nowrap;
-                width: calc(50% - 5px);
-            }
-            td:nth-child(3) {
-                vertical-align: middle;
-                text-align: right;
-                white-space: nowrap;
-                padding-right: 10px;
-            }
-        }
-    }
+.canvas {
+    width: calc(100% - 30px);
+    margin-left: 5px;
+    border: 2px solid #333;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.canvas:hover {
+    transform: scale(1.05);
+}
+
+.canvasTable td:nth-child(2) {
+    vertical-align: middle;
+    white-space: nowrap;
+    padding-left: 5px;
+    width: 14px;
+}
+
+.statusTable {
+    width: 100%;
+    height: 24px;
+    border-collapse: collapse;
+    background-color: #333;
+    color: #fff;
+    animation: fadeIn 1s ease-in-out;
+    z-index: 99;
+}
+
+.statusTable td {
+    padding: 5px;
+    border: 1px solid #ddd;
+}
+
+.statusTable td:nth-child(1) {
+    vertical-align: top;
+    white-space: nowrap;
+}
+
+.status {
+    padding-left: 10px;
+    vertical-align: middle;
+}
+
+.statusTable td:nth-child(2) {
+    vertical-align: top;
+    white-space: nowrap;
+    width: 240px;
+    text-align: right;
+}
+
+.xfer {
+    position: absolute;
+    background: #fafafa;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 50%;
+    height: 50%;
+    padding: 0;
+    resize: both;
+    min-width: 320px;
+    min-height: 180px;
+    animation: fadeIn 0.5s ease-in-out;
+    z-index: 99;
+    overflow: hidden;
+}
+
+.textBar {
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: flex-end;
+    background-color: #e9e9e9;
+}
+
+.text {
+    height: calc(100% - 74px);
+    width: 100%;
+    padding: 0 8px 8px 8px;
+    background-color: #f1f1f1;
+}
+
+textarea {
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bbb;
+    box-sizing: border-box;
+    background: #fff;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    font-weight: bold;
+    resize: none;
+    transition: background-color 0.3s ease;
+}
+
+textarea:focus {
+    background-color: #e0e0e0;
+}
+
+.buttons {
+    width: 100%;
+    height: 30px;
+    padding: 0 8px 8px 8px;
+    display: flex;
+    justify-content: space-between;
+    background-color: #e9e9e9;
+}
+
+.console {
+    position: absolute;
+    background: #ececec;
+    border: 1px solid #bbb;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    top: 8px;
+    left: 60%;
+    width: 40%;
+    height: calc(100% - 30px);
+    display: none;
+    animation: fadeIn 1s ease-in-out;
+    z-index: 99;
+    overflow: hidden;
+}
+
+.consoleTable {
+    width: 100%;
+    height: calc(100% - 30px);
+    border-collapse: collapse;
+}
+
+.consoleTable td {
+    padding: 2px;
+    border: 1px solid #ccc;
+    transition: all 0.3s ease;
+}
+
+.consoleTable td:nth-child(1) {
+    vertical-align: middle;
+    white-space: nowrap;
+    padding-bottom: 2px;
+    width: 10px;
+}
+
+.consoleTable td:nth-child(2) {
+    vertical-align: middle;
+    white-space: nowrap;
+    padding-top: 10px;
+}
+
+.consoleTable textarea {
+    height: 100%;
+    width: calc(100% - 10px);
+    padding: 10px;
+    border: 1px solid #bbb;
+    box-sizing: border-box;
+    background: #fafafa;
+    font-family: Consolas, monospace;
+    font-size: 14px;
+    resize: none;
+    transition: background-color 0.3s ease;
+}
+
+.consoleTable textarea:focus {
+    background-color: #e0e0e0;
+}
+
+.consoleTable .statusTable {
+    width: 100%;
+    height: 30px;
+    border-collapse: collapse;
+}
+
+.consoleTable .statusTable td {
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+.consoleTable .statusTable td:nth-child(1) {
+    vertical-align: middle;
+    white-space: nowrap;
+    padding-bottom: 2px;
+    width: 10px;
+}
+
+.consoleTable .statusTable td:nth-child(2) {
+    vertical-align: middle;
+    text-align: left;
+    white-space: nowrap;
+    width: calc(50% - 5px);
+}
+
+.consoleTable .statusTable td:nth-child(3) {
+    vertical-align: middle;
+    text-align: right;
+    white-space: nowrap;
+    padding-right: 10px;
 }
 
 .ctxmenu {
-    font-family:Helvetica, sans-serif;
-    font-size: 10pt;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px;
     display: none;
     position: fixed;
-    background: rgb(238, 235, 221);
-    color: black;
+    background: #fff;
+    color: #333;
     cursor: pointer;
-    border: 1px black solid;
-
-    p {
-        display: flex;
-        align-items:left;
-        padding: 2 1rem 0 1rem;
-        margin: 0;
-    }
-
-    p:hover {
-        background: rgb(116, 116, 116);
-        color: ghostwhite;
-    }
-
-    label {
-        flex: 0 0 60px;
-    }
-
-    input {
-        flex: 1;
-        width: 32px;
-    }
-
-    .menu-separator {
-        border: none;
-        border-top: 1px solid #ccc;
-        margin: 2px 0;
-    }
-
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out;
+    overflow: hidden;
+    z-index: 99;
 }
 
+.ctxmenu p {
+    display: flex;
+    align-items: left;
+    padding: 10px;
+    margin: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.ctxmenu p:hover {
+    background: #333;
+    color: #fff;
+}
+
+.ctxmenu label {
+    flex: 0 0 60px;
+}
+
+.ctxmenu input {
+    flex: 1;
+    width: 32px;
+}
+
+.menu-separator {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 2px 0;
+}
+
+/* Keyframes for animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.lungime {
+    width: 24px;
+    height: 24px;
+}
+
+.draggable {
+    position: relative;
+    cursor: ew-resize;
+}
+
+#hCtxMenuConsole {
+    display: none;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
