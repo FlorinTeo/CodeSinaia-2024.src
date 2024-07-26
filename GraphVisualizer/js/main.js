@@ -103,7 +103,8 @@ xferDialog.addCloseListener((event) => {
 // #region - key event handlers
 
 document.addEventListener('keydown', (event) => {
-  ctrlClicked = isWindowsOS() ? event.ctrlKey : event.metaKey;
+  ctrlClicked = event.ctrlKey || event.metaKey;
+  
   if (!keyPressed && hoverNode != null) {
     switch(event.key.toUpperCase()) {
       case 'E': // enqueue
@@ -133,7 +134,8 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.addEventListener('keyup', (event) => {
-  ctrlClicked = isWindowsOS() ? event.ctrlKey : event.metaKey;
+  ctrlClicked = event.ctrlKey || event.metaKey;
+
   keyPressed = false;
 });
 // #endregion - key event handlers
@@ -156,8 +158,22 @@ hCanvas.addEventListener('mousemove', (event) => {
   dragging = (event.button == 0) && (clickedNode != null);
 
   if (!dragging) {
-    // if not dragging, just show the state of the node the mouse may be hovering over
-    hNodeState.innerHTML = (hoverNode != null) ? hoverNode.toString(true) : "";
+    // if not dragging and ..
+    if (hoverNode != null) {
+        // .. if hovering over a node, just show the state of that node
+        hNodeState.textContent = hoverNode.toString(true);
+    } else {
+        let hoverEdge = graph.getEdge(x, y);
+        // .. otherwise..
+        if (hoverEdge != null) {
+            // .. if hovering over an edge, show the distance covered by that edge
+            hNodeState.textContent = `${hoverEdge.node1.label}\u21D4${hoverEdge.node2.label} : ${hoverEdge.node1.distance(hoverEdge.node2).toFixed(1)}`;
+        } else {
+            // .. if not hovering over anything, just clear the status area.
+            hNodeState.textContent = "";
+        }
+    }
+    
   } else if (clickedNode != null) {
     // in the middle of {drag} that started over a node (clickedNode)
     if (ctrlClicked) {
@@ -319,7 +335,6 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_ResetG', () => {
   queue.clear();
   stack.clear();
   repaint();
-  window.console.log("hey!!");
 });
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_XFer', () => {
