@@ -11,6 +11,7 @@ export const ARROW_LENGTH = [8, 5, 3];
 export const HIGHLIGHT_THICKNESS = [6, 5, 4];
 export const HIGHLIGHT_SENSITIVITY = [10, 8, 6];
 export const HIGHLIGHT_PALLETE = ['#EBEBEB', '#FFFD55', '#6EFBFF', '#FFCACA', '#93FF2D', '#ECA4FF'];
+
 export const ColorIndex = {
     Gray: 0,
     Yellow: 1,
@@ -19,6 +20,7 @@ export const ColorIndex = {
     Green: 4,
     Magenta: 5
 };
+
 function adjustScale(nNodes) {
     if (nNodes <= 15) {
         SCALE = 0;
@@ -67,17 +69,17 @@ export class Graph {
     }
 
     repaint() {
-        for(const edge of this.edges) {
+        for (const edge of this.edges) {
             edge.repaint();
         }
-        this.traverse((node)=>{
+        this.traverse((node) => {
             node.repaint();
         });
     }
 
     traverse(lambda) {
         // reset all the node markers
-        for(const node of this.nodes) {
+        for (const node of this.nodes) {
             node.marker = 0;
         }
         // repeteadly ...
@@ -85,7 +87,7 @@ export class Graph {
         while (!done) {
             done = true;
             // look for an un-marked node
-            for(const node of this.nodes) {
+            for (const node of this.nodes) {
                 // and if found, traverse the node and do it all over again
                 if (node.marker == 0) {
                     node.traverse(lambda);
@@ -111,7 +113,7 @@ export class Graph {
 
     addNode(label, x, y) {
         let node = new Node(this.#graphics, label, x, y);
-        if (node ) {
+        if (node) {
             this.nodes.push(node);
             this.#checkAndAdjustVersions(node.label);
             adjustScale(this.nodes.length);
@@ -120,7 +122,7 @@ export class Graph {
     }
 
     removeNode(node) {
-        for(const otherNode of this.nodes) {
+        for (const otherNode of this.nodes) {
             if (otherNode.hasEdge(node)) {
                 otherNode.removeEdge(node);
             }
@@ -191,7 +193,7 @@ export class Graph {
         let maxLabel = this.nodes.reduce(
             (maxLabel, n) => Math.max(maxLabel, (n.version == 0 ? `${n.label}`.length : `${n.label}#${n.version}`.length), 0),
             0);
-        for(const node of this.nodes) {
+        for (const node of this.nodes) {
             output += node.toString(brief, maxLabel + 1);
             output += '\n';
         }
@@ -205,7 +207,7 @@ export class Graph {
             if (line.trim().length === 0) {
                 continue;
             }
-            const {success, label, version, x, y, toVersionedLabels} = Node.fromString(line);
+            const { success, label, version, x, y, toVersionedLabels } = Node.fromString(line);
             if (!success) {
                 alert("Input is not a graph!");
                 return false;
@@ -215,8 +217,8 @@ export class Graph {
             newEdges.set(fromVersionedLabel, toVersionedLabels);
         }
 
-        for(const [fromVersionedLabel, toVersionedLabels] of newEdges) {
-            for(const toVersionedLabel of toVersionedLabels) {
+        for (const [fromVersionedLabel, toVersionedLabels] of newEdges) {
+            for (const toVersionedLabel of toVersionedLabels) {
                 if (!newGraph.has(toVersionedLabel)) {
                     alert(`Invalid target in edge ${fromVersionedLabel} > ${toVersionedLabel}`);
                     return false;
