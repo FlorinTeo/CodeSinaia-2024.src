@@ -31,7 +31,6 @@ export class Node {
         this.version = version ? version : 0;
         this.state = 0;
         this.neighbors = [];
-        this.neighbors = [];
         this.colorIndex = 0;
         this.marker = 0;
     }
@@ -50,6 +49,10 @@ export class Node {
     }
     toString() {
         return `<b>${this.label}</b>: ${this.state}`;
+    }
+
+    distance(otherNode) {
+        return Math.sqrt(Math.pow(otherNode.x - this.x, 2) + Math.pow(otherNode.y - this.y, 2));
     }
 
     toggleColor(deltaIndex) {
@@ -135,7 +138,14 @@ export class Node {
 
         // add either the State or the position and neighbors, as needed
         if (brief) {
-            output += `State___ ${this.state}`;
+            if (this.state instanceof Node) {
+                output += `State___ ${this.state.label}`;
+                if (this.state.cost != null) {
+                    output += `; Cost___ ${this.cost.toFixed(1)}`;
+                }
+            } else {
+                output += `State___ ${this.state}`;
+            }
         } else {
             output += `${this.x},${this.y}\t>`;
             for(const neighbor of this.neighbors) {
