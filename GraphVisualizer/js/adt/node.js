@@ -39,6 +39,10 @@ export class Node {
         return `<b>${this.label}</b>: ${this.state}`;
     }
 
+    distance(otherNode) {
+        return Math.sqrt(Math.pow(otherNode.x - this.x, 2) + Math.pow(otherNode.y - this.y, 2));
+    }
+
     toggleColor(deltaIndex) {
         deltaIndex = Math.sign(deltaIndex);
         this.colorIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.colorIndex + deltaIndex) % HIGHLIGHT_PALLETE.length);
