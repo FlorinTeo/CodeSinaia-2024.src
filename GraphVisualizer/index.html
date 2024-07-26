@@ -1,5 +1,8 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Graph Visualizer</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="index.css?v=10">
@@ -13,29 +16,13 @@
     <script type="module" src="js/core/graphics.js"></script>
     <script type="module" src="js/core/contextMenu.js"></script>
 </head>
-<style>
-    .draggable {
-        position: relative; /* Changed to relative for better control */
-        cursor: ew-resize;
-    }
-    #hCtxMenuConsole {
-        display: none;
-        position: absolute;
-        top: 40px; /* Adjust as needed */
-        left: 0;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        z-index: 1000;
-    }
-</style>
 <body>
     <table class="canvasTable">
         <tr>
             <td id="hTdCanvas"><canvas id="hMainCanvas" class="canvas"></canvas></td>
             <td id="hTdBtn">
                 <div id="draggableContainer" class="draggable">
-                    <img id="hBtnConsole" src="res/btnSlide.png" width="8">
+                    <img id="hBtnConsole" src="res/btnSlide.png" alt="" width="8">
                 </div>
             </td>
         </tr>
@@ -50,7 +37,7 @@
     <div id="hCtxMenuCanvas" class="ctxmenu">
         <p id="hCtxMenuCanvas_ResetS">
             <label>Reset states___</label>
-            <input type="text" autocomplete="nope">
+            <input type="text" label="" title="" placeholder="ceva">
         </p>
         <p id="hCtxMenuCanvas_ResetNh">Reset node highlights</p>
         <p id="hCtxMenuCanvas_ResetEh">Reset edge highlights</p>
@@ -66,11 +53,11 @@
     <div id="hCtxMenuNode" class="ctxmenu">
         <p id="hCtxMenuNode_Label">
             <label>Label___</label>
-            <input id="hInput_NodeL" type="text" autocomplete="nope">
+            <input id="hInput_NodeL" type="text" label="" title="" placeholder="ceva">
         </p>
         <p id="hCtxMenuNode_State">
             <label>State___</label>
-            <input id="hInput_NodeS" type="text" autocomplete="nope">
+            <input id="hInput_NodeS" type="text" label="" title="" placeholder="ceva">
         </p>
         <div class="menu-separator"></div>
         <p id="hCtxMenuNode_Enqueue">Enqueue</p>
@@ -81,20 +68,20 @@
 
     <dialog id="hXferDialog" class="xfer">
         <div id="hXferTitleBar" class="textBar">
-            <img id="hXferClose" src="res/window-close.png" alt="Close" style="width:24px;height:24px;">
+            <img id="hXferClose" src="res/window-close.png" alt="Close" class="lungime">
         </div>
         <div class="text">
             <textarea id="hXferText">This is where the graph goes.</textarea>
         </div>
         <div class="buttons">
             <div>
-                <input id="hXferBtn_Copy" type="image" src="res/clip-copy.png" title="Copy" alt="Copy" style="width:24px;height:24px;">
-                <input id="hXferBtn_Refresh" type="image" src="res/refresh.png" title="Refresh" alt="Refresh" style="width:24px;height:24px;">
-                <input id="hXferBtn_Paste" type="image" src="res/clip-paste.png" title="Paste" alt="Paste" style="width:24px;height:24px;">
+                <input id="hXferBtn_Copy" type="image" src="res/clip-copy.png" title="Copy" alt="Copy" class="lungime">
+                <input id="hXferBtn_Refresh" type="image" src="res/refresh.png" title="Refresh" alt="Refresh" class="lungime">
+                <input id="hXferBtn_Paste" type="image" src="res/clip-paste.png" title="Paste" alt="Paste" class="lungime">
             </div>
             <div>
-                <input id="hXferBtn_In" type="image" src="res/xfer-in.png" title="Xfer In" alt="XferIn" style="width:24px;height:24px;">
-                <input id="hXferBtn_Out" type="image" src="res/xfer-out.png" title="Xfer Out" alt="XferOut" style="width:24px;height:24px;">
+                <input id="hXferBtn_In" type="image" src="res/xfer-in.png" title="Xfer In" alt="XferIn" class="lungime">
+                <input id="hXferBtn_Out" type="image" src="res/xfer-out.png" title="Xfer Out" alt="XferOut" class="lungime">
             </div>
         </div>
     </dialog>
@@ -102,17 +89,17 @@
     <div id="hConsoleDialog" class="console">
         <table class="consoleTable">
             <tr>
-                <td><img id="hConsoleClose" src="res/btnSlide.png" width="8"></td>
-                <td><textarea id="hConsoleText">This is where the console output goes.</textarea></td>
+                <td><img id="hConsoleClose" src="res/btnSlide.png" width="8" title="ceva"></td>
+                <td><textarea id="hConsoleText" title="ceva" placeholder="ceva">This is where the console output goes.</textarea></td>
             </tr>
         </table>
         <table class="statusTable">
             <tr>
-                <td><img id="hConsoleBtnClear" src="res/btnDelete.png" width="24"></td>
+                <td><img id="hConsoleBtnClear" src="res/btnDelete.png" width="24" placeholder="ceva" title="ceva"></td>
                 <td><input id="hConsoleBtnRun" type="image" src="res/btnRun.png" height="20" alt="submit" accessKey="r"></td>
-                <td><img id="hConsoleBtnResize" src="res/console-resize.png" width="24"></td>
+                <td><img id="hConsoleBtnResize" src="res/console-resize.png" width="24" placeholder="ceva" title="ceva"></td>
             </tr>
         </table>
     </div>
 </body>
-
+</html>
