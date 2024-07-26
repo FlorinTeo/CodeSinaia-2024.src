@@ -129,7 +129,7 @@ export class Node {
             if (this.state instanceof Node) {
                 output += `State___ ${this.state.label}`;
                 if (this.state.cost != null) {
-                    output += `; Cost___ ${this.cost}`;
+                    output += `; Cost___ ${this.cost.toFixed(1)}`;
                 }
             } else {
                 output += `State___ ${this.state}`;
