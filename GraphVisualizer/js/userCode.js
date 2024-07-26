@@ -2,7 +2,6 @@ import { ColorIndex } from "./adt/graph.js";
 import { CoreCode } from "./core/coreCode.js";
 import { console, queue } from "./main.js";
 import { graph } from "./main.js";
-
 export class UserCode extends CoreCode {
 
     /**
@@ -76,6 +75,18 @@ export class UserCode extends CoreCode {
             let node = path[i];
             // let nextNode = path[i + 1];
             node.toggleColor(1); // Color the node
+            
+            // Find and color the edge between node and nextNode
+            let edge = node.neighbors.find(neighbor => neighbor === nextNode);
+            if (edge) {
+                edge.toggleColor(1); // Color the edge
+            }
+            // await this.step();
+        }
+        
+        // Color the last node
+        if (path.length > 0) {
+            path[path.length - 1].toggleColor(1);
         }
         console.outln(path.length-1);
         // Color the last node
@@ -83,6 +94,37 @@ export class UserCode extends CoreCode {
         //     path[path.length - 1].toggleColor(1);
         //     await this.step();
         // }
+    }
+
+    async spanningTree(){
+        let coloredNodes = graph.nodes.filter(n => n.colorIndex !=0 );
+        
+        if(coloredNodes.length != 1){
+            console.outln("No root!")
+            return
+        }
+        let root = coloredNodes[0];
+        root.toggleColor(1);
+        queue.clear();
+        queue.enqueue(root);
+        while(queue.size() != 0){
+            let node = queue.dequeue();
+            node.colorIndex=ColorIndex.Red;
+            for(const n of node.neighbors){
+                if(n.colorIndex == ColorIndex.Gray){
+                    n.colorIndex = ColorIndex.Green;
+                    let edge = graph.getEdge(node, n);
+                    edge.colorIndex = ColorIndex.Yellow;
+                    queue.enqueue(n);
+                }
+            }
+            node.colorIndex=ColorIndex.Yellow;
+        }    
+        let noncoloredEdges = graph.edges.filter(e => e.colorIndex == ColorIndex.Gray)
+        for(const e of noncoloredEdges){
+            graph.removeEdge(e.node1, e.node2);
+            graph.removeEdge(e.node2, e.node1);
+        }
     }
     /**
      * Entry point for user-defined code.
