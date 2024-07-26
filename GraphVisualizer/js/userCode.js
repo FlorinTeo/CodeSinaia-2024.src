@@ -339,7 +339,8 @@ export class UserCode extends CoreCode {
         // // tree check
         // console.outln("Binary tree check..");
         // pass = await this.isBinaryTree(graph);
-        // console.outln(pass ? "Graph IS a binary tree!" : "Graph is NOT a binary tree!");
+        // console.outln(pa
+        ss ? "Graph IS a binary tree!" : "Graph is NOT a binary tree!";
 
         // console.outln("Breath-first tree traversal:");
         // await this.bfsTraverse();
