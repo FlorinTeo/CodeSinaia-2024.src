@@ -19,11 +19,18 @@ export class CoreCode {
         }
     }
 
-    async step() {
+    async step(delay = Infinity) {
+        if (delay == 0) {
+            return;
+        }
+
         if (this.#hConsoleBtnRunStep != null) {
             repaint();
-            const promise = new Promise((resolve) => { this.#nextStep = resolve; });
-            await promise;
+            if (delay == Infinity) {
+                return new Promise((resolve) => { this.#nextStep = resolve; });                        
+            } else {
+                return new Promise(resolve => setTimeout(resolve, delay));
+            }
         }
     }
 
