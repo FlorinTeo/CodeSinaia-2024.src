@@ -161,10 +161,7 @@ hCanvas.addEventListener('mousemove', (event) => {
     // if not dragging and ..
     if (hoverNode != null) {
         // .. if hovering over a node, just show the state of that node
-        hNodeState.textContent = `${hoverNode.label}: State___${hoverNode.state}`;
-        if (hoverNode.cost != null) {
-            hNodeState.textContent += `; Cost__${hoverNode.cost.toFixed(1)}`;
-        }
+        hNodeState.textContent = hoverNode.toString(true);
     } else {
         let hoverEdge = graph.getEdge(x, y);
         // .. otherwise..
