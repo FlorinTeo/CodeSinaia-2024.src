@@ -6,7 +6,7 @@ import { ColorIndex } from "./adt/graph.js";
 
 export class UserCode extends CoreCode {
 
-    //#region previous work
+    //#region Tue-Wed work
     async findShortestPath(startNode, endNode) {
         let previousNodes = new Map();
         let unvisitedNodes = new Set(graph.nodes);
@@ -95,6 +95,7 @@ export class UserCode extends CoreCode {
         }
         console.outln(path.length-1);
     }
+
     async spanningTree(){
         let coloredNodes = graph.nodes.filter(n => n.colorIndex !=0 );
         
@@ -125,6 +126,7 @@ export class UserCode extends CoreCode {
             graph.removeEdge(e.node2, e.node1);
         }
     }
+
     async isList(graph) {
         let pass = true;
         // reset the state in the graph nodes
@@ -326,8 +328,30 @@ export class UserCode extends CoreCode {
         }
         console.outln();
     }
-    //#endregion - previous work
+    //#endregion Tue-Wed work
     
+    async extractPath(startNode, endNode) {
+        if (endNode.state == null) {
+            console.outln("No path exists!");
+            return;
+        }
+
+        let crtNode = endNode;
+        let distance = 0;
+        while(crtNode != startNode) {
+            let edge = graph.getEdge(crtNode, crtNode.state);
+            edge.colorIndex = ColorIndex.Green;
+            distance += edge.node1.distance(edge.node2);
+            if (crtNode != endNode) {
+                crtNode.colorIndex = ColorIndex.Green;
+            }
+            await this.step(100);
+            crtNode = crtNode.state;
+        }
+
+        console.outln(`    route distance = ${distance.toFixed(1)}`);
+    }
+
     async runBFS() {
         // pick up inputs in the algo
         let coloredNodes = graph.nodes.filter(n => n.colorIndex != 0);
@@ -338,7 +362,7 @@ export class UserCode extends CoreCode {
         coloredNodes = coloredNodes.sort((n1, n2) => (n1.colorIndex - n2.colorIndex));
         let startNode = coloredNodes[0];
         let endNode = coloredNodes[1];
-        console.outln(`start=${startNode.label} end=${endNode.label}`);
+        console.outln(`    start=${startNode.label} end=${endNode.label}`);
 
         // clear initial state
         graph.nodes.forEach(n => { n.state = null; });
@@ -347,7 +371,9 @@ export class UserCode extends CoreCode {
         startNode.state = startNode;
 
         // loop until the queue is empty
+        let iterations = 0;
         while(queue.size() !== 0) {
+            iterations++;
             let node = queue.dequeue();
             if (node != startNode && node != endNode) {
                 node.colorIndex = ColorIndex.Magenta;
@@ -361,7 +387,7 @@ export class UserCode extends CoreCode {
                 queue.enqueue(n);
                 graph.getEdge(node, n).colorIndex = ColorIndex.Yellow;                
                 if (n === endNode) {
-                    console.outln("EndNode is found!");
+                    console.outln("    EndNode is found!");
                     queue.clear();
                     break;
                 }
@@ -373,16 +399,8 @@ export class UserCode extends CoreCode {
             }
             await this.step(100);
         }
-
-        let crtNode = endNode;
-        while(crtNode != startNode) {
-            graph.getEdge(crtNode, crtNode.state).colorIndex = ColorIndex.Green;
-            if (crtNode != endNode) {
-                crtNode.colorIndex = ColorIndex.Green;
-            }
-            await this.step(100);
-            crtNode = crtNode.state;
-        }
+        await this.extractPath(startNode, endNode);
+        console.outln(`    iterations = ${iterations}`);
     }
 
     async runDijkstra() {
@@ -395,7 +413,7 @@ export class UserCode extends CoreCode {
         coloredNodes = coloredNodes.sort((n1, n2) => (n1.colorIndex - n2.colorIndex));
         let startNode = coloredNodes[0];
         let endNode = coloredNodes[1];
-        console.outln(`start=${startNode.label} end=${endNode.label}`);
+        console.outln(`    start=${startNode.label} end=${endNode.label}`);
 
         // clear initial state
         graph.nodes.forEach(n => { n.state = null; n.cost = Infinity; });
@@ -405,12 +423,14 @@ export class UserCode extends CoreCode {
         startNode.cost = 0;
 
         // loop until the queue is empty
+        let iterations = 0;
         while(queue.size() !== 0) {
+            iterations++;
             let node = queue.dequeue();
             if (node != startNode && node != endNode) {
                 node.colorIndex = ColorIndex.Magenta;
             }
-            await this.step(500);
+            await this.step(200);
             for(const n of node.neighbors) {
                 let newCost = node.cost + node.distance(n);
                 // if (n.cost < newCost) {
@@ -424,31 +444,16 @@ export class UserCode extends CoreCode {
                     if (n != endNode) {               
                         n.colorIndex = ColorIndex.Red;
                     }
-                    await this.step(200);
+                    await this.step(100);
                 }
             }
             if (node != startNode && node != endNode) {
                 node.colorIndex = ColorIndex.Yellow;
             }
-            await this.step(500);
-        }
-
-        if (endNode.state == null) {
-            console.outln("No path exists!");
-            return;
-        }
-
-        await this.step();
-
-        let crtNode = endNode;
-        while(crtNode != startNode) {
-            graph.getEdge(crtNode, crtNode.state).colorIndex = ColorIndex.Green;
-            if (crtNode != endNode) {
-                crtNode.colorIndex = ColorIndex.Green;
-            }
             await this.step(100);
-            crtNode = crtNode.state;
         }
+        await this.extractPath(startNode, endNode);
+        console.outln(`    iterations = ${iterations}`);
     }
 
     async runAStar() {
@@ -461,7 +466,7 @@ export class UserCode extends CoreCode {
         coloredNodes = coloredNodes.sort((n1, n2) => (n1.colorIndex - n2.colorIndex));
         let startNode = coloredNodes[0];
         let endNode = coloredNodes[1];
-        console.outln(`start=${startNode.label} end=${endNode.label}`);
+        console.outln(`    start=${startNode.label} end=${endNode.label}`);
 
         // clear initial state
         graph.nodes.forEach(n => { n.state = null; });
@@ -471,12 +476,14 @@ export class UserCode extends CoreCode {
         startNode.cost = startNode.distance(endNode);
 
         // loop until the queue is empty
+        let iterations = 0;
         while(queue.size() !== 0) {
+            iterations++;
             let node = queue.dequeue();
             if (node != startNode && node != endNode) {
                 node.colorIndex = ColorIndex.Magenta;
             }
-            await this.step(300);
+            await this.step(200);
             for(const n of node.neighbors) {
                 if (n.state != null) {
                     continue;
@@ -486,7 +493,7 @@ export class UserCode extends CoreCode {
                 queue.enqueue(n, (n) => { return n.cost; });
                 graph.getEdge(node, n).colorIndex = ColorIndex.Yellow;                
                 if (n === endNode) {
-                    console.outln("EndNode is found!");
+                    console.outln("    EndNode is found!");
                     queue.clear();
                     break;
                 }
@@ -498,18 +505,8 @@ export class UserCode extends CoreCode {
             }
             await this.step(100);
         }
-
-        await this.step();
-
-        let crtNode = endNode;
-        while(crtNode != startNode) {
-            graph.getEdge(crtNode, crtNode.state).colorIndex = ColorIndex.Green;
-            if (crtNode != endNode) {
-                crtNode.colorIndex = ColorIndex.Green;
-            }
-            await this.step(200);
-            crtNode = crtNode.state;
-        }
+        await this.extractPath(startNode, endNode);
+        console.outln(`    iterations = ${iterations}`);
     }
 
     /**
@@ -542,17 +539,14 @@ export class UserCode extends CoreCode {
 
         console.outln("Run Path Finding algo via BFS.");
         await this.runBFS();
-
         await this.step();
 
         console.outln("Run Path Finding algo via Dijkstra.");
         await this.runDijkstra();
-
         await this.step();
         
         console.outln("Run Path Finding algo via A*.");
         await this.runAStar();
-
         console.outln("---- User-defined code ended! ----");
     }
 }
