@@ -537,16 +537,19 @@ export class UserCode extends CoreCode {
         // console.outln("Prefix Expression!")
         // await this.prefixExpression();
 
-        console.outln("Run Path Finding algo via BFS.");
-        await this.runBFS();
-        await this.step();
+        // console.outln("Run Path Finding algo via BFS.");
+        // await this.runBFS();
+        // await this.step();
 
-        console.outln("Run Path Finding algo via Dijkstra.");
-        await this.runDijkstra();
-        await this.step();
+        // console.outln("Run Path Finding algo via Dijkstra.");
+        // await this.runDijkstra();
+        // await this.step();
         
-        console.outln("Run Path Finding algo via A*.");
-        await this.runAStar();
+        // console.outln("Run Path Finding algo via A*.");
+        // await this.runAStar();
+        let selection = console.getSelection();
+        console.outln(`command > ${selection}`);
+
         console.outln("---- User-defined code ended! ----");
     }
 }

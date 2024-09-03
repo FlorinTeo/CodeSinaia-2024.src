@@ -8,8 +8,9 @@ export class ConsoleDialog {
     #hConsoleBtnResize;
     #lambdaOnClose;
     #width;
-    #code
+    #code;
 
+    #selection;
 
     constructor(code) {
         this.#code = code;
@@ -21,10 +22,21 @@ export class ConsoleDialog {
         this.#hConsoleBtnRunStep = document.getElementById('hConsoleBtnRun');
         this.#hConsoleBtnResize = document.getElementById('hConsoleBtnResize');
 
+        this.#selection = "";
+
         this.#hConsoleClose.addEventListener('click', () => { this.onBtnCloseClick(); });
         this.#hConsoleBtnResize.addEventListener('click', () => { this.onBtnResize(); });
         this.#hConsoleBtnClear.addEventListener('click', () => { this.onBtnClearClick(); });
         this.#hConsoleBtnRunStep.addEventListener('click', () => { this.onBtnRunStepClick(); })
+        this.#hConsoleText.addEventListener('selectionchange', () => {
+            let iStart = this.#hConsoleText.selectionStart;
+            let iEnd = this.#hConsoleText.selectionEnd;
+            if (iStart < iEnd) {
+                this.#selection = this.#hConsoleText.value.substring(iStart, iEnd);
+            } else if (this.#selection != '') {
+                this.#selection = '';
+            }
+        });
 
         this.#width = 32;
     }
@@ -58,6 +70,10 @@ export class ConsoleDialog {
     onBtnClearClick(event = null) {
         this.#code.done();
         this.clear();
+    }
+
+    getSelection() {
+        return this.#selection;
     }
 
     outln(message) {
