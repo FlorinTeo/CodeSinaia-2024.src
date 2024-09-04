@@ -6,6 +6,61 @@ import { ColorIndex } from "./adt/graph.js";
 
 export class UserCode extends CoreCode {
 
+    #startColor;
+    #endColor;
+    #startNode;
+    #endNode;
+
+    //#region graph setup helpers
+    async setupStart() {
+        let success = false;
+        let coloredNodes = graph.nodes.filter(n => n.colorIndex != 0);
+        if (coloredNodes.length == 1) {
+            this.#startNode = coloredNodes[0];
+            this.#startColor = this.#startNode.colorIndex;
+            console.outln(`    start=${this.#startNode.label}`);
+            success = true;
+        } else if (this.#startNode) {
+            graph.traverse((node) => { node.colorIndex = 0; });
+            graph.edges.forEach((edge) => { edge.toggleColor(-1); });
+            this.#startNode.colorIndex = this.#startColor;
+            console.outln(`    start=${this.#startNode.label}`);
+            console.outln(`    ::Graph setup complete. Click <Run> to continue::`);
+            success = true;
+            await this.step();
+        } else {
+            console.outln("Incorrect input. Expect exactly one colored nodes.");
+        }
+        return success;       
+    }
+
+    async setupStartEnd() {
+        let success = false;
+        let coloredNodes = graph.nodes.filter(n => n.colorIndex != 0);
+        if (coloredNodes.length == 2) {
+            coloredNodes = coloredNodes.sort((n1, n2) => (n1.colorIndex - n2.colorIndex));
+            this.#startNode = coloredNodes[0];
+            this.#endNode = coloredNodes[1];
+            this.#startColor = this.#startNode.colorIndex;
+            this.#endColor = this.#endNode.colorIndex;
+            console.outln(`    start=${this.#startNode.label} end=${this.#endNode.label}`);
+            success = true;
+        } else if (this.#startNode && this.#endNode) {
+            graph.traverse((node) => { node.colorIndex = 0; });
+            graph.edges.forEach((edge) => { edge.toggleColor(-1); });
+            this.#startNode.colorIndex = this.#startColor;
+            this.#endNode.colorIndex = this.#endColor;
+            console.outln(`    start=${this.#startNode.label} end=${this.#endNode.label}`);
+            console.outln(`    ::Graph setup complete. Click <Run> to continue::`);
+            success = true;
+            await this.step();
+        } else {
+            console.outln("Incorrect input. Expect exactly two colored nodes.");
+        }
+        return success;
+    }
+    //#endregion graph setup helpers
+
     //#region Tue-Wed work
     async findShortestPath(startNode, endNode) {
         let previousNodes = new Map();
@@ -94,37 +149,6 @@ export class UserCode extends CoreCode {
             path[path.length - 1].toggleColor(1);
         }
         console.outln(path.length-1);
-    }
-
-    async spanningTree(){
-        let coloredNodes = graph.nodes.filter(n => n.colorIndex !=0 );
-        
-        if(coloredNodes.length != 1){
-            console.outln("No root!")
-            return
-        }
-        let root = coloredNodes[0];
-        root.toggleColor(1);
-        queue.clear();
-        queue.enqueue(root);
-        while(queue.size() != 0){
-            let node = queue.dequeue();
-            node.colorIndex=ColorIndex.Red;
-            for(const n of node.neighbors){
-                if(n.colorIndex == ColorIndex.Gray){
-                    n.colorIndex = ColorIndex.Green;
-                    let edge = graph.getEdge(node, n);
-                    edge.colorIndex = ColorIndex.Yellow;
-                    queue.enqueue(n);
-                }
-            }
-            node.colorIndex=ColorIndex.Yellow;
-        }    
-        let noncoloredEdges = graph.edges.filter(e => e.colorIndex == ColorIndex.Gray)
-        for(const e of noncoloredEdges){
-            graph.removeEdge(e.node1, e.node2);
-            graph.removeEdge(e.node2, e.node1);
-        }
     }
 
     async isList(graph) {
@@ -329,7 +353,7 @@ export class UserCode extends CoreCode {
         console.outln();
     }
     //#endregion Tue-Wed work
-    
+
     async extractPath(startNode, endNode) {
         if (endNode.state == null) {
             console.outln("No path exists!");
@@ -352,17 +376,50 @@ export class UserCode extends CoreCode {
         console.outln(`    route distance = ${distance.toFixed(1)}`);
     }
 
-    async runBFS() {
+    async runSpanningTree(){
         // pick up inputs in the algo
-        let coloredNodes = graph.nodes.filter(n => n.colorIndex != 0);
-        if (coloredNodes.length != 2) {
-            console.outln("Incorrect input. Expect exactly two colored nodes.");
+        if (!await this.setupStart()) {
             return;
         }
-        coloredNodes = coloredNodes.sort((n1, n2) => (n1.colorIndex - n2.colorIndex));
-        let startNode = coloredNodes[0];
-        let endNode = coloredNodes[1];
-        console.outln(`    start=${startNode.label} end=${endNode.label}`);
+
+        let root = this.#startNode;
+        queue.clear();
+        queue.enqueue(root);
+        while(queue.size() != 0){
+            let node = queue.dequeue();
+            node.colorIndex=ColorIndex.Red;
+            for(const n of node.neighbors){
+                if(n.colorIndex == ColorIndex.Gray){
+                    n.colorIndex = ColorIndex.Green;
+                    let edge = graph.getEdge(node, n);
+                    edge.colorIndex = this.#startColor;
+                    queue.enqueue(n);
+                    await this.step(100);
+                }
+            }
+            if (node === root) {
+                node.toggleColor(1);
+            } else {
+                node.colorIndex=this.#startColor;
+            }
+        }
+        // // remove edges to make the spanning tree more visible
+        // let noncoloredEdges = graph.edges.filter(e => e.colorIndex == ColorIndex.Gray)
+        // for(const e of noncoloredEdges){
+        //     graph.removeEdge(e.node1, e.node2);
+        //     graph.removeEdge(e.node2, e.node1);
+        // }
+    }
+
+
+
+    async runBFS() {
+        // pick up inputs in the algo
+        if (!await this.setupStartEnd()) {
+            return;
+        }
+        let startNode = this.#startNode;
+        let endNode = this.#endNode;
 
         // clear initial state
         graph.nodes.forEach(n => { n.state = null; });
@@ -405,15 +462,11 @@ export class UserCode extends CoreCode {
 
     async runDijkstra() {
         // pick up inputs in the algo
-        let coloredNodes = graph.nodes.filter(n => n.colorIndex != 0);
-        if (coloredNodes.length != 2) {
-            console.outln("Incorrect input. Expect exactly two colored nodes.");
+        if (!await this.setupStartEnd()) {
             return;
         }
-        coloredNodes = coloredNodes.sort((n1, n2) => (n1.colorIndex - n2.colorIndex));
-        let startNode = coloredNodes[0];
-        let endNode = coloredNodes[1];
-        console.outln(`    start=${startNode.label} end=${endNode.label}`);
+        let startNode = this.#startNode;
+        let endNode = this.#endNode;
 
         // clear initial state
         graph.nodes.forEach(n => { n.state = null; n.cost = Infinity; });
@@ -458,15 +511,11 @@ export class UserCode extends CoreCode {
 
     async runAStar() {
         // pick up inputs in the algo
-        let coloredNodes = graph.nodes.filter(n => n.colorIndex != 0);
-        if (coloredNodes.length != 2) {
-            console.outln("Incorrect input. Expect exactly two colored nodes.");
+        if (!await this.setupStartEnd()) {
             return;
         }
-        coloredNodes = coloredNodes.sort((n1, n2) => (n1.colorIndex - n2.colorIndex));
-        let startNode = coloredNodes[0];
-        let endNode = coloredNodes[1];
-        console.outln(`    start=${startNode.label} end=${endNode.label}`);
+        let startNode = this.#startNode;
+        let endNode = this.#endNode;
 
         // clear initial state
         graph.nodes.forEach(n => { n.state = null; });
@@ -537,18 +586,32 @@ export class UserCode extends CoreCode {
         // console.outln("Prefix Expression!")
         // await this.prefixExpression();
 
-        // console.outln("Run Path Finding algo via BFS.");
-        // await this.runBFS();
-        // await this.step();
-
-        // console.outln("Run Path Finding algo via Dijkstra.");
-        // await this.runDijkstra();
-        // await this.step();
-        
-        // console.outln("Run Path Finding algo via A*.");
-        // await this.runAStar();
         let selection = console.getSelection();
-        console.outln(`command > ${selection}`);
+        switch(selection.toLowerCase()) {
+            case 'spanningtree':
+                await this.runSpanningTree();
+                break;
+            case 'bfs':
+                console.outln("Run Path Finding algo via BFS:");
+                await this.runBFS();
+                break;
+            case 'dijkstra':
+                console.outln("Run Path Finding algo via Dijkstra:");
+                await this.runDijkstra();
+                break;
+            case 'astar':
+            case 'a*':
+                console.outln("Run Path finding algo via A*:");
+                await this.runAStar();
+                break;
+            default:
+                console.outln("Available commands:");
+                console.outln("  spanningTree : runs the Spanning tree algo.");
+                console.outln("  bfs          : runs Breath-First-Search algo.");
+                console.outln("  dijkstra     : runs Dijkstra algo.");
+                console.outln("  astar        : runs the A* algo.");
+                console.outln("::Select word and click <Run> to execute command::");
+        }
 
         console.outln("---- User-defined code ended! ----");
     }

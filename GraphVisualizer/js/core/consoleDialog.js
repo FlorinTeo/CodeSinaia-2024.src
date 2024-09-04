@@ -73,7 +73,7 @@ export class ConsoleDialog {
     }
 
     getSelection() {
-        return this.#selection;
+        return this.#selection.trim();
     }
 
     outln(message) {
