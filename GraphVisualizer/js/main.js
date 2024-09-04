@@ -101,7 +101,6 @@ xferDialog.addCloseListener((event) => {
 // #endregion - window/dialog event handlers
 
 // #region - key event handlers
-
 document.addEventListener('keydown', (event) => {
   ctrlClicked = event.ctrlKey || event.metaKey;
   
