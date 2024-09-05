@@ -75,6 +75,7 @@ repaint();
 let hoverNode = null;
 let clickedNode = null;
 let ctrlClicked = false;
+let shiftClicked = false;
 let keyPressed = false;
 let dragging = false;
 
@@ -103,6 +104,7 @@ xferDialog.addCloseListener((event) => {
 // #region - key event handlers
 document.addEventListener('keydown', (event) => {
   ctrlClicked = event.ctrlKey || event.metaKey;
+  shiftClicked = event.shiftKey;
   
   if (!keyPressed && hoverNode != null) {
     switch(event.key.toUpperCase()) {
@@ -128,13 +130,12 @@ document.addEventListener('keydown', (event) => {
         break;
     }
   }
-
   keyPressed = true;
 });
 
 document.addEventListener('keyup', (event) => {
   ctrlClicked = event.ctrlKey || event.metaKey;
-
+  shiftClicked = event.shiftKey;
   keyPressed = false;
 });
 // #endregion - key event handlers
@@ -172,7 +173,6 @@ hCanvas.addEventListener('mousemove', (event) => {
             hNodeState.textContent = "";
         }
     }
-    
   } else if (clickedNode != null) {
     // in the middle of {drag} that started over a node (clickedNode)
     if (ctrlClicked) {
@@ -220,10 +220,10 @@ hCanvas.addEventListener('mouseup', (event) => {
     // if {control-drag}, meaning control pressed, started on a node and ended on a different node)...
     if (ctrlClicked && clickedNode != null && droppedNode != null && clickedNode != droppedNode) {
       // => reset edge from clickedNode to droppedNode
-      if (!clickedNode.hasEdge(droppedNode)) {
-        graph.addEdge(clickedNode, droppedNode);
+      if (!graph.hasEdge(clickedNode, droppedNode, shiftClicked)) {
+        graph.addEdge(clickedNode, droppedNode, shiftClicked);
       } else {
-        graph.removeEdge(clickedNode, droppedNode);
+        graph.removeEdge(clickedNode, droppedNode, shiftClicked);
       }
     } else if (clickedNode != null) {
       // otherwise, if drag was just moving a node, need to resort all edges across all nodes
