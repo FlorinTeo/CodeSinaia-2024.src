@@ -4,7 +4,7 @@ import { Direction } from "./edge.js";
 
 export let SCALE = 0;
 export const LINE_WIDTH = [1, 0.6, 0.5];
-export const RADIUS = [16, 10, 6];
+export const RADIUS = [16, 12, 8];
 export const FONT = ["bold 14px Consolas", "12px Consolas", null]
 export const ARROW_WIDTH = [5, 3, 2];
 export const ARROW_LENGTH = [8, 5, 3];
@@ -161,7 +161,13 @@ export class Graph {
         return edge;
     }
 
-    addEdge(fromNode, toNode) {
+    hasEdge(fromNode, toNode, bidirectional) {
+        return bidirectional
+            ? fromNode.hasEdge(toNode) && toNode.hasEdge(fromNode)
+            : fromNode.hasEdge(toNode);
+    }
+
+    addEdge(fromNode, toNode, bidirectional) {
         if (!fromNode.hasEdge(toNode)) {
             fromNode.addEdge(toNode);
             let edge = this.edges.filter(e => e.matchesNodes(fromNode, toNode))[0];
@@ -171,15 +177,32 @@ export class Graph {
                 edge.addDirection(fromNode, toNode);
             }
         }
+        if (bidirectional && !toNode.hasEdge(fromNode)) {
+            toNode.addEdge(fromNode);
+            let edge = this.edges.filter(e => e.matchesNodes(toNode, fromNode))[0];
+            if (edge == null) {
+                this.edges.push(new Edge(this.#graphics, toNode, fromNode));
+            } else {
+                edge.addDirection(toNode, fromNode);
+            }
+        }
     }
 
-    removeEdge(fromNode, toNode) {
+    removeEdge(fromNode, toNode, bidirectional) {
         if (fromNode.hasEdge(toNode)) {
             fromNode.removeEdge(toNode);
             let edge = this.edges.filter(e => e.matchesNodes(fromNode, toNode))[0];
             edge.removeDirection(fromNode, toNode);
             if (edge.direction == Direction.None) {
                 this.edges = this.edges.filter(e => !e.matchesNodes(fromNode, toNode));
+            }
+        }
+        if (bidirectional && toNode.hasEdge(fromNode)) {
+            toNode.removeEdge(fromNode);
+            let edge = this.edges.filter(e => e.matchesNodes(toNode, fromNode))[0];
+            edge.removeDirection(toNode, fromNode);
+            if (edge.direction == Direction.None) {
+                this.edges = this.edges.filter(e => !e.matchesNodes(toNode, fromNode));
             }
         }
     }
