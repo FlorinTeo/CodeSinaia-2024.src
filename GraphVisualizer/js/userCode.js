@@ -411,8 +411,6 @@ export class UserCode extends CoreCode {
         // }
     }
 
-
-
     async runBFS() {
         // pick up inputs in the algo
         if (!await this.setupStartEnd()) {
