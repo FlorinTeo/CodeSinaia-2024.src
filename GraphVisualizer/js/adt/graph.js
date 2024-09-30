@@ -162,17 +162,23 @@ export class Graph {
 
     moveNode(node, x, y) {
         if (node instanceof VarNode) {
-            node.x = x;
-            node.y = y;
             let refNode = null;
             this.nodes.forEach(n => {
                 refNode = (refNode == null) || (node.distance(refNode) > node.distance(n)) ? n : refNode;
             });
             node.setRef(refNode);
         } else {
-            node.x = x;
-            node.y = y;
+            let dx = x - node.x;
+            let dy = y - node.y;
+            this.varNodes.forEach(vN => {
+                if (vN.hasEdge(node)) {
+                    vN.x += dx;
+                    vN.y += dy;
+                }
+            });
         }
+        node.x = x;
+        node.y = y;
     }
 
     removeVarNode(vNode) {
