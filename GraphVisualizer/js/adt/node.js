@@ -60,33 +60,40 @@ export class Node {
         this.colorIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.colorIndex + deltaIndex) % HIGHLIGHT_PALLETE.length);
     }
 
-    repaint() {
-        for(const neighbor of this.neighbors) {
-            if (neighbor.marker == 0 || !neighbor.hasEdge(this)) {
-                this.#graphics.drawLine(
+    repaint(isVarNode) {
+        if (isVarNode) {
+            this.#graphics.drawVarNode(
+                this.label,
+                this.x, this.y,
+                FONT[SCALE]);
+        } else {
+            for(const neighbor of this.neighbors) {
+                if (neighbor.marker == 0 || !neighbor.hasEdge(this)) {
+                    this.#graphics.drawLine(
+                        this.x, this.y,
+                        neighbor.x, neighbor.y,
+                        RADIUS[SCALE],
+                        RADIUS[SCALE],
+                        LINE_WIDTH[SCALE],
+                        'black');
+                }
+                this.#graphics.drawArrow(
                     this.x, this.y,
                     neighbor.x, neighbor.y,
                     RADIUS[SCALE],
-                    RADIUS[SCALE],
+                    ARROW_LENGTH[SCALE],
+                    ARROW_WIDTH[SCALE],
                     LINE_WIDTH[SCALE],
                     'black');
             }
-            this.#graphics.drawArrow(
+            this.#graphics.drawNode(
+                this.label,
                 this.x, this.y,
-                neighbor.x, neighbor.y,
                 RADIUS[SCALE],
-                ARROW_LENGTH[SCALE],
-                ARROW_WIDTH[SCALE],
                 LINE_WIDTH[SCALE],
-                'black');
+                FONT[SCALE],
+                HIGHLIGHT_PALLETE[this.colorIndex]);
         }
-        this.#graphics.drawNode(
-            this.label,
-            this.x, this.y,
-            RADIUS[SCALE],
-            LINE_WIDTH[SCALE],
-            FONT[SCALE],
-            HIGHLIGHT_PALLETE[this.colorIndex]);
     }
 
     traverse(lambda) {
@@ -180,5 +187,15 @@ export class Node {
             };
         }
         return {success: false};
+    }
+}
+
+export class VarNode extends Node {
+    repaint() {
+        super.repaint(true);
+    }
+
+    toString() {
+        return `variable: ${this.label}`;
     }
 }

@@ -1,4 +1,5 @@
 import { Node } from "./node.js";
+import { VarNode } from "./node.js";
 import { Edge } from "./edge.js";
 import { Direction } from "./edge.js";
 
@@ -41,6 +42,7 @@ export class Graph {
     // Public class members
     nodes; // array of Node objects
     edges; // array of Edge objects
+    varNodes; // array of VarNode objects
 
     #checkAndAdjustVersions(label) {
         let clashingNodes = this.nodes.filter(n => n.label == label);
@@ -61,6 +63,7 @@ export class Graph {
     clear() {
         this.nodes = [];
         this.edges = [];
+        this.varNodes = [];
         adjustScale(0);
     }
 
@@ -69,12 +72,18 @@ export class Graph {
     }
 
     repaint() {
+        // repaint all edge highlights, if any
         for (const edge of this.edges) {
             edge.repaint();
         }
+        // repaint graph
         this.traverse((node) => {
             node.repaint();
         });
+        // repaint variables (varNodes), if any
+        for (const varNode of this.varNodes) {
+            varNode.repaint();
+        }
     }
 
     traverse(lambda) {
@@ -101,13 +110,19 @@ export class Graph {
     reLabel(node, newLabel) {
         let prevLabel = node.label;
         node.label = newLabel;
-        this.#checkAndAdjustVersions(prevLabel);
-        this.#checkAndAdjustVersions(newLabel);
+        if (!(node instanceof VarNode)) {
+            this.#checkAndAdjustVersions(prevLabel);
+            this.#checkAndAdjustVersions(newLabel);
+        }
         return prevLabel;
     }
 
     getNode(x, y) {
         let node = this.nodes.find(n => n.isTarget(x, y));
+        if (node != undefined) {
+            return node;
+        }
+        node = this.varNodes.find(v => v.isTarget(x, y));
         return (node != undefined) ? node : null;
     }
 
@@ -132,6 +147,19 @@ export class Graph {
         adjustScale(this.nodes.length);
         this.#checkAndAdjustVersions(node.label);
         return node;
+    }
+
+    addVarNode(label, x, y) {
+        let vNode = new VarNode(this.#graphics, label, x, y);
+        if (vNode) {
+            this.varNodes.push(vNode);
+        }
+        return vNode;
+    }
+
+    removeVarNode(vNode) {
+        this.varNodes = this.varNodes.filter(v => !(v == vNode));
+        return vNode;
     }
 
     hasNodeHighlights() {

@@ -1,6 +1,7 @@
 import {SCALE} from "./adt/graph.js";
 import { RADIUS } from "./adt/graph.js";
 import { LINE_WIDTH } from "./adt/graph.js";
+import { VarNode } from "./adt/node.js";
 import { Graph } from "./adt/graph.js";
 import { Queue } from "./adt/queue.js";
 import { Stack } from "./adt/stack.js";
@@ -106,7 +107,7 @@ document.addEventListener('keydown', (event) => {
   ctrlClicked = event.ctrlKey || event.metaKey;
   shiftClicked = event.shiftKey;
   
-  if (!keyPressed && hoverNode != null) {
+  if (!keyPressed && hoverNode != null && !(hoverNode instanceof VarNode)) {
     switch(event.key.toUpperCase()) {
       case 'E': // enqueue
         queue.enqueue(hoverNode);
@@ -175,10 +176,10 @@ hCanvas.addEventListener('mousemove', (event) => {
     }
   } else if (clickedNode != null) {
     // in the middle of {drag} that started over a node (clickedNode)
-    if (ctrlClicked) {
+    if (ctrlClicked && !(clickedNode instanceof VarNode)) {
       // {ctrl-drag} => draw an edge lead line since we may be creating/removing an edge.
       repaint();
-      if (hoverNode != null) {
+      if (hoverNode != null && !(hoverNode instanceof VarNode)) {
         // {ctrl-drag} => draw an edge lead line
         graphics.drawLine(
             clickedNode.x, clickedNode.y,
@@ -219,28 +220,44 @@ hCanvas.addEventListener('mouseup', (event) => {
   if (dragging) {
     // if {control-drag}, meaning control pressed, started on a node and ended on a different node)...
     if (ctrlClicked && clickedNode != null && droppedNode != null && clickedNode != droppedNode) {
-      // => reset edge from clickedNode to droppedNode
-      if (!graph.hasEdge(clickedNode, droppedNode, shiftClicked)) {
-        graph.addEdge(clickedNode, droppedNode, shiftClicked);
-      } else {
-        graph.removeEdge(clickedNode, droppedNode, shiftClicked);
-      }
-    } else if (clickedNode != null) {
+      // add/remove edges only if both nodes involved are graph nodes, not variable nodes
+      if (!(clickedNode instanceof VarNode) && !(droppedNode instanceof VarNode)) {
+        // => reset edge from clickedNode to droppedNode
+        if (!graph.hasEdge(clickedNode, droppedNode, shiftClicked)) {
+          graph.addEdge(clickedNode, droppedNode, shiftClicked);
+        } else {
+          graph.removeEdge(clickedNode, droppedNode, shiftClicked);
+        }
+      } 
+    } else if (clickedNode != null && !(clickedNode instanceof VarNode)) {
       // otherwise, if drag was just moving a node, need to resort all edges across all nodes
       // such that nodes with smaller x coordinate are ahead in neighbors lists (to model trees deterministically)
       graph.traverse((node) => { node.resortEdges(); });
     }
     dragging = false;
   } else if (ctrlClicked) {
-    // {control-click} => either add a new node, or remove an existent one
-    if (droppedNode != null) {
-      // {control-click} over existent node => remove node
-      queue.removeNode(droppedNode);
-      stack.removeNode(droppedNode);
-      graph.removeNode(droppedNode);
-    } else {
-      // {click} over an empty areay => add node
-      graph.addNode(nextLabel(), x, y);
+    // {control click} should do nothing if clicking on a VarNode
+    if (droppedNode == null || !(droppedNode instanceof VarNode)) {
+      // {control-click} => either add a new node, or remove an existent one
+      if (droppedNode != null) {
+        // {control-click} over existent node => remove node
+        queue.removeNode(droppedNode);
+        stack.removeNode(droppedNode);
+        graph.removeNode(droppedNode);
+      } else {
+        // {click} over an empty areay => add node
+        graph.addNode(nextLabel(), x, y);
+      }
+    }
+  } else if (shiftClicked) {
+    // {shift-click} should do nothing if clicking on a graph node
+    if (droppedNode == null || (droppedNode instanceof VarNode)) {
+      // {shift-click} => either add a new VarNode, or remove an existent one
+      if (droppedNode != null) {
+        graph.removeVarNode(droppedNode);
+      } else {
+        graph.addVarNode("var", x, y);
+      }
     }
   }
   repaint();
@@ -285,7 +302,10 @@ hCanvas.addEventListener('contextmenu', (event) => {
     ctxMenuNode.setInput('hCtxMenuNode_Label', clickedNode.label);
     ctxMenuNode.setInput('hCtxMenuNode_State', clickedNode.state);
     ctxMenuNode.setVisible(new Map([
+      ['hCtxMenuNode_State', !(clickedNode instanceof VarNode)],
+      ['hCtxMenuNode_Enqueue', !(clickedNode instanceof VarNode)],
       ['hCtxMenuNode_Dequeue', clickedNode === queue.peek()],
+      ['hCtxMenuNode_Push', !(clickedNode instanceof VarNode)],
       ['hCtxMenuNode_Pop', clickedNode === stack.peek()],
     ]));
     ctxMenuNode.show(event.pageX - 10, event.pageY - 10, () => { clickedNode = null; });

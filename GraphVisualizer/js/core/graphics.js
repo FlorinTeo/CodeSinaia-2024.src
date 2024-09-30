@@ -61,6 +61,15 @@ export class Graphics {
         }
     }
 
+    // draws a varNode label
+    drawVarNode(label, x, y, font) {
+        let context = this.hCanvas.getContext("2d");
+        context.font = font;
+        context.textAlign = "center";
+        context.fillStyle = 'black';
+        context.fillText(label, x, y + 4);
+    }
+
     drawArrow(fromX, fromY, toX, toY, marginTo, arrowLength, arrowWidth, lineWidth, color) {
         let dX = toX - fromX;
         let dY = toY - fromY;
