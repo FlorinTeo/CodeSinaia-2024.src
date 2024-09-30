@@ -126,6 +126,7 @@ export class Graph {
         return (node != undefined) ? node : null;
     }
 
+    // #region - add/remove Node
     addNode(label, x, y) {
         let node = new Node(this.#graphics, label, x, y);
         if (node) {
@@ -148,7 +149,9 @@ export class Graph {
         this.#checkAndAdjustVersions(node.label);
         return node;
     }
+    // #endregion - add/remove Node
 
+    // #region - add/remove VarNode
     addVarNode(label, x, y) {
         let vNode = new VarNode(this.#graphics, label, x, y);
         if (vNode) {
@@ -161,7 +164,9 @@ export class Graph {
         this.varNodes = this.varNodes.filter(v => !(v == vNode));
         return vNode;
     }
+    // #endregion - add/remove VarNode
 
+    // #region - Edge methods
     hasNodeHighlights() {
         let hNodes = this.nodes.filter(n => n.colorIndex != 0);
         return hNodes.length > 0;
@@ -238,6 +243,7 @@ export class Graph {
     hasEdgeHighlights() {
         return (this.edges.filter(e => !e.matchesIndex(0)).length) > 0;
     }
+    // #endregion - Edge methods
 
     toString(brief = false) {
         let output = '';
