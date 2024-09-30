@@ -200,6 +200,9 @@ hCanvas.addEventListener('mousemove', (event) => {
       // simple {drag} => just move the node following the mouse
       clickedNode.x = x;
       clickedNode.y = y;
+      if (clickedNode instanceof VarNode) {
+        graph.setVarNodeRef(clickedNode);
+      }
       repaint();
     }
   }
@@ -255,7 +258,7 @@ hCanvas.addEventListener('mouseup', (event) => {
       // {shift-click} => either add a new VarNode, or remove an existent one
       if (droppedNode != null) {
         graph.removeVarNode(droppedNode);
-      } else {
+      } else if (graph.size() > 0) {
         graph.addVarNode("var", x, y);
       }
     }

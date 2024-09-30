@@ -145,6 +145,7 @@ export class Graph {
         }
         this.nodes = this.nodes.filter(n => !(n === node));
         this.edges = this.edges.filter(e => !e.contains(node));
+        this.varNodes = this.varNodes.filter(v => !v.hasEdge(node));
         adjustScale(this.nodes.length);
         this.#checkAndAdjustVersions(node.label);
         return node;
@@ -154,10 +155,17 @@ export class Graph {
     // #region - add/remove VarNode
     addVarNode(label, x, y) {
         let vNode = new VarNode(this.#graphics, label, x, y);
-        if (vNode) {
-            this.varNodes.push(vNode);
-        }
+        this.setVarNodeRef(vNode);
+        this.varNodes.push(vNode);
         return vNode;
+    }
+
+    setVarNodeRef(vNode) {
+        let refNode = null;
+        this.nodes.forEach(node => {
+            refNode = (refNode == null) || (vNode.distance(refNode) > vNode.distance(node)) ? node : refNode;
+        });
+        vNode.setRef(refNode);
     }
 
     removeVarNode(vNode) {

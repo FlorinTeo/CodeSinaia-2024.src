@@ -66,6 +66,16 @@ export class Node {
                 this.label,
                 this.x, this.y,
                 FONT[SCALE]);
+            let refNode = this.neighbors[0];
+            this.#graphics.drawArrow(
+                this.x, this.y,
+                refNode.x, refNode.y,
+                RADIUS[SCALE],
+                ARROW_LENGTH[SCALE],
+                ARROW_WIDTH[SCALE],
+                LINE_WIDTH[SCALE],
+                'black',
+                true);
         } else {
             for(const neighbor of this.neighbors) {
                 if (neighbor.marker == 0 || !neighbor.hasEdge(this)) {
@@ -193,6 +203,19 @@ export class Node {
 export class VarNode extends Node {
     repaint() {
         super.repaint(true);
+    }
+
+    setRef(refNode) {
+        if (this.neighbors.length == 0) {
+            this.label = `ref${refNode.label}`;
+            this.addEdge(refNode);
+        } else {
+            let crtDist = this.distance(this.neighbors[0]);
+            let newDist = this.distance(refNode);
+            if (newDist < 0.9 * crtDist) {
+                this.neighbors[0] = refNode;
+            }
+        }
     }
 
     toString() {

@@ -70,7 +70,7 @@ export class Graphics {
         context.fillText(label, x, y + 4);
     }
 
-    drawArrow(fromX, fromY, toX, toY, marginTo, arrowLength, arrowWidth, lineWidth, color) {
+    drawArrow(fromX, fromY, toX, toY, marginTo, arrowLength, arrowWidth, lineWidth, color, isFilled) {
         let dX = toX - fromX;
         let dY = toY - fromY;
         let length = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
@@ -92,6 +92,11 @@ export class Graphics {
         context.moveTo(xA, yA);
         context.lineTo(pointX, pointY);
         context.lineTo(xB, yB);
+        if (isFilled) {
+            context.lineTo(xA, yA);
+            context.fillStyle = 'black';
+            context.fill();
+        }
         context.stroke();
     }
 
