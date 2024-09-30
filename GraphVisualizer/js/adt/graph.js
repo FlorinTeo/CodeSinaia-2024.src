@@ -155,17 +155,24 @@ export class Graph {
     // #region - add/remove VarNode
     addVarNode(label, x, y) {
         let vNode = new VarNode(this.#graphics, label, x, y);
-        this.setVarNodeRef(vNode);
+        this.moveNode(vNode, x, y);
         this.varNodes.push(vNode);
         return vNode;
     }
 
-    setVarNodeRef(vNode) {
-        let refNode = null;
-        this.nodes.forEach(node => {
-            refNode = (refNode == null) || (vNode.distance(refNode) > vNode.distance(node)) ? node : refNode;
-        });
-        vNode.setRef(refNode);
+    moveNode(node, x, y) {
+        if (node instanceof VarNode) {
+            node.x = x;
+            node.y = y;
+            let refNode = null;
+            this.nodes.forEach(n => {
+                refNode = (refNode == null) || (node.distance(refNode) > node.distance(n)) ? n : refNode;
+            });
+            node.setRef(refNode);
+        } else {
+            node.x = x;
+            node.y = y;
+        }
     }
 
     removeVarNode(vNode) {

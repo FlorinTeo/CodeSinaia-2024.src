@@ -198,11 +198,7 @@ hCanvas.addEventListener('mousemove', (event) => {
       }
     } else {
       // simple {drag} => just move the node following the mouse
-      clickedNode.x = x;
-      clickedNode.y = y;
-      if (clickedNode instanceof VarNode) {
-        graph.setVarNodeRef(clickedNode);
-      }
+      graph.moveNode(clickedNode, x, y);
       repaint();
     }
   }
