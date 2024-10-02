@@ -162,7 +162,7 @@ export class Node {
         let strParts = strNode.split(/\s+/);
         let success = (strParts.length > 3);
         if (success) {
-            success = (strParts[1] == ':') && (strParts[3] == '>');
+            success = (strParts[1] == ':') && ((strParts[3] == '>') || (strParts[3] == '='));
         }
         if (success) {
             var strCoords = strParts[2].split(',');
@@ -245,11 +245,37 @@ export class VarNode extends Node {
         }
     }
 
-    toString() {
-        if (this.neighbors.length == 0) {
-            return `${this.label} \u21D2 (null)`;
-        } else {
-            return `${this.label} \u21D2 ${this.neighbors[0].label}`;
+    toString(brief = false, spacing = 0) {
+        let output = `${this.label}`;
+        
+        // add version, if a non default one is set
+        if (this.version != 0) {
+            output += `#${this.version}`;
         }
+        
+        // add spacing as needed
+        if (output.length < spacing) {
+            output += " ".repeat(spacing - output.length);
+        }
+        output += ": ";
+
+        // add either the State or the position and neighbors, as needed
+        if (brief) {
+            if (this.neighbors.length == 0) {
+                return `${output} \u21D2 (null)`;
+            } else {
+                return `${output} \u21D2 ${this.neighbors[0].label}`;
+            }
+        } else {
+            let coords = `${this.x},${this.y}`.padEnd(7, ' ');
+            output += `${coords}\t=`;
+            for(const neighbor of this.neighbors) {
+                output += ` ${neighbor.label}`;
+                if (neighbor.version != 0) {
+                    output += `#${neighbor.version}`;
+                }
+            }
+        }
+        return output;
     }
 }
