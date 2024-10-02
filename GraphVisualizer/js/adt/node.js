@@ -60,52 +60,33 @@ export class Node {
         this.colorIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.colorIndex + deltaIndex) % HIGHLIGHT_PALLETE.length);
     }
 
-    repaint(isVarNode) {
-        if (isVarNode) {
-            this.#graphics.drawVarNode(
-                this.label,
-                this.x, this.y,
-                FONT[SCALE]);
-            if (this.neighbors.length > 0) {
-                let refNode = this.neighbors[0];
-                this.#graphics.drawArrow(
-                    this.x, this.y,
-                    refNode.x, refNode.y,
-                    RADIUS[SCALE],
-                    ARROW_LENGTH[SCALE],
-                    ARROW_WIDTH[SCALE],
-                    LINE_WIDTH[SCALE],
-                    'black',
-                    true);
-            }
-        } else {
-            for(const neighbor of this.neighbors) {
-                if (neighbor.marker == 0 || !neighbor.hasEdge(this)) {
-                    this.#graphics.drawLine(
-                        this.x, this.y,
-                        neighbor.x, neighbor.y,
-                        RADIUS[SCALE],
-                        RADIUS[SCALE],
-                        LINE_WIDTH[SCALE],
-                        'black');
-                }
-                this.#graphics.drawArrow(
+    repaint() {
+        for(const neighbor of this.neighbors) {
+            if (neighbor.marker == 0 || !neighbor.hasEdge(this)) {
+                this.#graphics.drawLine(
                     this.x, this.y,
                     neighbor.x, neighbor.y,
                     RADIUS[SCALE],
-                    ARROW_LENGTH[SCALE],
-                    ARROW_WIDTH[SCALE],
+                    RADIUS[SCALE],
                     LINE_WIDTH[SCALE],
                     'black');
             }
-            this.#graphics.drawNode(
-                this.label,
+            this.#graphics.drawArrow(
                 this.x, this.y,
+                neighbor.x, neighbor.y,
                 RADIUS[SCALE],
+                ARROW_LENGTH[SCALE],
+                ARROW_WIDTH[SCALE],
                 LINE_WIDTH[SCALE],
-                FONT[SCALE],
-                HIGHLIGHT_PALLETE[this.colorIndex]);
+                'black');
         }
+        this.#graphics.drawNode(
+            this.label,
+            this.x, this.y,
+            RADIUS[SCALE],
+            LINE_WIDTH[SCALE],
+            FONT[SCALE],
+            HIGHLIGHT_PALLETE[this.colorIndex]);
     }
 
     traverse(lambda) {
@@ -203,8 +184,45 @@ export class Node {
 }
 
 export class VarNode extends Node {
+    // Private class members
+    #graphics;  // the graphics engine
+
+    constructor(graphics, label, x, y, version) {
+        super(graphics, label, x, y, version);
+        this.#graphics = graphics;
+    }
+
     repaint() {
-        super.repaint(true);
+        if (this.neighbors.length > 0) {
+            let refNode = this.neighbors[0];
+            this.#graphics.drawLine(
+                this.x, this.y,
+                refNode.x, refNode.y,
+                0,
+                RADIUS[SCALE],
+                LINE_WIDTH[SCALE],
+                'gray');
+            this.#graphics.drawArrow(
+                this.x, this.y,
+                refNode.x, refNode.y,
+                RADIUS[SCALE],
+                ARROW_LENGTH[SCALE],
+                ARROW_WIDTH[SCALE],
+                LINE_WIDTH[SCALE],
+                'black',
+                true);
+        }
+        let [labelW, labelH] = this.#graphics.drawVarNode(
+            this.label,
+            this.x, this.y,
+            FONT[SCALE]);
+        if (this.neighbors.length == 0) {
+            this.#graphics.drawNull(
+                this.x + labelW / 2 + 4,  // top left X
+                this.y - labelH / 2, // top left Y
+                labelH,              // width of the null marker
+                labelH);             // height of the null marker
+        }
     }
 
     setRef(refNode) {

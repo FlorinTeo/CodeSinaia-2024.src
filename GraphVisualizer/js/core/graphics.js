@@ -66,8 +66,28 @@ export class Graphics {
         let context = this.hCanvas.getContext("2d");
         context.font = font;
         context.textAlign = "center";
+        // draw the label background
+        let labelMetrics = context.measureText(label);
+        let labelWidth = labelMetrics.width;
+        let labelHeight = labelMetrics.actualBoundingBoxAscent + labelMetrics.actualBoundingBoxDescent;
+        context.fillStyle = 'white';
+        context.fillRect(x - labelWidth / 2 - 2, y - labelHeight / 2 - 2, labelWidth + 4, labelHeight + 4);
+        // draw the label
         context.fillStyle = 'black';
         context.fillText(label, x, y + 4);
+        return [labelWidth, labelHeight];
+    }
+
+    drawNull(topLeftX, topLeftY, width, height) {
+        let context = this.hCanvas.getContext("2d");
+        context.strokeStyle = 'gray';
+        context.lineWidth = 1;
+        context.strokeRect(topLeftX, topLeftY, width, height);
+        context.beginPath();
+        context.strokeStyle = 'black';
+        context.moveTo(topLeftX, topLeftY + height);
+        context.lineTo(topLeftX + width, topLeftY);
+        context.stroke();
     }
 
     drawArrow(fromX, fromY, toX, toY, marginTo, arrowLength, arrowWidth, lineWidth, color, isFilled) {

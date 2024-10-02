@@ -118,12 +118,14 @@ export class Graph {
     }
 
     getNode(x, y) {
-        let node = this.nodes.find(n => n.isTarget(x, y));
+        let node = this.varNodes.find(v => v.isTarget(x, y));
         if (node != undefined) {
             return node;
         }
-        node = this.varNodes.find(v => v.isTarget(x, y));
-        return (node != undefined) ? node : null;
+        node = this.nodes.find(n => n.isTarget(x, y));
+        if (node != undefined) {
+            return node;
+        }
     }
 
     // #region - add/remove Node
