@@ -246,6 +246,10 @@ export class VarNode extends Node {
     }
 
     toString() {
-        return `variable: ${this.label}`;
+        if (this.neighbors.length == 0) {
+            return `${this.label} \u21D2 (null)`;
+        } else {
+            return `${this.label} \u21D2 ${this.neighbors[0].label}`;
+        }
     }
 }
