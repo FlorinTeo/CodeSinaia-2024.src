@@ -176,7 +176,7 @@ export class Node {
                 version: version,
                 x: Number(strCoords[0]),
                 y: Number(strCoords[1]),
-                toVersionedLabels: (strParts.length) > 4 ? strParts.slice(4) : [],
+                toVersionedLabels: ((strParts.length > 4) && (strParts[4] != `(null)`)) ? strParts.slice(4) : [],
             };
         }
         return {success: false};
@@ -269,7 +269,10 @@ export class VarNode extends Node {
         } else {
             let coords = `${this.x},${this.y}`.padEnd(7, ' ');
             output += `${coords}\t=`;
-            for(const neighbor of this.neighbors) {
+            if (this.neighbors.length == 0) {
+                output += ` (null)`;
+            } else {
+                let neighbor = this.neighbors[0];
                 output += ` ${neighbor.label}`;
                 if (neighbor.version != 0) {
                     output += `#${neighbor.version}`;
