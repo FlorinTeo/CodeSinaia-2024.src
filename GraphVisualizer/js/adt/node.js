@@ -66,16 +66,18 @@ export class Node {
                 this.label,
                 this.x, this.y,
                 FONT[SCALE]);
-            let refNode = this.neighbors[0];
-            this.#graphics.drawArrow(
-                this.x, this.y,
-                refNode.x, refNode.y,
-                RADIUS[SCALE],
-                ARROW_LENGTH[SCALE],
-                ARROW_WIDTH[SCALE],
-                LINE_WIDTH[SCALE],
-                'black',
-                true);
+            if (this.neighbors.length > 0) {
+                let refNode = this.neighbors[0];
+                this.#graphics.drawArrow(
+                    this.x, this.y,
+                    refNode.x, refNode.y,
+                    RADIUS[SCALE],
+                    ARROW_LENGTH[SCALE],
+                    ARROW_WIDTH[SCALE],
+                    LINE_WIDTH[SCALE],
+                    'black',
+                    true);
+            }
         } else {
             for(const neighbor of this.neighbors) {
                 if (neighbor.marker == 0 || !neighbor.hasEdge(this)) {
@@ -206,8 +208,15 @@ export class VarNode extends Node {
     }
 
     setRef(refNode) {
+        if (refNode == null) {
+            // refuse this reference if this "closest" node is farther than a threshold
+            this.neighbors = [];
+            this.label ??= `refVar`;
+            return;
+        } 
+        
         if (this.neighbors.length == 0) {
-            this.label = `ref${refNode.label}`;
+            this.label ??= `ref${refNode.label}`;
             this.addEdge(refNode);
         } else {
             let crtDist = this.distance(this.neighbors[0]);

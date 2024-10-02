@@ -166,7 +166,12 @@ export class Graph {
             this.nodes.forEach(n => {
                 refNode = (refNode == null) || (node.distance(refNode) > node.distance(n)) ? n : refNode;
             });
-            node.setRef(refNode);
+            // set refNode as reference to this VarNode if it is within grasp
+            if (refNode != null && node.distance(refNode) <= 4 * RADIUS[SCALE]) {
+                node.setRef(refNode);
+            } else {
+                node.setRef(null);
+            }
         } else {
             let dx = x - node.x;
             let dy = y - node.y;

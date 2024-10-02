@@ -254,8 +254,8 @@ hCanvas.addEventListener('mouseup', (event) => {
       // {shift-click} => either add a new VarNode, or remove an existent one
       if (droppedNode != null) {
         graph.removeVarNode(droppedNode);
-      } else if (graph.size() > 0) {
-        graph.addVarNode("var", x, y);
+      } else {
+        graph.addVarNode(null, x, y);
       }
     }
   }
