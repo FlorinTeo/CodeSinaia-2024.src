@@ -96,6 +96,7 @@ hBtnConsole.addEventListener('click', (event) => {
 
 xferDialog.addCloseListener((event) => {
   if (event != null && event == 'in') {
+    stack.clear();
     queue.clear();
     repaint();
   }

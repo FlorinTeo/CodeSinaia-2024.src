@@ -348,6 +348,7 @@ export class Graph {
                 }
             }
         }
+        this.clear();
         this.nodes = Array.from(newNodes.values().filter(n => !(n instanceof VarNode)));
         this.varNodes = Array.from(newNodes.values().filter(n => (n instanceof VarNode)));
         adjustScale(this.nodes.length);
