@@ -555,6 +555,14 @@ export class UserCode extends CoreCode {
         await this.extractPath(startNode, endNode);
         console.outln(`    iterations = ${iterations}`);
     }
+    async reset(){
+        await this.step(1000);
+        for(const n of graph.nodes)
+            if(n.colorIndex==ColorIndex.Yellow||n.colorIndex==ColorIndex.Green) n.colorIndex=ColorIndex.Gray;
+        await this.step(1000);
+        for(const n of graph.edges)
+            if(n.colorIndex==ColorIndex.Yellow||n.colorIndex==ColorIndex.Green) n.colorIndex=ColorIndex.Gray;
+    }
 
     /**
      * Entry point for user-defined code.
@@ -583,6 +591,7 @@ export class UserCode extends CoreCode {
 
         // console.outln("Prefix Expression!")
         // await this.prefixExpression();
+  await this.reset();
 
         let selection = console.getSelection();
         switch(selection.toLowerCase()) {
@@ -610,7 +619,6 @@ export class UserCode extends CoreCode {
                 console.outln("  astar        : runs the A* algo.");
                 console.outln("::Select word and click <Run> to execute command::");
         }
-
         console.outln("---- User-defined code ended! ----");
     }
 }
