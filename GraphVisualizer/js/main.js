@@ -151,8 +151,6 @@ document.addEventListener('keyup', (event) => {
 // mouse down event handler
 // retain the target node (if any) at the beginning of a click or drag action
 hCanvas.addEventListener('mousedown', (event) => {
-    console.outln("main.mousedown!");
-
     // if any context menu is shown, close them with no action change (equivalent to ESC)
     if (ctxMenuCanvas.isShown || ctxMenuNode.isShown) {
         ctxMenuCanvas.onClose();
@@ -168,8 +166,6 @@ hCanvas.addEventListener('mousedown', (event) => {
 // mouse move event handler
 // draw the guide line from the target node (if any) to the mouse position
 hCanvas.addEventListener('mousemove', (event) => {
-    console.outln("main.mousemove!");
-
     // if any context menu is shown, do nothing!
     if (ctxMenuCanvas.isShown || ctxMenuNode.isShown) {
         return;
