@@ -33,6 +33,7 @@ export class ContextMenu {
                     lastMenuKVP[1].hLabel = hElement;
                 } else if (hElement.tagName === 'INPUT') {
                     lastMenuKVP[1].hInput = hElement;
+                    hElement.setAttribute('autocomplete', 'off');
                 }
             }
         }
