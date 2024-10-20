@@ -6,4 +6,4 @@
 
 rm -rf build
 mkdir build/
-cp -r GraphVisualizer/*.ico GraphVisualizer/*.html GraphVisualizer/*.css GraphVisualizer/js GraphVisualizer/res build/
+cp -r GraphVisualizer/*.ico GraphVisualizer/*.html GraphVisualizer/*.css GraphVisualizer/js GraphVisualizer/res GraphVisualizer/data build/
