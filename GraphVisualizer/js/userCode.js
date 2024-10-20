@@ -376,7 +376,15 @@ export class UserCode extends CoreCode {
         console.outln(`    route distance = ${distance.toFixed(1)}`);
     }
 
-    async runSpanningTree(){
+    async loadGraph() {
+        const response = await fetch("https://florinteo.github.io/CodeSinaia-2024.src/GraphVisualizer/data/graph.txt");
+        const graphString = await response.text();
+        graph.fromString(graphString);
+        queue.clear();
+        stack.clear();
+    }
+
+    async runSpanningTree() {
         // pick up inputs in the algo
         if (!await this.setupStart()) {
             return;
@@ -586,6 +594,9 @@ export class UserCode extends CoreCode {
 
         let selection = console.getSelection();
         switch(selection.toLowerCase()) {
+            case 'loadgraph':
+                await this.loadGraph();
+                break;
             case 'spanningtree':
                 await this.runSpanningTree();
                 break;
@@ -604,6 +615,7 @@ export class UserCode extends CoreCode {
                 break;
             default:
                 console.outln("Available commands:");
+                console.outln("  loadGraph    : loads a sample graph.")
                 console.outln("  spanningTree : runs the Spanning tree algo.");
                 console.outln("  bfs          : runs Breath-First-Search algo.");
                 console.outln("  dijkstra     : runs Dijkstra algo.");

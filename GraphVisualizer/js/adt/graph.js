@@ -312,7 +312,7 @@ export class Graph {
         let newNodes = new Map();
         // map of label linked to a list of all its neighboring labels
         let newEdges = new Map();
-        for (const line of strGraph.split('\n')) {
+        for (const line of strGraph.split(/\r?\n/)) {
             if (line.trim().length === 0) {
                 continue;
             }
@@ -331,6 +331,11 @@ export class Graph {
             newEdges.set(fromVersionedLabel, toVersionedLabels);
         }
 
+        // clear the graph and add all nodes and varNodes
+        this.clear();
+        this.nodes = Array.from(newNodes.values().filter(n => !(n instanceof VarNode)));
+        this.varNodes = Array.from(newNodes.values().filter(n => (n instanceof VarNode)));
+
         // for each label -> [neighboring labels]  map entry
         for (const [fromVersionedLabel, toVersionedLabels] of newEdges) {
             // for each neighboring label
@@ -348,9 +353,6 @@ export class Graph {
                 }
             }
         }
-        this.clear();
-        this.nodes = Array.from(newNodes.values().filter(n => !(n instanceof VarNode)));
-        this.varNodes = Array.from(newNodes.values().filter(n => (n instanceof VarNode)));
         adjustScale(this.nodes.length);
         return true;   
     }
