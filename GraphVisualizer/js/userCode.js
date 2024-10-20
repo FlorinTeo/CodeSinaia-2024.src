@@ -7,57 +7,28 @@ import { ColorIndex } from "./adt/graph.js";
 export class UserCode extends CoreCode {
 
     #startColor;
-    #endColor;
     #startNode;
     #endNode;
 
     //#region graph setup helpers
-    async setupStart() {
-        let success = false;
-        let coloredNodes = graph.nodes.filter(n => n.colorIndex != 0);
-        if (coloredNodes.length == 1) {
-            this.#startNode = coloredNodes[0];
-            this.#startColor = this.#startNode.colorIndex;
-            console.outln(`    start=${this.#startNode.label}`);
-            success = true;
-        } else if (this.#startNode) {
-            graph.traverse((node) => { node.colorIndex = 0; });
-            graph.edges.forEach((edge) => { edge.toggleColor(-1); });
-            this.#startNode.colorIndex = this.#startColor;
-            console.outln(`    start=${this.#startNode.label}`);
-            console.outln(`    ::Graph setup complete. Click <Run> to continue::`);
-            success = true;
-            await this.step();
-        } else {
-            console.outln("Incorrect input. Expect exactly one colored nodes.");
+    async setup(startStr, endStr) {
+        let varNode = graph.varNodes.filter(vN => vN.label.toLowerCase() === startStr)[0];
+        if (!varNode) {
+            console.outln(`No '${startStr}' node detected.`);
+            return false;
         }
-        return success;       
-    }
-
-    async setupStartEnd() {
-        let success = false;
-        let coloredNodes = graph.nodes.filter(n => n.colorIndex != 0);
-        if (coloredNodes.length == 2) {
-            coloredNodes = coloredNodes.sort((n1, n2) => (n1.colorIndex - n2.colorIndex));
-            this.#startNode = coloredNodes[0];
-            this.#endNode = coloredNodes[1];
-            this.#startColor = this.#startNode.colorIndex;
-            this.#endColor = this.#endNode.colorIndex;
-            console.outln(`    start=${this.#startNode.label} end=${this.#endNode.label}`);
-            success = true;
-        } else if (this.#startNode && this.#endNode) {
-            graph.traverse((node) => { node.colorIndex = 0; });
-            graph.edges.forEach((edge) => { edge.toggleColor(-1); });
-            this.#startNode.colorIndex = this.#startColor;
-            this.#endNode.colorIndex = this.#endColor;
-            console.outln(`    start=${this.#startNode.label} end=${this.#endNode.label}`);
-            console.outln(`    ::Graph setup complete. Click <Run> to continue::`);
-            success = true;
-            await this.step();
-        } else {
-            console.outln("Incorrect input. Expect exactly two colored nodes.");
+        this.#startNode = varNode.neighbors[0];
+        if (endStr) {
+            varNode = graph.varNodes.filter(vN => vN.label.toLowerCase() === endStr)[0];
+            if (!varNode) {
+                console.outln(`No '${endStr}' node detected.`);
+                return false;
+            }
+            this.#endNode = varNode.neighbors[0];
         }
-        return success;
+        graph.traverse(node =>{ node.colorIndex = 0; });
+        graph.edges.forEach(edge => { edge.colorIndex = 0; });
+        return true;
     }
     //#endregion graph setup helpers
 
@@ -366,12 +337,11 @@ export class UserCode extends CoreCode {
             let edge = graph.getEdge(crtNode, crtNode.state);
             edge.colorIndex = ColorIndex.Green;
             distance += edge.node1.distance(edge.node2);
-            if (crtNode != endNode) {
-                crtNode.colorIndex = ColorIndex.Green;
-            }
+            crtNode.colorIndex = ColorIndex.Green;
             await this.step(100);
             crtNode = crtNode.state;
         }
+        crtNode.colorIndex = ColorIndex.Green;
 
         console.outln(`    route distance = ${distance.toFixed(1)}`);
     }
@@ -386,7 +356,7 @@ export class UserCode extends CoreCode {
 
     async runSpanningTree() {
         // pick up inputs in the algo
-        if (!await this.setupStart()) {
+        if (!await this.setup("root")) {
             return;
         }
 
@@ -400,7 +370,7 @@ export class UserCode extends CoreCode {
                 if(n.colorIndex == ColorIndex.Gray){
                     n.colorIndex = ColorIndex.Green;
                     let edge = graph.getEdge(node, n);
-                    edge.colorIndex = this.#startColor;
+                    edge.colorIndex = ColorIndex.Green;
                     queue.enqueue(n);
                     await this.step(100);
                 }
@@ -408,7 +378,7 @@ export class UserCode extends CoreCode {
             if (node === root) {
                 node.toggleColor(1);
             } else {
-                node.colorIndex=this.#startColor;
+                node.colorIndex=ColorIndex.Green;
             }
         }
         // // remove edges to make the spanning tree more visible
@@ -421,7 +391,7 @@ export class UserCode extends CoreCode {
 
     async runBFS() {
         // pick up inputs in the algo
-        if (!await this.setupStartEnd()) {
+        if (!await this.setup("start", "end")) {
             return;
         }
         let startNode = this.#startNode;
@@ -438,9 +408,7 @@ export class UserCode extends CoreCode {
         while(queue.size() !== 0) {
             iterations++;
             let node = queue.dequeue();
-            if (node != startNode && node != endNode) {
-                node.colorIndex = ColorIndex.Magenta;
-            }
+            node.colorIndex = ColorIndex.Magenta;
             await this.step(200);
             for(const n of node.neighbors) {
                 if (n.state != null) {
@@ -457,9 +425,7 @@ export class UserCode extends CoreCode {
                 n.colorIndex = ColorIndex.Red;
                 await this.step(100);
             }
-            if (node != startNode && node != endNode) {
-                node.colorIndex = ColorIndex.Yellow;
-            }
+            node.colorIndex = ColorIndex.Yellow;
             await this.step(100);
         }
         await this.extractPath(startNode, endNode);
@@ -468,7 +434,7 @@ export class UserCode extends CoreCode {
 
     async runDijkstra() {
         // pick up inputs in the algo
-        if (!await this.setupStartEnd()) {
+        if (!await this.setup("start", "end")) {
             return;
         }
         let startNode = this.#startNode;
@@ -486,9 +452,7 @@ export class UserCode extends CoreCode {
         while(queue.size() !== 0) {
             iterations++;
             let node = queue.dequeue();
-            if (node != startNode && node != endNode) {
-                node.colorIndex = ColorIndex.Magenta;
-            }
+            node.colorIndex = ColorIndex.Magenta;
             await this.step(200);
             for(const n of node.neighbors) {
                 let newCost = node.cost + node.distance(n);
@@ -506,9 +470,7 @@ export class UserCode extends CoreCode {
                     await this.step(100);
                 }
             }
-            if (node != startNode && node != endNode) {
-                node.colorIndex = ColorIndex.Yellow;
-            }
+            node.colorIndex = ColorIndex.Yellow;
             await this.step(100);
         }
         await this.extractPath(startNode, endNode);
@@ -517,7 +479,7 @@ export class UserCode extends CoreCode {
 
     async runAStar() {
         // pick up inputs in the algo
-        if (!await this.setupStartEnd()) {
+        if (!await this.setup("start", "end")) {
             return;
         }
         let startNode = this.#startNode;
@@ -535,9 +497,7 @@ export class UserCode extends CoreCode {
         while(queue.size() !== 0) {
             iterations++;
             let node = queue.dequeue();
-            if (node != startNode && node != endNode) {
-                node.colorIndex = ColorIndex.Magenta;
-            }
+            node.colorIndex = ColorIndex.Magenta;
             await this.step(200);
             for(const n of node.neighbors) {
                 if (n.state != null) {
@@ -555,9 +515,7 @@ export class UserCode extends CoreCode {
                 n.colorIndex = ColorIndex.Red;
                 await this.step(100);
             }
-            if (node != startNode && node != endNode) {
-                node.colorIndex = ColorIndex.Yellow;
-            }
+            node.colorIndex = ColorIndex.Yellow;
             await this.step(100);
         }
         await this.extractPath(startNode, endNode);
