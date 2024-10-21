@@ -174,7 +174,7 @@ hCanvas.addEventListener('mousemove', (event) => {
     let x = event.clientX - hCanvas.offsetLeft;
     let y = event.clientY - hCanvas.offsetTop;
     hoverNode = graph.getNode(x, y);
-    dragging = (event.button == 0) && (clickedNode != null);
+    dragging = (event.buttons == 1);
 
     if (!dragging) {
         // if not dragging and ..
