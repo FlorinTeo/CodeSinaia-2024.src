@@ -213,6 +213,7 @@ hCanvas.addEventListener('mousemove', (event) => {
                     LINE_WIDTH[SCALE],
                     'black');
             } else {
+                graph.traverse(n => { n.selected = (n === clickedNode); });
                 // not hovering over a node => draw a gray tracking line
                 graphics.drawLine(
                     clickedNode.x, clickedNode.y,
