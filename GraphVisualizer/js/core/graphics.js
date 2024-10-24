@@ -74,10 +74,10 @@ export class Graphics {
         }
         if (halo) {
             context.beginPath();
-            context.setLineDash([4, 4]);
-            context.arc(x, y, radius + 2, 0, 2 * Math.PI, false);
-            context.lineWidth = width;
-            context.strokeStyle = 'gray';
+            //context.setLineDash([4, 2]);
+            context.arc(x, y, radius + 1, 0, 2 * Math.PI, false);
+            context.lineWidth = 2*width;
+            context.strokeStyle = 'blue';
             context.stroke();
         }
     }

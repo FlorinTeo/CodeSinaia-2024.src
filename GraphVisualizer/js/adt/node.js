@@ -50,11 +50,7 @@ export class Node {
         return Infinity;
     }
     toString() {
-        let output = `<b>${this.label}</b>: ${this.state}`;
-        if (selected) {
-            output = "* " + output;
-        }
-        return output;
+        return `<b>${this.label}</b>: ${this.state}`;
     }
 
     distance(otherNode) {
@@ -130,7 +126,7 @@ export class Node {
     }
 
     toString(brief = false, spacing = 0) {
-        let output = `${this.label}`;
+        let output = this.selected ? `* ${this.label}` : `${this.label}`;
         
         // add version, if a non default one is set
         if (this.version != 0) {

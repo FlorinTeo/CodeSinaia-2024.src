@@ -164,9 +164,8 @@ hCanvas.addEventListener('mousedown', (event) => {
     let x = event.clientX - hCanvas.offsetLeft;
     let y = event.clientY - hCanvas.offsetTop;
     clickedNode = graph.getNode(x, y);
-    if (clickedNode && !(clickedNode instanceof VarNode)) {
-        clickedNode.selected = true;
-    }
+    graph.traverse(n => { n.selected = false; });
+    selection.reset();
 });
 
 // mouse move event handler
@@ -199,6 +198,7 @@ hCanvas.addEventListener('mousemove', (event) => {
             }
         }
     } else if (clickedNode != null) {
+        clickedNode.selected = true;
         // in the middle of {drag} that started over a node (clickedNode)
         if (ctrlClicked && !(clickedNode instanceof VarNode)) {
             // {ctrl-drag} => draw an edge lead line since we may be creating/removing an edge.
@@ -250,8 +250,6 @@ hCanvas.addEventListener('mouseup', (event) => {
     if (dragging) {
         // if {control-drag}, meaning control pressed, started on a node and ended on a different node)...
         if (ctrlClicked && clickedNode != null && droppedNode != null && clickedNode != droppedNode) {
-            clickedNode.selected = false;
-            droppedNode.selected = false;
             // add/remove edges only if both nodes involved are graph nodes, not variable nodes
             if (!(clickedNode instanceof VarNode) && !(droppedNode instanceof VarNode)) {
                 // => reset edge from clickedNode to droppedNode
@@ -261,18 +259,21 @@ hCanvas.addEventListener('mouseup', (event) => {
                     graph.removeEdge(clickedNode, droppedNode, shiftClicked);
                 }
             }
+            graph.traverse(n => n.selected = false);
+            selection.reset();
         } else if (clickedNode != null && !(clickedNode instanceof VarNode)) {
-            clickedNode.selected = false;
             // otherwise, if drag was just moving a node, need to resort all edges across all nodes
             // such that nodes with smaller x coordinate are ahead in neighbors lists (to model trees deterministically)
             graph.traverse((node) => { node.resortEdges(); });
+            graph.traverse(n => { n.selected = false; });
+            selection.reset();
         } else {
+            graph.traverse(n => { n.selected = selection.isInBounds(n.x, n.y); });
             selection.reset();
         }
         dragging = false;
-    } else if (ctrlClicked) {
-        // {control click} should do nothing if clicking on a VarNode
-        if (droppedNode == null || !(droppedNode instanceof VarNode)) {
+    } else {
+        if (ctrlClicked && (droppedNode == null || !(droppedNode instanceof VarNode))) {
             // {control-click} => either add a new node, or remove an existent one
             if (droppedNode != null) {
                 // {control-click} over existent node => remove node
@@ -283,10 +284,7 @@ hCanvas.addEventListener('mouseup', (event) => {
                 // {click} over an empty areay => add node
                 graph.addNode(nextLabel(), x, y);
             }
-        }
-    } else if (shiftClicked) {
-        // {shift-click} should do nothing if clicking on a graph node
-        if (droppedNode == null || (droppedNode instanceof VarNode)) {
+        } else if (shiftClicked && (droppedNode == null || (droppedNode instanceof VarNode))) {
             // {shift-click} => either add a new VarNode, or remove an existent one
             if (droppedNode != null) {
                 graph.removeVarNode(droppedNode);
@@ -294,6 +292,8 @@ hCanvas.addEventListener('mouseup', (event) => {
                 graph.addVarNode(null, x, y);
             }
         }
+        graph.traverse(n => n.selected = false);
+        selection.reset();
     }
     repaint();
     clickedNode = null;
