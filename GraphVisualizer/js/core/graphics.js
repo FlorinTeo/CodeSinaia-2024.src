@@ -36,6 +36,18 @@ export class Graphics {
 
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
+        context.setLineDash([]); 
+        context.strokeStyle = color;
+        context.lineWidth = width;
+        context.moveTo(fromX, fromY);
+        context.lineTo(toX, toY);
+        context.stroke();
+    }
+
+    drawSelection(fromX, fromY, toX, toY, width, color) {
+        let context = this.hCanvas.getContext("2d");
+        context.beginPath();
+        context.setLineDash([4, 4]); 
         context.strokeStyle = color;
         context.lineWidth = width;
         context.moveTo(fromX, fromY);
@@ -47,6 +59,7 @@ export class Graphics {
     drawNode(label, x, y, radius, width, font, fillColor) {
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
+        context.setLineDash([]); 
         context.arc(x, y, radius, 0, 2 * Math.PI, false);
         context.fillStyle = fillColor;
         context.fill();
@@ -84,6 +97,7 @@ export class Graphics {
         context.lineWidth = 1;
         context.strokeRect(topLeftX, topLeftY, width, height);
         context.beginPath();
+        context.setLineDash([]); 
         context.strokeStyle = 'black';
         context.moveTo(topLeftX, topLeftY + height);
         context.lineTo(topLeftX + width, topLeftY);
@@ -107,6 +121,7 @@ export class Graphics {
         let yB = baseY + arrowWidth * dX / length;
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
+        context.setLineDash([]); 
         context.strokeStyle = color;
         context.lineWidth = lineWidth;
         context.moveTo(xA, yA);
@@ -132,6 +147,7 @@ export class Graphics {
     drawVMargin(fromX, fromY, height, color) {
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
+        context.setLineDash([]); 
         context.strokeStyle = color;
         context.lineWidth = 1;
         context.moveTo(fromX, fromY);
@@ -154,6 +170,7 @@ export class Graphics {
     drawHMargin(fromX, fromY, width, color) {
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
+        context.setLineDash([]); 
         context.strokeStyle = color;
         context.lineWidth = 1;
         context.moveTo(fromX, fromY);
@@ -193,6 +210,7 @@ export class Graphics {
         let [w, h] = this.measureText(text);
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
+        context.setLineDash([]); 
         context.font = '14px Consolas';
         context.textAlign = 'left';
         context.fillStyle = 'black';

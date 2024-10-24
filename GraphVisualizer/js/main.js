@@ -6,6 +6,7 @@ import { Graph } from "./adt/graph.js";
 import { Queue } from "./adt/queue.js";
 import { Stack } from "./adt/stack.js";
 import { Graphics } from "./core/graphics.js";
+import { Selection } from "./core/selection.js";
 import { ContextMenu } from "./core/contextMenu.js";
 import { XferDialog } from "./core/xferDialog.js";
 import { ConsoleDialog } from "./core/consoleDialog.js";
@@ -23,6 +24,7 @@ export let hNodeState = document.getElementById("hNodeState");
 export let ctxMenuCanvas = new ContextMenu("hCtxMenuCanvas");
 export let ctxMenuNode = new ContextMenu("hCtxMenuNode");
 export let graphics = new Graphics(hCanvas);
+export let selection = new Selection(graphics);
 export let xferDialog = new XferDialog(graphics);
 export let userCode = new UserCode();
 export let console = new ConsoleDialog(userCode);
@@ -38,6 +40,7 @@ export function repaint() {
     graph.repaint();
     queue.repaint();
     stack.repaint();
+    selection.repaint();
 }
 
 const AUTO_LABELS = '123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -219,6 +222,10 @@ hCanvas.addEventListener('mousemove', (event) => {
             graph.moveNode(clickedNode, x, y);
             repaint();
         }
+    } else {
+        // dragging from an empty area of the canvas
+        selection.addPoint(x, y);
+        repaint();
     }
 });
 
@@ -251,6 +258,8 @@ hCanvas.addEventListener('mouseup', (event) => {
             // otherwise, if drag was just moving a node, need to resort all edges across all nodes
             // such that nodes with smaller x coordinate are ahead in neighbors lists (to model trees deterministically)
             graph.traverse((node) => { node.resortEdges(); });
+        } else {
+            selection.reset();
         }
         dragging = false;
     } else if (ctrlClicked) {
