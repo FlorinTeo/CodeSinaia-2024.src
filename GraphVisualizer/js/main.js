@@ -164,6 +164,9 @@ hCanvas.addEventListener('mousedown', (event) => {
     let x = event.clientX - hCanvas.offsetLeft;
     let y = event.clientY - hCanvas.offsetTop;
     clickedNode = graph.getNode(x, y);
+    if (clickedNode && !(clickedNode instanceof VarNode)) {
+        clickedNode.selected = true;
+    }
 });
 
 // mouse move event handler
@@ -201,6 +204,7 @@ hCanvas.addEventListener('mousemove', (event) => {
             // {ctrl-drag} => draw an edge lead line since we may be creating/removing an edge.
             repaint();
             if (hoverNode != null && !(hoverNode instanceof VarNode)) {
+                hoverNode.selected = true;
                 // {ctrl-drag} => draw an edge lead line
                 graphics.drawLine(
                     clickedNode.x, clickedNode.y,
@@ -245,6 +249,8 @@ hCanvas.addEventListener('mouseup', (event) => {
     if (dragging) {
         // if {control-drag}, meaning control pressed, started on a node and ended on a different node)...
         if (ctrlClicked && clickedNode != null && droppedNode != null && clickedNode != droppedNode) {
+            clickedNode.selected = false;
+            droppedNode.selected = false;
             // add/remove edges only if both nodes involved are graph nodes, not variable nodes
             if (!(clickedNode instanceof VarNode) && !(droppedNode instanceof VarNode)) {
                 // => reset edge from clickedNode to droppedNode
@@ -255,6 +261,7 @@ hCanvas.addEventListener('mouseup', (event) => {
                 }
             }
         } else if (clickedNode != null && !(clickedNode instanceof VarNode)) {
+            clickedNode.selected = false;
             // otherwise, if drag was just moving a node, need to resort all edges across all nodes
             // such that nodes with smaller x coordinate are ahead in neighbors lists (to model trees deterministically)
             graph.traverse((node) => { node.resortEdges(); });

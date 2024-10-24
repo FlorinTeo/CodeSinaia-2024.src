@@ -21,7 +21,8 @@ export class Node {
     state;      // public state holder for this node
     neighbors;  // array of Node object, the neighbors of this node
     colorIndex; // color index of this node in the HIGHLIGHT_PALLETE array
-    marker;     // internal state holder for this node 
+    marker;     // internal state holder for this node
+    selected;   // selected state holder for this node
 
     constructor(graphics, label, x, y, version) {
         this.#graphics = graphics;
@@ -33,6 +34,7 @@ export class Node {
         this.neighbors = [];
         this.colorIndex = 0;
         this.marker = 0;
+        this.selected = false;
     }
     getEdgeWeight(neighbor) {
         // Assuming you have access to the graph object or edges directly
@@ -48,7 +50,11 @@ export class Node {
         return Infinity;
     }
     toString() {
-        return `<b>${this.label}</b>: ${this.state}`;
+        let output = `<b>${this.label}</b>: ${this.state}`;
+        if (selected) {
+            output = "* " + output;
+        }
+        return output;
     }
 
     distance(otherNode) {
@@ -86,7 +92,8 @@ export class Node {
             RADIUS[SCALE],
             LINE_WIDTH[SCALE],
             FONT[SCALE],
-            HIGHLIGHT_PALLETE[this.colorIndex]);
+            HIGHLIGHT_PALLETE[this.colorIndex],
+            this.selected);
     }
 
     traverse(lambda) {

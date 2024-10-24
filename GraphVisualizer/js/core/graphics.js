@@ -56,7 +56,7 @@ export class Graphics {
     }
 
     // draws a node as a labeled circle
-    drawNode(label, x, y, radius, width, font, fillColor) {
+    drawNode(label, x, y, radius, width, font, fillColor, halo) {
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
         context.setLineDash([]); 
@@ -71,6 +71,14 @@ export class Graphics {
             context.textAlign = "center";
             context.fillStyle = 'black';
             context.fillText(label, x, y + 4);
+        }
+        if (halo) {
+            context.beginPath();
+            context.setLineDash([4, 4]);
+            context.arc(x, y, radius + 2, 0, 2 * Math.PI, false);
+            context.lineWidth = width;
+            context.strokeStyle = 'gray';
+            context.stroke();
         }
     }
 
