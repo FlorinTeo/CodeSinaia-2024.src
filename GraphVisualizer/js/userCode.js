@@ -50,25 +50,36 @@ export class UserCode extends CoreCode {
         graph.traverse(n => {n.state = 0;});
         stack.clear();
         queue.clear();
-        root.toggleColor(-1);
-        await this.step(this.#delay);
         stack.push(root);
         while (stack.size() > 0) {
             let node = stack.pop();
-            node.colorIndex = ColorIndex.Yellow;
-            for (let i = node.neighbors.length - 1; i >= 0; i--) {
-                stack.push(node.neighbors[i]);
+            if (node.neighbors.length > 0) {
+                if (node.colorIndex == ColorIndex.Gray) {
+                    node.colorIndex = ColorIndex.Yellow;
+                    stack.push(node);
+                    for(let i = node.neighbors.length-1; i >= 0; i--) {
+                        let neighbor = node.neighbors[i];
+                        if (neighbor.colorIndex != ColorIndex.Gray) {
+                            console.outln("Error: Not a tree!");
+                            return false;
+                        }
+                        stack.push(node.neighbors[i]);
+                    }
+                } else {
+                    node.colorIndex = ColorIndex.Green;
+                    node.state = node.label;
+                    for(let i = 0; i < node.neighbors.length; i++) {
+                        node.state += `${node.neighbors[i].state}`;
+                    }
+                }
+            } else {
+                node.colorIndex = ColorIndex.Green;
+                node.state = node.label;
             }
-            queue.enqueue(node);
             await this.step(this.#delay);
         }
-        while (queue.size() > 0) {
-            let node = queue.dequeue();
-            node.colorIndex = ColorIndex.Green;
-            console.out(node.label);
-            await this.step(this.#delay);
-        }
-        console.outln();
+        console.outln(root.state);
+        return true;
     }
 
     async infixExpression() {
@@ -119,40 +130,42 @@ export class UserCode extends CoreCode {
         if (!await this.setup("root")) {
             return;
         }
-
+        
         let root = this.#startNode;
         graph.traverse(n => {n.state = 0;});
         stack.clear();
         queue.clear();
-        root.toggleColor(-1);
-        await this.step(this.#delay);
         stack.push(root);
         while (stack.size() > 0) {
             let node = stack.pop();
-            if (node.colorIndex != 0) {
-                queue.enqueue(node);
-            } else {
-                node.colorIndex = ColorIndex.Yellow;
-                for (const n of node.neighbors) {
-                    stack.push(n);
+            if (node.neighbors.length > 0) {
+                if (node.colorIndex == ColorIndex.Gray) {
+                    node.colorIndex = ColorIndex.Yellow;
+                    stack.push(node);
+                    for(let i = node.neighbors.length-1; i >= 0; i--) {
+                        let neighbor = node.neighbors[i];
+                        if (neighbor.colorIndex != ColorIndex.Gray) {
+                            console.outln("Error: Not a tree!");
+                            return false;
+                        }
+                        stack.push(node.neighbors[i]);
+                    }
+                } else {
+                    node.colorIndex = ColorIndex.Green;
+                    node.state = ``;
+                    for(let i = 0; i < node.neighbors.length; i++) {
+                        node.state += `${node.neighbors[i].state}`;
+                    }
+                    node.state += node.label;
                 }
-                stack.push(node);
+            } else {
+                node.colorIndex = ColorIndex.Green;
+                node.state = node.label;
             }
             await this.step(this.#delay);
         }
-        while (queue.size() > 0) {
-            let node = queue.dequeue();
-            node.colorIndex = ColorIndex.Blue;
-            stack.push(node);
-            await this.step(this.#delay);
-        }
-        while (stack.size() > 0) {
-            let node = stack.pop();
-            node.colorIndex = ColorIndex.Green;
-            console.out(node.label);
-            await this.step(this.#delay);
-        }
-        console.outln();
+        console.outln(root.state);
+        return true;
     }
 
     async runSpanningTree() {
