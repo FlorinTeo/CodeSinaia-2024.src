@@ -103,6 +103,25 @@ export class UserCode extends CoreCode {
         console.outln();
     }
 
+    async infixExpression() {
+        // pick up inputs in the algo
+        if (!await this.setup("root")) {
+            return;
+        }
+        
+        let root = this.#startNode;
+        let expr = await this.infixExpressionHelper(root);
+        console.outln(expr);
+    }
+
+    async infixExpressionHelper(node) {
+        node.colorIndex = ColorIndex.Yellow;
+        await this.step(100);
+        return (node.neighbors.length != 0)
+            ? `(${await this.infixExpressionHelper(node.neighbors[0])} ${node.label} ${await this.infixExpressionHelper(node.neighbors[1])})`
+            : `${node.label}`;
+    }
+
     async runSpanningTree() {
         // pick up inputs in the algo
         if (!await this.setup("root")) {
@@ -306,13 +325,17 @@ export class UserCode extends CoreCode {
             case 'loadexprtree':
                 await this.loadGraph("exprTree.txt");
                 break;
-            case 'postfixexpr':
-                console.outln("Postfix form of expression:");
-                await this.postfixExpression();
-                break;
             case 'prefixexpr':
                 console.outln("Prefix form of expression:");
                 await this.prefixExpression();
+                break;
+            case 'infixexpr':
+                console.outln("Infix form of expression:");
+                await this.infixExpression();
+                break;
+            case 'postfixexpr':
+                console.outln("Postfix form of expression:");
+                await this.postfixExpression();
                 break;
             case 'spanningtree':
                 console.outln("Run Spanning Tree algo.");
@@ -336,8 +359,9 @@ export class UserCode extends CoreCode {
                 console.outln("  loadGraph    : loads a sample graph.")
                 console.outln("  loadExprTree : loads a sample expression tree.")
                 console.outln("  --------------");
+                console.outln("  prefixExpr   : extracts the prefix form from an expression tree.");
+                console.outln("  infixExpr    : extracts the infix form from an expression tree.")
                 console.outln("  postfixExpr  : extracts postfix form from an expression tree.");
-                console.outln("  prefixExpr   : extracts the prefix from an expression tree.");
                 console.outln("  spanningTree : runs the Spanning tree algo.");
                 console.outln("  bfs          : runs Breath-First-Search algo.");
                 console.outln("  dijkstra     : runs Dijkstra algo.");
