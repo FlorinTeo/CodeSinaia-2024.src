@@ -23,9 +23,9 @@ export const ColorIndex = {
 };
 
 function adjustScale(nNodes) {
-    if (nNodes <= 15) {
+    if (nNodes <= 20) {
         SCALE = 0;
-    } else if (nNodes <= 35) {
+    } else if (nNodes <= 40) {
         SCALE = 1;
     } else {
         SCALE = 2;
