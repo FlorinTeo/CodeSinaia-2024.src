@@ -381,12 +381,13 @@ export class UserCode extends CoreCode {
                 node.colorIndex=ColorIndex.Green;
             }
         }
-        // // remove edges to make the spanning tree more visible
-        // let noncoloredEdges = graph.edges.filter(e => e.colorIndex == ColorIndex.Gray)
-        // for(const e of noncoloredEdges){
-        //     graph.removeEdge(e.node1, e.node2);
-        //     graph.removeEdge(e.node2, e.node1);
-        // }
+        // remove edges to make the spanning tree more visible
+        let noncoloredEdges = graph.edges.filter(e => e.colorIndex == ColorIndex.Gray)
+        for(const e of noncoloredEdges){
+            graph.removeEdge(e.node1, e.node2);
+            graph.removeEdge(e.node2, e.node1);
+            await this.step(50);
+        }
     }
 
     async runBFS() {
