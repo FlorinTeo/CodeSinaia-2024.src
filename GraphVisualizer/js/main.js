@@ -77,6 +77,7 @@ repaint();
 
 // state variables to control UI actions
 let hoverNode = null;
+let lastCursorXY = null;
 let clickedNode = null;
 let ctrlClicked = false;
 let shiftClicked = false;
@@ -161,11 +162,8 @@ hCanvas.addEventListener('mousedown', (event) => {
         return;
     }
 
-    let x = event.clientX - hCanvas.offsetLeft;
-    let y = event.clientY - hCanvas.offsetTop;
-    clickedNode = graph.getNode(x, y);
-    graph.traverse(n => { n.selected = false; });
-    selection.reset();
+    lastCursorXY = { x: event.clientX - hCanvas.offsetLeft, y: event.clientY - hCanvas.offsetTop };
+    clickedNode = graph.getNode(lastCursorXY.x, lastCursorXY.y);
 });
 
 // mouse move event handler
@@ -222,9 +220,12 @@ hCanvas.addEventListener('mousemove', (event) => {
                     LINE_WIDTH[SCALE],
                     '#CCCCCC');
             }
+        } else if (clickedNode instanceof VarNode) {
+            graph.moveNode(clickedNode, x - lastCursorXY.x, y - lastCursorXY.y);
+            repaint();
         } else {
             // simple {drag} => just move the node following the mouse
-            graph.moveNode(clickedNode, x, y);
+            graph.moveNodes(x - lastCursorXY.x, y - lastCursorXY.y);
             repaint();
         }
     } else {
@@ -232,6 +233,7 @@ hCanvas.addEventListener('mousemove', (event) => {
         selection.addPoint(x, y);
         repaint();
     }
+    lastCursorXY = {x: x, y: y};
 });
 
 // mouse up event handler

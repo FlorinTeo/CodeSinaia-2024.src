@@ -143,6 +143,38 @@ export class Graph {
         }
         return node;
     }
+    
+    moveNode(node, dx, dy) {
+        if (node instanceof VarNode) {
+            let refNode = null;
+            this.nodes.forEach(n => {
+                refNode = (refNode == null) || (node.distance(refNode) > node.distance(n)) ? n : refNode;
+            });
+            // set refNode as reference to this VarNode if it is within grasp
+            if (refNode != null && node.distance(refNode) <= 4 * RADIUS[SCALE]) {
+                node.setRef(refNode);
+            } else {
+                node.setRef(null);
+            }
+        } else {
+            this.varNodes.forEach(vN => {
+                if (vN.hasEdge(node)) {
+                    vN.x += dx;
+                    vN.y += dy;
+                }
+            });
+        }
+        node.x += dx;
+        node.y += dy;
+    }
+
+    moveNodes(dx, dy) {
+        this.nodes.forEach(n => {
+            if (n.selected) {
+                this.moveNode(n, dx, dy);
+            }
+        })
+    }
 
     removeNode(node) {
         for (const otherNode of this.nodes) {
@@ -162,36 +194,10 @@ export class Graph {
     // #region - add/remove VarNode
     addVarNode(label, x, y) {
         let vNode = new VarNode(this.#graphics, label, x, y);
-        this.moveNode(vNode, x, y);
+        this.moveNode(vNode, 0, 0);
         this.varNodes.push(vNode);
         this.#checkAndAdjustVersions(vNode.label, true);
         return vNode;
-    }
-
-    moveNode(node, x, y) {
-        if (node instanceof VarNode) {
-            let refNode = null;
-            this.nodes.forEach(n => {
-                refNode = (refNode == null) || (node.distance(refNode) > node.distance(n)) ? n : refNode;
-            });
-            // set refNode as reference to this VarNode if it is within grasp
-            if (refNode != null && node.distance(refNode) <= 4 * RADIUS[SCALE]) {
-                node.setRef(refNode);
-            } else {
-                node.setRef(null);
-            }
-        } else {
-            let dx = x - node.x;
-            let dy = y - node.y;
-            this.varNodes.forEach(vN => {
-                if (vN.hasEdge(node)) {
-                    vN.x += dx;
-                    vN.y += dy;
-                }
-            });
-        }
-        node.x = x;
-        node.y = y;
     }
 
     removeVarNode(vNode) {
