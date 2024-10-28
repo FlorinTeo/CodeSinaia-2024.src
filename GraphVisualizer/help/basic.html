@@ -1,0 +1,165 @@
+<head>
+    <meta charset="utf-8">
+    <title>Graph Visualizer help</title>
+    <link rel="stylesheet" href="basic.css">
+</head>
+<body>
+    <div><h2 id="idSummary">Graph Visualizer reference</h2></div>
+    <div> <!-- Summary -->
+    <b>Graph Visualizer</b> allows modeling graph algorithms by creating and interacting with a visual representation of a generic Graph. 
+    Using a combination of keys and mouse clicks, moves, drags and wheel actions on a simple canvas, you can define and alter the structure the 
+    Graph and model algorithmic executions by highlighing its nodes or edges and by referencing individual nodes.
+    <p>
+        The main concepts used by the <b>Graph Visualizer</b> are as follows:
+        <table class="summary-table">
+            <tr>
+                <th><span class="centered-text">Nodes</span></th>
+                <th><span class="centered-text">Edges</span></th>
+                <th><span class="centered-text">References</span></th>
+            </tr>
+            <tr>
+                <td><span class="centered-text"><img src="res/graph-node.png" width="160px"></span></td>
+                <td><span class="centered-text"><img src="res/graph-edge.png" width="160px"></span></td>
+                <td><span class="centered-text"><img src="res/graph-reference.png" width="160px"></span></td>
+            <tr>
+            <tr>
+                <td>The <b>Nodes</b> can be <i>created</i>, <i>deleted</i> or <i>repositioned</i> via <a href="#idNodeBasicOps">Node basic operations</a>.
+                    Nodes contain a <i>label</i> and a <i>state</i> which can be altered, via <a href="https://bing.com">Node context menu</a> options.</td>
+                <td>The <b>Edges</b> are directional links between Nodes and can be <i>created</i>, <i>reoriented</i> or <i>deleted</i>
+                    via <a href="#idEdgeBasicOps">Edge basic operations</a>.</td>
+                <td>The <b>References</b> are pointers to individual Nodes, that can be <i>created</i>, <i>deleted</i> or <i>repositioned</i> 
+                    via <a href="https://bing">Reference basic operations</a>. They can be renamed via 
+                    a <a href="https://bing.com">Reference context menu</a></td>
+            </tr>
+        </Table>
+    </div>
+    <div> <!-- Node basic operations -->
+    <table id="idNodeBasicOps" class="section-table"><tr>
+        <td class="section">Node basic operations</td>
+        <td class="summary"><a href="#idSummary">top</a></td>
+    </tr></table>
+    <table>
+        <tr>
+            <td class="icons">
+                <img src="res/cursor.png" width="20px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/ctrl-key.png" width="50px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/mouse-left-click.png" width="40px">
+            </td>
+            <td>
+                <b>Add a Node</b><br>
+                On an open area on the canvas, press the <b>[Ctrl]</b> key and <b>[left-click]</b>.</td>
+        </tr>
+        <tr>
+            <td class="icons">
+                <img src="res/node-cursor.png" width="32px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/ctrl-key.png" width="50px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/mouse-left-click.png" width="40px">
+            </td>
+            <td>
+                <b>Remove a Node</b><br>
+                Point to a Node, press the <b>[Ctrl]</b> key and <b>[left-click]</b>.
+                Removing a Node removes all outgoing and incoming edges and clears the content of the auxiliary data structures.
+            </td>
+        </tr>
+        <tr>
+            <td class="icons">
+                <img src="res/node-cursor.png" width="32px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/mouse-move.png" width="36px">
+            </td>
+            <td>
+                <b>Reposition a Node</b><br>
+                Point to a Node and <b>[drag]</b> it to a new position on the canvas.
+                The Node remains attached to the Graph and preserves all its properties.
+            </td>
+        </tr>
+        <tr>
+            <td class="icons">
+                <img src="res/node-red-cursor.png" width="30px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/mouse-wheel.png" width="45px">
+
+            </td>
+            <td>
+                <b>Change the color of a Node</b><br>
+                Point to a Node and <b>[scroll down]</b> the mouse wheel to loop through
+                five predefined colors: [<span style="color:blue">blue</span>, <span style="color:red">red</span>,
+                <span style="color:green">green</span>, <span style="color:magenta">magenta</span>, <span style="color:orange">yellow</span>] or
+                <b>[scroll up]</b> to reset the color of the Node to the default <span style="color:gray">gray</span>.
+            </td>
+        </tr>
+        <tr>
+            <td class="icons">
+                <img src="res/node-m-cursor.png" width="30px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/ctrl-key.png" width="50px">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/mouse-wheel.png" width="45px">
+
+            </td>
+            <td>
+                <b>Change the label of a Node</b><br>
+                Point to a Node, press the <b>[Ctrl]</b> key and </b><b>[scroll up]</b> or <b>[scroll down]</b> the mouse wheel.
+                The label of the Node will loop through available letters in the range [1-9A-Z]. If no letter is available, the default '?' label
+                will be used.
+            </td>
+        </tr>
+    </table>
+    </div>
+    <div> <!-- Edge basic operations -->
+        <table id="idEdgeBasicOps" class="section-table"><tr>
+            <td class="section">Edge basic operations</td>
+            <td class="summary"><a href="#idSummary">top</a></td>
+        </tr></table>
+        <table>
+            <tr>
+                <td class="icons">
+                    <img src="res/ctrl-key.png" width="50px">
+                    <img src="res/plus-sign.png" width="15px">
+                    <img src="res/edge-ab.png" width="80px">
+                    <img src="res/plus-sign.png" width="15px">
+                    <img src="res/mouse-move.png" width="36px">
+                </td>
+                <td>
+                    <b>Add/Remove a <u>directional</u> Edge</b><br>
+                    Point to a Node and press <b>[Ctrl]</b> key while <b>[dragging]</b> a line over to another Node.
+                    A directional Edge will connect the first Node to the second one, or, if the Edge existed already, it will be removed.
+                </td>
+            </tr>
+            <tr>
+                <td class="icons">
+                    <img src="res/ctrl-key.png" width="50px">
+                    <img src="res/plus-sign.png" width="15px">
+                    <img src="res/shift-key.png" width="50px">
+                    <img src="res/plus-sign.png" width="15px">
+                    <img src="res/edge-add.png" width="80px">
+                    <img src="res/plus-sign.png" width="15px">
+                    <img src="res/mouse-move.png" width="36px">
+                </td>
+                <td>
+                    <b>Add/Remove a <u>bi-directional</u> Edge</b><br>
+                    Point to a Node and press <b>[Ctrl]</b> and <b>[Shift]</b> keys while <b>[dragging]</b> a line over to another Node.
+                    A bi-directional Edge will connect the first Node to the second one, or, if the Edge existed already, it will be removed.
+                </td>
+            </tr>
+            <tr>
+                <td class="icons">
+                    <img src="res/edge-color.png" width="80px">
+                    <img src="res/plus-sign.png" width="15px">
+                    <img src="res/mouse-wheel.png" width="45px">
+                </td>
+                <td>
+                    <b>Change the color of an Edge</b><br>
+                    Hover in proximity of an Edge and <b>[scroll down]</b> the mouse wheel to loop through
+                    five predefined colors: [<span style="color:blue">blue</span>, <span style="color:red">red</span>,
+                    <span style="color:green">green</span>, <span style="color:magenta">magenta</span>, <span style="color:orange">yellow</span>] or
+                    <b>[scroll up]</b> to reset the color of the Edge to the default <span style="color:gray">gray</span>.
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>

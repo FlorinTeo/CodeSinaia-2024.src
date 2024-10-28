@@ -396,7 +396,7 @@ ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_XFer', () => {
 })
 
 ctxMenuCanvas.addContextMenuListener('hCtxMenuCanvas_Help', () => {
-    window.open('help.html', '_blank').focus();
+    window.open('help/basic.html', '_blank').focus();
 })
 // #endregion - Canvas context menu handlers
 
