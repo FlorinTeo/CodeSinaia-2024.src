@@ -30,8 +30,8 @@ export class UserCode extends CoreCode {
         return true;
     }
 
-    async loadGraph() {
-        const response = await fetch("https://florinteo.github.io/CodeSinaia-2024.src/GraphVisualizer/data/graph.txt");
+    async loadGraph(graphData) {
+        const response = await fetch(`https://florinteo.github.io/CodeSinaia-2024.src/GraphVisualizer/data/${graphData}`);
         const graphString = await response.text();
         graph.fromString(graphString);
         queue.clear();
@@ -301,10 +301,10 @@ export class UserCode extends CoreCode {
         let selection = console.getSelection();
         switch(selection.toLowerCase()) {
             case 'loadgraph':
-                await this.loadGraph();
+                await this.loadGraph("graph.txt");
                 break;
             case 'loadexprtree':
-                await this.loadExprTree();
+                await this.loadGraph("exprTree.txt");
                 break;
             case 'postfixexpr':
                 console.outln("Postfix form of expression:");
