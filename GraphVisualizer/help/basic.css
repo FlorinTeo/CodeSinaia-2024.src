@@ -68,4 +68,9 @@ body {
             padding-right: 10px;
         }
     }
+
+    .section-table-override {
+        background-color: rgb(227, 239, 241);
+        border: 2px solid lightblue;
+    }
 }

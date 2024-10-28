@@ -24,12 +24,12 @@
             <tr>
             <tr>
                 <td>The <b>Nodes</b> can be <i>created</i>, <i>deleted</i> or <i>repositioned</i> via <a href="#idNodeBasicOps">Node basic operations</a>.
-                    Nodes contain a <i>label</i> and a <i>state</i> which can be altered, via <a href="https://bing.com">Node context menu</a> options.</td>
+                    Nodes contain a <i>label</i> and a <i>state</i> which can be altered, via <a href="#idNodeCtxMenu">Node context menu</a> options.</td>
                 <td>The <b>Edges</b> are directional links between Nodes and can be <i>created</i>, <i>reoriented</i> or <i>deleted</i>
                     via <a href="#idEdgeBasicOps">Edge basic operations</a>.</td>
                 <td>The <b>References</b> are pointers to individual Nodes, that can be <i>created</i>, <i>deleted</i> or <i>repositioned</i> 
-                    via <a href="https://bing">Reference basic operations</a>. They can be renamed via 
-                    a <a href="https://bing.com">Reference context menu</a></td>
+                    via <a href="#idReferenceBasicOps">Reference basic operations</a>. They can be renamed via 
+                    a <a href="#idReferenceCtxMenu">Reference context menu</a></td>
             </tr>
         </Table>
     </div>
@@ -49,7 +49,8 @@
             </td>
             <td>
                 <b>Add a Node</b><br>
-                On an open area on the canvas, press the <b>[Ctrl]</b> key and <b>[left-click]</b>.</td>
+                On an open area on the canvas, press the <b>[Ctrl]</b> key and <b>[left-click]</b>.
+            </td>
         </tr>
         <tr>
             <td class="icons">
@@ -109,7 +110,31 @@
             </td>
         </tr>
     </table>
+    <table id="idNodeCtxMenu" class="section-table section-table-override"><tr>
+        <td class="section">Node context menu</td>
+        <td class="summary"><a href="#idSummary">top</a></td>
+    </tr></table>
+    <table>
+        <tr>
+            <td class="icons">
+                <img src="res/node-ctxmenu.png">
+                <img src="res/plus-sign.png" width="15px">
+                <img src="res/mouse-right-click.png" width="40px">
+            </td>
+            <td>
+                Point to a Ndoe and <b>[right-click]</b>. The context menu that opens can be used for the following actions:<br>
+                <b>Customize the node's <i>label</i></b><br>
+                Hover over the edit area next to the <b>[Label___]</b> text. Type in the desired new label, then 
+                press <b>&lt;Enter&gt;</b> to set it into the Node.<br>
+                <b>Change the node's <i>state</i></b><br>
+                Hover over the edit area next to the <b>[State___]</b> text. Type in the desired new state for the Node, then
+                press <b>&lt;Enter&gt;</b> to set it into the Node.<br>
+                
+            </td>
+        </tr>
+    </table>
     </div>
+    <br>
     <div> <!-- Edge basic operations -->
         <table id="idEdgeBasicOps" class="section-table"><tr>
             <td class="section">Edge basic operations</td>
@@ -126,7 +151,7 @@
                 </td>
                 <td>
                     <b>Add/Remove a <u>directional</u> Edge</b><br>
-                    Point to a Node and press <b>[Ctrl]</b> key while <b>[dragging]</b> a line over to another Node.
+                    Press <b>[Ctrl]</b> key while pointing to a Node and <b>[dragging]</b> a line over to another Node.
                     A directional Edge will connect the first Node to the second one, or, if the Edge existed already, it will be removed.
                 </td>
             </tr>
@@ -136,19 +161,19 @@
                     <img src="res/plus-sign.png" width="15px">
                     <img src="res/shift-key.png" width="50px">
                     <img src="res/plus-sign.png" width="15px">
-                    <img src="res/edge-add.png" width="80px">
+                    <img src="res/edge-ab.png" width="80px">
                     <img src="res/plus-sign.png" width="15px">
                     <img src="res/mouse-move.png" width="36px">
                 </td>
                 <td>
                     <b>Add/Remove a <u>bi-directional</u> Edge</b><br>
-                    Point to a Node and press <b>[Ctrl]</b> and <b>[Shift]</b> keys while <b>[dragging]</b> a line over to another Node.
+                    Press both <b>[Ctrl]</b> and <b>[Shift]</b> keys while pointing to a Node and <b>[dragging]</b> a line over to another Node.
                     A bi-directional Edge will connect the first Node to the second one, or, if the Edge existed already, it will be removed.
                 </td>
             </tr>
             <tr>
                 <td class="icons">
-                    <img src="res/edge-color.png" width="80px">
+                    <img src="res/edge-ab-blue.png" width="84px">
                     <img src="res/plus-sign.png" width="15px">
                     <img src="res/mouse-wheel.png" width="45px">
                 </td>
@@ -158,6 +183,65 @@
                     five predefined colors: [<span style="color:blue">blue</span>, <span style="color:red">red</span>,
                     <span style="color:green">green</span>, <span style="color:magenta">magenta</span>, <span style="color:orange">yellow</span>] or
                     <b>[scroll up]</b> to reset the color of the Edge to the default <span style="color:gray">gray</span>.
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br>
+    <div> <!-- Reference basic operations -->
+        <table id="idReferenceBasicOps" class="section-table"><tr>
+            <td class="section">Reference basic operations</td>
+            <td class="summary"><a href="#idSummary">top</a></td>
+        </tr></table>
+        <table>
+            <tr>
+                <td class="icons">
+                    <td class="icons">
+                        <img src="res/cursor.png" width="20px">
+                        <img src="res/plus-sign.png" width="15px">
+                        <img src="res/shift-key.png" width="50px">
+                        <img src="res/plus-sign.png" width="15px">
+                        <img src="res/mouse-left-click.png" width="40px">
+                    </td>
+                </td>
+                <td>
+                    <b>Add/Remove a <u>Reference</u> to a Node</b><br>
+                    On an open area on the canvas, press <b>[Shift]</b> and <b>[left-click]</b>. A Reference label will be created, or 
+                    if one exists already, it will be removed. If a the Reference is created in the proximity of a Node, it will automatically
+                    attach itself to that Node. Otherwise it wll be created as an independent, (null) reference.
+                </td>
+            </tr>
+            <tr>
+                <td class="icons">
+                    <img src="res/ref-ab.png" width="100px">
+                    <img src="res/plus-sign.png" width="15px">
+                    <img src="res/mouse-move.png" width="36px">
+                </td>
+                <td>
+                    <b>Reposition a Reference</b><br>
+                    Point to the middle area of the Reference and <b>[drag]</b> it to a new position.
+                    The Reference will automatically detach / reattach to the Node in its closest proximity. If no Node is close enough,
+                    it will will become a (null) reference.
+                </td>
+            </tr>
+        </table>
+        <table id="idReferenceCtxMenu" class="section-table section-table-override"><tr>
+            <td class="section">Reference context menu</td>
+            <td class="summary"><a href="#idSummary">top</a></td>
+        </tr></table>
+        <table>
+            <tr>
+                <td class="icons">
+                    <img src="res/ref-ctxmenu.png">
+                    <img src="res/plus-sign.png" width="15px">
+                    <img src="res/mouse-right-click.png" width="40px">
+                </td>
+                <td>
+                    <b>Renaming a Reference</b><br>
+                    Point to the middle of a Reference and <b>[right-click]</b>. In the context menu that opens up, hover over the edit
+                    area next to the <b>[Label___]</b> text. This will set the input focus on the edit field. Type in the desired new
+                    name for the Reference, followed by the <b>&lt;Enter&gt;</b> key to set the new name for the Reference. Press the
+                    <b>&lt;Escape&gt;</b> key or click anywhere on the canvas to cancel the operation and dismiss the menu.
                 </td>
             </tr>
         </table>
