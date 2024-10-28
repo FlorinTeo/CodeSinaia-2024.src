@@ -126,7 +126,7 @@ export class Node {
     }
 
     toString(brief = false, spacing = 0) {
-        let output = this.selected ? `* ${this.label}` : `${this.label}`;
+        let output = `${this.label}`;
         
         // add version, if a non default one is set
         if (this.version != 0) {
