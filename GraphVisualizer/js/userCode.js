@@ -6,7 +6,6 @@ import { ColorIndex } from "./adt/graph.js";
 
 export class UserCode extends CoreCode {
 
-    #startColor;
     #startNode;
     #endNode;
 
