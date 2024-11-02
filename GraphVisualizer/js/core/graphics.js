@@ -36,6 +36,18 @@ export class Graphics {
 
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
+        context.setLineDash([]); 
+        context.strokeStyle = color;
+        context.lineWidth = width;
+        context.moveTo(fromX, fromY);
+        context.lineTo(toX, toY);
+        context.stroke();
+    }
+
+    drawSelection(fromX, fromY, toX, toY, width, color) {
+        let context = this.hCanvas.getContext("2d");
+        context.beginPath();
+        context.setLineDash([4, 4]); 
         context.strokeStyle = color;
         context.lineWidth = width;
         context.moveTo(fromX, fromY);
@@ -44,9 +56,10 @@ export class Graphics {
     }
 
     // draws a node as a labeled circle
-    drawNode(label, x, y, radius, width, font, fillColor) {
+    drawNode(label, x, y, radius, width, font, fillColor, halo) {
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
+        context.setLineDash([]); 
         context.arc(x, y, radius, 0, 2 * Math.PI, false);
         context.fillStyle = fillColor;
         context.fill();
@@ -59,9 +72,47 @@ export class Graphics {
             context.fillStyle = 'black';
             context.fillText(label, x, y + 4);
         }
+        if (halo) {
+            context.beginPath();
+            //context.setLineDash([4, 2]);
+            context.arc(x, y, radius + 1, 0, 2 * Math.PI, false);
+            context.lineWidth = 2*width;
+            context.strokeStyle = 'blue';
+            context.stroke();
+        }
     }
 
-    drawArrow(fromX, fromY, toX, toY, marginTo, arrowLength, arrowWidth, lineWidth, color) {
+    // draws a varNode label
+    drawVarNode(label, x, y, font) {
+        let context = this.hCanvas.getContext("2d");
+        context.font = font;
+        context.textAlign = "center";
+        // draw the label background
+        let labelMetrics = context.measureText(label);
+        let labelWidth = labelMetrics.width;
+        let labelHeight = labelMetrics.actualBoundingBoxAscent + labelMetrics.actualBoundingBoxDescent;
+        context.fillStyle = 'white';
+        context.fillRect(x - labelWidth / 2 - 2, y - labelHeight / 2 - 2, labelWidth + 4, labelHeight + 4);
+        // draw the label
+        context.fillStyle = 'black';
+        context.fillText(label, x, y + 4);
+        return [labelWidth, labelHeight];
+    }
+
+    drawNull(topLeftX, topLeftY, width, height) {
+        let context = this.hCanvas.getContext("2d");
+        context.strokeStyle = 'gray';
+        context.lineWidth = 1;
+        context.strokeRect(topLeftX, topLeftY, width, height);
+        context.beginPath();
+        context.setLineDash([]); 
+        context.strokeStyle = 'black';
+        context.moveTo(topLeftX, topLeftY + height);
+        context.lineTo(topLeftX + width, topLeftY);
+        context.stroke();
+    }
+
+    drawArrow(fromX, fromY, toX, toY, marginTo, arrowLength, arrowWidth, lineWidth, color, isFilled) {
         let dX = toX - fromX;
         let dY = toY - fromY;
         let length = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
@@ -78,11 +129,17 @@ export class Graphics {
         let yB = baseY + arrowWidth * dX / length;
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
+        context.setLineDash([]); 
         context.strokeStyle = color;
         context.lineWidth = lineWidth;
         context.moveTo(xA, yA);
         context.lineTo(pointX, pointY);
         context.lineTo(xB, yB);
+        if (isFilled) {
+            context.lineTo(xA, yA);
+            context.fillStyle = 'black';
+            context.fill();
+        }
         context.stroke();
     }
 
@@ -98,6 +155,7 @@ export class Graphics {
     drawVMargin(fromX, fromY, height, color) {
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
+        context.setLineDash([]); 
         context.strokeStyle = color;
         context.lineWidth = 1;
         context.moveTo(fromX, fromY);
@@ -120,6 +178,7 @@ export class Graphics {
     drawHMargin(fromX, fromY, width, color) {
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
+        context.setLineDash([]); 
         context.strokeStyle = color;
         context.lineWidth = 1;
         context.moveTo(fromX, fromY);
@@ -159,6 +218,7 @@ export class Graphics {
         let [w, h] = this.measureText(text);
         let context = this.hCanvas.getContext("2d");
         context.beginPath();
+        context.setLineDash([]); 
         context.font = '14px Consolas';
         context.textAlign = 'left';
         context.fillStyle = 'black';

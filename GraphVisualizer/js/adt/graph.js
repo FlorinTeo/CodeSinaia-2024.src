@@ -1,10 +1,11 @@
 import { Node } from "./node.js";
+import { VarNode } from "./node.js";
 import { Edge } from "./edge.js";
 import { Direction } from "./edge.js";
 
 export let SCALE = 0;
 export const LINE_WIDTH = [1, 0.6, 0.5];
-export const RADIUS = [16, 10, 6];
+export const RADIUS = [16, 12, 8];
 export const FONT = ["bold 14px Consolas", "12px Consolas", null]
 export const ARROW_WIDTH = [5, 3, 2];
 export const ARROW_LENGTH = [8, 5, 3];
@@ -22,9 +23,9 @@ export const ColorIndex = {
 };
 
 function adjustScale(nNodes) {
-    if (nNodes <= 15) {
+    if (nNodes <= 20) {
         SCALE = 0;
-    } else if (nNodes <= 35) {
+    } else if (nNodes <= 40) {
         SCALE = 1;
     } else {
         SCALE = 2;
@@ -41,9 +42,12 @@ export class Graph {
     // Public class members
     nodes; // array of Node objects
     edges; // array of Edge objects
+    varNodes; // array of VarNode objects
 
-    #checkAndAdjustVersions(label) {
-        let clashingNodes = this.nodes.filter(n => n.label == label);
+    #checkAndAdjustVersions(label, isVerLabel = false) {
+        let clashingNodes = isVerLabel 
+            ? this.varNodes.filter(vN => vN.label == label)
+            : this.nodes.filter(n => n.label == label);
         let maxVersion = clashingNodes.reduce((accumulator, n) => Math.max(accumulator, n.version), 0);
         if (clashingNodes.length > 1) {
             clashingNodes.filter(n => n.version == 0).forEach((n) => { n.version = ++maxVersion; });
@@ -61,6 +65,7 @@ export class Graph {
     clear() {
         this.nodes = [];
         this.edges = [];
+        this.varNodes = [];
         adjustScale(0);
     }
 
@@ -69,12 +74,18 @@ export class Graph {
     }
 
     repaint() {
+        // repaint all edge highlights, if any
         for (const edge of this.edges) {
             edge.repaint();
         }
+        // repaint graph
         this.traverse((node) => {
             node.repaint();
         });
+        // repaint variables (varNodes), if any
+        for (const varNode of this.varNodes) {
+            varNode.repaint();
+        }
     }
 
     traverse(lambda) {
@@ -101,16 +112,28 @@ export class Graph {
     reLabel(node, newLabel) {
         let prevLabel = node.label;
         node.label = newLabel;
-        this.#checkAndAdjustVersions(prevLabel);
-        this.#checkAndAdjustVersions(newLabel);
+        if (node instanceof VarNode) {
+            this.#checkAndAdjustVersions(prevLabel, true);
+            this.#checkAndAdjustVersions(newLabel, true);
+        } else {
+            this.#checkAndAdjustVersions(prevLabel);
+            this.#checkAndAdjustVersions(newLabel);
+        }
         return prevLabel;
     }
 
     getNode(x, y) {
-        let node = this.nodes.find(n => n.isTarget(x, y));
-        return (node != undefined) ? node : null;
+        let node = this.varNodes.find(v => v.isTarget(x, y));
+        if (node != undefined) {
+            return node;
+        }
+        node = this.nodes.find(n => n.isTarget(x, y));
+        if (node != undefined) {
+            return node;
+        }
     }
 
+    // #region - add/remove Node
     addNode(label, x, y) {
         let node = new Node(this.#graphics, label, x, y);
         if (node) {
@@ -119,6 +142,38 @@ export class Graph {
             adjustScale(this.nodes.length);
         }
         return node;
+    }
+    
+    moveNode(node, dx, dy) {
+        if (node instanceof VarNode) {
+            let refNode = null;
+            this.nodes.forEach(n => {
+                refNode = (refNode == null) || (node.distance(refNode) > node.distance(n)) ? n : refNode;
+            });
+            // set refNode as reference to this VarNode if it is within grasp
+            if (refNode != null && node.distance(refNode) <= 4 * RADIUS[SCALE]) {
+                node.setRef(refNode);
+            } else {
+                node.setRef(null);
+            }
+        } else {
+            this.varNodes.forEach(vN => {
+                if (vN.hasEdge(node)) {
+                    vN.x += dx;
+                    vN.y += dy;
+                }
+            });
+        }
+        node.x += dx;
+        node.y += dy;
+    }
+
+    moveNodes(dx, dy) {
+        this.nodes.forEach(n => {
+            if (n.selected) {
+                this.moveNode(n, dx, dy);
+            }
+        })
     }
 
     removeNode(node) {
@@ -129,11 +184,30 @@ export class Graph {
         }
         this.nodes = this.nodes.filter(n => !(n === node));
         this.edges = this.edges.filter(e => !e.contains(node));
+        this.varNodes = this.varNodes.filter(v => !v.hasEdge(node));
         adjustScale(this.nodes.length);
         this.#checkAndAdjustVersions(node.label);
         return node;
     }
+    // #endregion - add/remove Node
 
+    // #region - add/remove VarNode
+    addVarNode(label, x, y) {
+        let vNode = new VarNode(this.#graphics, label, x, y);
+        this.moveNode(vNode, 0, 0);
+        this.varNodes.push(vNode);
+        this.#checkAndAdjustVersions(vNode.label, true);
+        return vNode;
+    }
+
+    removeVarNode(vNode) {
+        this.varNodes = this.varNodes.filter(v => !(v == vNode));
+        this.#checkAndAdjustVersions(vNode.label, true);
+        return vNode;
+    }
+    // #endregion - add/remove VarNode
+
+    // #region - Edge methods
     hasNodeHighlights() {
         let hNodes = this.nodes.filter(n => n.colorIndex != 0);
         return hNodes.length > 0;
@@ -161,7 +235,13 @@ export class Graph {
         return edge;
     }
 
-    addEdge(fromNode, toNode) {
+    hasEdge(fromNode, toNode, bidirectional) {
+        return bidirectional
+            ? fromNode.hasEdge(toNode) && toNode.hasEdge(fromNode)
+            : fromNode.hasEdge(toNode);
+    }
+
+    addEdge(fromNode, toNode, bidirectional) {
         if (!fromNode.hasEdge(toNode)) {
             fromNode.addEdge(toNode);
             let edge = this.edges.filter(e => e.matchesNodes(fromNode, toNode))[0];
@@ -171,9 +251,18 @@ export class Graph {
                 edge.addDirection(fromNode, toNode);
             }
         }
+        if (bidirectional && !toNode.hasEdge(fromNode)) {
+            toNode.addEdge(fromNode);
+            let edge = this.edges.filter(e => e.matchesNodes(toNode, fromNode))[0];
+            if (edge == null) {
+                this.edges.push(new Edge(this.#graphics, toNode, fromNode));
+            } else {
+                edge.addDirection(toNode, fromNode);
+            }
+        }
     }
 
-    removeEdge(fromNode, toNode) {
+    removeEdge(fromNode, toNode, bidirectional) {
         if (fromNode.hasEdge(toNode)) {
             fromNode.removeEdge(toNode);
             let edge = this.edges.filter(e => e.matchesNodes(fromNode, toNode))[0];
@@ -182,13 +271,23 @@ export class Graph {
                 this.edges = this.edges.filter(e => !e.matchesNodes(fromNode, toNode));
             }
         }
+        if (bidirectional && toNode.hasEdge(fromNode)) {
+            toNode.removeEdge(fromNode);
+            let edge = this.edges.filter(e => e.matchesNodes(toNode, fromNode))[0];
+            edge.removeDirection(toNode, fromNode);
+            if (edge.direction == Direction.None) {
+                this.edges = this.edges.filter(e => !e.matchesNodes(toNode, fromNode));
+            }
+        }
     }
 
     hasEdgeHighlights() {
         return (this.edges.filter(e => !e.matchesIndex(0)).length) > 0;
     }
+    // #endregion - Edge methods
 
     toString(brief = false) {
+        // calculate the max label length for all nodes then add them to the output
         let output = '';
         let maxLabel = this.nodes.reduce(
             (maxLabel, n) => Math.max(maxLabel, (n.version == 0 ? `${n.label}`.length : `${n.label}#${n.version}`.length), 0),
@@ -197,13 +296,29 @@ export class Graph {
             output += node.toString(brief, maxLabel + 1);
             output += '\n';
         }
+
+        // if there are varNodes to be added
+        // calculate the max label length of all varNodes then add them to the output
+        if (this.varNodes.length > 0) {
+            maxLabel = this.varNodes.reduce(
+                (maxLabel, n) => Math.max(maxLabel, (n.version == 0 ? `${n.label}`.length : `${n.label}#${n.version}`.length), 0),
+                0);
+    
+            output += '\n';
+            for (const node of this.varNodes) {
+                output += node.toString(brief, maxLabel + 1);
+                output += '\n';
+            }
+        }
         return output;
     }
 
     fromString(strGraph) {
-        let newGraph = new Map();
+        // map of Nodes or VarNodes keyed by their label
+        let newNodes = new Map();
+        // map of label linked to a list of all its neighboring labels
         let newEdges = new Map();
-        for (const line of strGraph.split('\n')) {
+        for (const line of strGraph.split(/\r?\n/)) {
             if (line.trim().length === 0) {
                 continue;
             }
@@ -213,20 +328,37 @@ export class Graph {
                 return false;
             }
             let fromVersionedLabel = version ? `${label}#${version}` : `${label}`;
-            newGraph.set(fromVersionedLabel, new Node(this.#graphics, label, x, y, version));
+            // check if this is a VerNode
+            if (line.includes("=")) {
+                newNodes.set(fromVersionedLabel, new VarNode(this.#graphics, label, x, y, version));
+            } else {
+                newNodes.set(fromVersionedLabel, new Node(this.#graphics, label, x, y, version));                
+            }
             newEdges.set(fromVersionedLabel, toVersionedLabels);
         }
 
+        // clear the graph and add all nodes and varNodes
+        this.clear();
+        this.nodes = Array.from(newNodes.values().filter(n => !(n instanceof VarNode)));
+        this.varNodes = Array.from(newNodes.values().filter(n => (n instanceof VarNode)));
+
+        // for each label -> [neighboring labels]  map entry
         for (const [fromVersionedLabel, toVersionedLabels] of newEdges) {
+            // for each neighboring label
             for (const toVersionedLabel of toVersionedLabels) {
-                if (!newGraph.has(toVersionedLabel)) {
+                let fromNode = newNodes.get(fromVersionedLabel);
+                let toNode = newNodes.get(toVersionedLabel);
+                if (!newNodes.has(toVersionedLabel)) {
                     alert(`Invalid target in edge ${fromVersionedLabel} > ${toVersionedLabel}`);
                     return false;
                 }
-                this.addEdge(newGraph.get(fromVersionedLabel), newGraph.get(toVersionedLabel));
+                if (fromNode instanceof VarNode) {
+                    fromNode.addEdge(toNode);
+                } else {
+                    this.addEdge(fromNode, toNode);
+                }
             }
         }
-        this.nodes = Array.from(newGraph.values());
         adjustScale(this.nodes.length);
         return true;   
     }

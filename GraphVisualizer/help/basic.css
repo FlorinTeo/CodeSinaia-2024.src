@@ -1,0 +1,76 @@
+@font-face {
+    font-family: 'Aptos';
+    src: url('res/aptos.ttf');
+}
+
+body {
+    font-family: Aptos;
+    font-size: 12pt;
+
+    h2 {
+        font-size: 18pt;
+    }
+
+    .icons {
+        display: flex;
+        flex-direction: row; /* Stack images vertically */
+        justify-content: right;
+        align-items: center; /* Center horizontally */
+    }
+
+    .icons img {
+        margin: 4px; /* Add spacing between images */
+    }
+    
+
+    table, th, td {
+      border: 0px solid black;
+      border-collapse: collapse;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .centered-text {
+        text-align: center;
+        display: block;
+    }
+
+    .summary-table {
+        border-collapse: collapse;
+        margin: 20px;
+        width: 90%;
+        th, td {
+            border-left: 1px solid lightgray;
+            border-right: 1px solid lightgray;
+            padding: 10px;
+        }
+        th:first-child, td:first-child {
+            border-left: none;
+        }
+        th:last-child, td:last-child {
+            border-right: none;
+        }
+    }
+
+    .section-table {
+        border-collapse: collapse;
+        border: 0px;
+        width: 100%;
+        background-color: lightblue;
+        .section {
+            width: 90%;
+            font-weight: bold;
+            padding-left: 10px;
+        }
+        .summary {
+            width: 10%;
+            text-align: right;
+            padding-right: 10px;
+        }
+    }
+
+    .section-table-override {
+        background-color: rgb(227, 239, 241);
+        border: 2px solid lightblue;
+    }
+}

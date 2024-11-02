@@ -21,7 +21,8 @@ export class Node {
     state;      // public state holder for this node
     neighbors;  // array of Node object, the neighbors of this node
     colorIndex; // color index of this node in the HIGHLIGHT_PALLETE array
-    marker;     // internal state holder for this node 
+    marker;     // internal state holder for this node
+    selected;   // selected state holder for this node
 
     constructor(graphics, label, x, y, version) {
         this.#graphics = graphics;
@@ -33,6 +34,7 @@ export class Node {
         this.neighbors = [];
         this.colorIndex = 0;
         this.marker = 0;
+        this.selected = false;
     }
     getEdgeWeight(neighbor) {
         // Assuming you have access to the graph object or edges directly
@@ -86,7 +88,8 @@ export class Node {
             RADIUS[SCALE],
             LINE_WIDTH[SCALE],
             FONT[SCALE],
-            HIGHLIGHT_PALLETE[this.colorIndex]);
+            HIGHLIGHT_PALLETE[this.colorIndex],
+            this.selected);
     }
 
     traverse(lambda) {
@@ -162,7 +165,7 @@ export class Node {
         let strParts = strNode.split(/\s+/);
         let success = (strParts.length > 3);
         if (success) {
-            success = (strParts[1] == ':') && (strParts[3] == '>');
+            success = (strParts[1] == ':') && ((strParts[3] == '>') || (strParts[3] == '='));
         }
         if (success) {
             var strCoords = strParts[2].split(',');
@@ -176,9 +179,109 @@ export class Node {
                 version: version,
                 x: Number(strCoords[0]),
                 y: Number(strCoords[1]),
-                toVersionedLabels: (strParts.length) > 4 ? strParts.slice(4) : [],
+                toVersionedLabels: ((strParts.length > 4) && (strParts[4] != `(null)`)) ? strParts.slice(4) : [],
             };
         }
         return {success: false};
+    }
+}
+
+export class VarNode extends Node {
+    // Private class members
+    #graphics;  // the graphics engine
+
+    constructor(graphics, label, x, y, version) {
+        super(graphics, label, x, y, version);
+        this.#graphics = graphics;
+    }
+
+    repaint() {
+        if (this.neighbors.length > 0) {
+            let refNode = this.neighbors[0];
+            this.#graphics.drawLine(
+                this.x, this.y,
+                refNode.x, refNode.y,
+                0,
+                RADIUS[SCALE],
+                LINE_WIDTH[SCALE],
+                'gray');
+            this.#graphics.drawArrow(
+                this.x, this.y,
+                refNode.x, refNode.y,
+                RADIUS[SCALE],
+                ARROW_LENGTH[SCALE],
+                ARROW_WIDTH[SCALE],
+                LINE_WIDTH[SCALE],
+                'black',
+                true);
+        }
+        let [labelW, labelH] = this.#graphics.drawVarNode(
+            this.label,
+            this.x, this.y,
+            FONT[SCALE]);
+        if (this.neighbors.length == 0) {
+            this.#graphics.drawNull(
+                this.x + labelW / 2 + 4,  // top left X
+                this.y - labelH / 2, // top left Y
+                labelH,              // width of the null marker
+                labelH);             // height of the null marker
+        }
+    }
+
+    setRef(refNode) {
+        if (refNode == null) {
+            // refuse this reference if this "closest" node is farther than a threshold
+            this.neighbors = [];
+            this.label ??= `refVar`;
+            return;
+        } 
+        
+        if (this.neighbors.length == 0) {
+            this.label ??= `ref${refNode.label}`;
+            this.addEdge(refNode);
+        } else {
+            let crtDist = this.distance(this.neighbors[0]);
+            let newDist = this.distance(refNode);
+            if (newDist < 0.9 * crtDist) {
+                this.neighbors[0] = refNode;
+            }
+        }
+    }
+
+    toString(brief = false, spacing = 0) {
+        let output = `${this.label}`;
+        
+        // add version, if a non default one is set
+        if (this.version != 0) {
+            output += `#${this.version}`;
+        }
+        
+        // add spacing as needed
+        if (output.length < spacing) {
+            output += " ".repeat(spacing - output.length);
+        }
+        output += ": ";
+
+        // add either the State or the position and neighbors, as needed
+        if (brief) {
+            if (this.neighbors.length == 0) {
+                return `${output} \u21D2 (null)`;
+            } else {
+                return `${output} \u21D2 ${this.neighbors[0].label}`;
+            }
+        } else {
+            let coords = `${this.x},${this.y}`.padEnd(7, ' ');
+            output += `${coords}\t=`;
+            if (this.neighbors.length == 0) {
+                output += ` (null)`;
+            } else {
+                let neighbor = this.neighbors[0];
+                output += ` ${neighbor.label}`;
+                if (neighbor.version != 0) {
+                    output += `#${neighbor.version}`;
+                }
+            }
+        }
+        return output;
     }
 }
