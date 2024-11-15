@@ -11,6 +11,7 @@ import { ContextMenu } from "./core/contextMenu.js";
 import { XferDialog } from "./core/xferDialog.js";
 import { ConsoleDialog } from "./core/consoleDialog.js";
 import { UserCode } from "./userCode.js";
+import { distance } from "./adt/graph.js";
 
 // html elements
 export let hTdCanvas = document.getElementById("hTdCanvas");
@@ -76,6 +77,7 @@ console.clear();
 repaint();
 
 // state variables to control UI actions
+const DRAG_SENSITIVITY = 16; // drag is initiated only after these pixels away from the starting point
 let hoverNode = null;
 let lastCursorXY = null;
 let clickedNode = null;
@@ -174,10 +176,11 @@ hCanvas.addEventListener('mousemove', (event) => {
         return;
     }
 
-    let x = event.clientX - hCanvas.offsetLeft;
-    let y = event.clientY - hCanvas.offsetTop;
-    hoverNode = graph.getNode(x, y);
-    dragging = (event.buttons == 1);
+    let crtCursorXY = { x: event.clientX - hCanvas.offsetLeft, y: event.clientY - hCanvas.offsetTop };
+    hoverNode = graph.getNode(crtCursorXY.x, crtCursorXY.y);
+    if (event.buttons == 1) {
+        dragging = dragging || distance(lastCursorXY.x, lastCursorXY.y, crtCursorXY.x, crtCursorXY.y) >= DRAG_SENSITIVITY;
+    }
 
     if (!dragging) {
         // if not dragging and ..
@@ -185,7 +188,7 @@ hCanvas.addEventListener('mousemove', (event) => {
             // .. if hovering over a node, just show the state of that node
             hNodeState.textContent = hoverNode.toString(true);
         } else {
-            let hoverEdge = graph.getEdge(x, y);
+            let hoverEdge = graph.getEdge(crtCursorXY.x, crtCursorXY.y);
             // .. otherwise..
             if (hoverEdge != null) {
                 // .. if hovering over an edge, show the distance covered by that edge
@@ -215,25 +218,25 @@ hCanvas.addEventListener('mousemove', (event) => {
                 // not hovering over a node => draw a gray tracking line
                 graphics.drawLine(
                     clickedNode.x, clickedNode.y,
-                    x, y,
+                    crtCursorXY.x, crtCursorXY.y,
                     RADIUS[SCALE], 0,
                     LINE_WIDTH[SCALE],
                     '#CCCCCC');
             }
         } else if (clickedNode instanceof VarNode) {
-            graph.moveNode(clickedNode, x - lastCursorXY.x, y - lastCursorXY.y);
+            graph.moveNode(clickedNode, crtCursorXY.x - lastCursorXY.x, crtCursorXY.y - lastCursorXY.y);
             repaint();
         } else {
             // simple {drag} => just move the node following the mouse
-            graph.moveNodes(x - lastCursorXY.x, y - lastCursorXY.y);
+            graph.moveNodes(crtCursorXY.x - lastCursorXY.x, crtCursorXY.y - lastCursorXY.y);
             repaint();
         }
+        lastCursorXY = crtCursorXY;
     } else {
         // dragging from an empty area of the canvas
-        selection.addPoint(x, y);
+        selection.addPoint(crtCursorXY.x, crtCursorXY.y);
         repaint();
     }
-    lastCursorXY = {x: x, y: y};
 });
 
 // mouse up event handler

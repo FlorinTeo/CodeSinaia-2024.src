@@ -6,6 +6,7 @@ import { Direction } from "./edge.js";
 export let SCALE = 0;
 export const LINE_WIDTH = [1, 0.6, 0.5];
 export const RADIUS = [16, 12, 8];
+export const SNAP_DISTANCE = [72, 56, 40];
 export const FONT = ["bold 14px Consolas", "12px Consolas", null]
 export const ARROW_WIDTH = [5, 3, 2];
 export const ARROW_LENGTH = [8, 5, 3];
@@ -21,6 +22,10 @@ export const ColorIndex = {
     Green: 4,
     Magenta: 5
 };
+
+export function distance(x1, y1, x2, y2) {
+    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+}
 
 function adjustScale(nNodes) {
     if (nNodes <= 20) {
@@ -151,7 +156,7 @@ export class Graph {
                 refNode = (refNode == null) || (node.distance(refNode) > node.distance(n)) ? n : refNode;
             });
             // set refNode as reference to this VarNode if it is within grasp
-            if (refNode != null && node.distance(refNode) <= 4 * RADIUS[SCALE]) {
+            if (refNode != null && node.distance(refNode) <= SNAP_DISTANCE[SCALE]) {
                 node.setRef(refNode);
             } else {
                 node.setRef(null);

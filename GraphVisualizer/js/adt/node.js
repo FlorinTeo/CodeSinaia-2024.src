@@ -6,6 +6,8 @@ import { FONT } from "./graph.js";
 import { ARROW_WIDTH } from "./graph.js";
 import { ARROW_LENGTH } from "./graph.js";
 
+import { distance } from "./graph.js";
+
 /**
  * Models a node in the Graph
  */
@@ -54,7 +56,7 @@ export class Node {
     }
 
     distance(otherNode) {
-        return Math.sqrt(Math.pow(otherNode.x - this.x, 2) + Math.pow(otherNode.y - this.y, 2));
+        return distance(this.x, this.y, otherNode.x, otherNode.y);
     }
 
     toggleColor(deltaIndex) {
