@@ -96,7 +96,10 @@ export class Graphics {
         // draw the label
         context.fillStyle = 'black';
         context.fillText(label, x, y + 4);
-        return [labelWidth, labelHeight];
+        // calculate the side of the null marker based on the size of the rendered character "O" for the current font
+        let nullMetrics = context.measureText("O");
+        let nullSide = nullMetrics.actualBoundingBoxAscent + nullMetrics.actualBoundingBoxDescent;
+        return [labelWidth, labelHeight, nullSide];
     }
 
     drawNull(topLeftX, topLeftY, width, height) {

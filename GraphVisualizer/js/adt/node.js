@@ -215,7 +215,7 @@ export class VarNode extends Node {
                 'black',
                 true);
         }
-        let [labelW, labelH] = this.#graphics.drawVarNode(
+        let [labelW, labelH, nullS] = this.#graphics.drawVarNode(
             this.label,
             this.x, this.y,
             FONT[SCALE]);
@@ -223,8 +223,8 @@ export class VarNode extends Node {
             this.#graphics.drawNull(
                 this.x + labelW / 2 + 4,  // top left X
                 this.y - labelH / 2, // top left Y
-                labelH,              // width of the null marker
-                labelH);             // height of the null marker
+                nullS,              // width of the null marker
+                nullS);             // height of the null marker
         }
     }
 
