@@ -78,6 +78,10 @@ export class Graph {
         return this.nodes.length;
     }
 
+    varSize() {
+        return this.varNodes.length;
+    }
+
     repaint() {
         // repaint all edge highlights, if any
         for (const edge of this.edges) {

@@ -363,7 +363,7 @@ hCanvas.addEventListener('contextmenu', (event) => {
             ['hCtxMenuCanvas_ResetEh', graph.hasEdgeHighlights()],
             ['hCtxMenuCanvas_ResetQ', queue.size() > 0],
             ['hCtxMenuCanvas_ResetT', stack.size() > 0],
-            ['hCtxMenuCanvas_ResetG', graph.size() > 0],
+            ['hCtxMenuCanvas_ResetG', graph.size() > 0 || graph.varSize() > 0],
         ]));
         ctxMenuCanvas.show(event.pageX - 10, event.pageY - 10);
     }
