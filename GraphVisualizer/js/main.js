@@ -77,7 +77,9 @@ console.clear();
 repaint();
 
 // state variables to control UI actions
-const DRAG_SENSITIVITY = 16; // drag is initiated only after these pixels away from the starting point
+const DRAG_DISTANCE_SENSITIVITY = 16; // drag is initiated only after these pixels away from the starting point
+const DRAG_DELAY_SENSITIVITY = 100; // drag is initiated if the move follows click by this delay
+let clickTimestamp = null;
 let hoverNode = null;
 let lastCursorXY = null;
 let clickedNode = null;
@@ -166,6 +168,7 @@ hCanvas.addEventListener('mousedown', (event) => {
 
     lastCursorXY = { x: event.clientX - hCanvas.offsetLeft, y: event.clientY - hCanvas.offsetTop };
     clickedNode = graph.getNode(lastCursorXY.x, lastCursorXY.y);
+    clickTimestamp = performance.now();
 });
 
 // mouse move event handler
@@ -179,7 +182,9 @@ hCanvas.addEventListener('mousemove', (event) => {
     let crtCursorXY = { x: event.clientX - hCanvas.offsetLeft, y: event.clientY - hCanvas.offsetTop };
     hoverNode = graph.getNode(crtCursorXY.x, crtCursorXY.y);
     if (event.buttons == 1) {
-        dragging = dragging || distance(lastCursorXY.x, lastCursorXY.y, crtCursorXY.x, crtCursorXY.y) >= DRAG_SENSITIVITY;
+        dragging = dragging 
+                  || distance(lastCursorXY.x, lastCursorXY.y, crtCursorXY.x, crtCursorXY.y) >= DRAG_DISTANCE_SENSITIVITY
+                  || (performance.now() - clickTimestamp) >= DRAG_DELAY_SENSITIVITY;
     }
 
     if (!dragging) {
