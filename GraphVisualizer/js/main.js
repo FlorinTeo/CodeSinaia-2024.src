@@ -232,8 +232,8 @@ hCanvas.addEventListener('mousemove', (event) => {
             graph.moveNode(clickedNode, crtCursorXY.x - lastCursorXY.x, crtCursorXY.y - lastCursorXY.y);
             repaint();
         } else {
-            // simple {drag} => just move the node following the mouse
-            graph.moveNodes(crtCursorXY.x - lastCursorXY.x, crtCursorXY.y - lastCursorXY.y);
+            // simple {drag} => just move the selected nodes, following the mouse
+            graph.selectedNodes().forEach(n => graph.moveNode(n, crtCursorXY.x - lastCursorXY.x, crtCursorXY.y - lastCursorXY.y));
             repaint();
         }
         lastCursorXY = crtCursorXY;
@@ -287,9 +287,10 @@ hCanvas.addEventListener('mouseup', (event) => {
             // {control-click} => either add a new node, or remove an existent one
             if (droppedNode != null) {
                 // {control-click} over existent node => remove node
-                queue.removeNode(droppedNode);
-                stack.removeNode(droppedNode);
-                graph.removeNode(droppedNode);
+                let selectedNodes = droppedNode.selected ? graph.selectedNodes() : [droppedNode];
+                selectedNodes.forEach(n => queue.removeNode(n));
+                selectedNodes.forEach(n => stack.removeNode(n));
+                selectedNodes.forEach(n => graph.removeNode(n));
             } else {
                 // {click} over an empty areay => add node
                 graph.addNode(nextLabel(), x, y);

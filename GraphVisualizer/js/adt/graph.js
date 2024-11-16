@@ -177,12 +177,8 @@ export class Graph {
         node.y += dy;
     }
 
-    moveNodes(dx, dy) {
-        this.nodes.forEach(n => {
-            if (n.selected) {
-                this.moveNode(n, dx, dy);
-            }
-        })
+    selectedNodes() {
+        return this.nodes.filter(n => n.selected);
     }
 
     removeNode(node) {
