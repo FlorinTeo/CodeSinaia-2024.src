@@ -43,6 +43,7 @@ function adjustScale(nNodes) {
 export class Graph {
     // Private class members
     #graphics;  // the graphics engine
+    #directed; // flag telling if the graph is directed (true) or undirected (false)
 
     // Public class members
     nodes; // array of Node objects
@@ -72,6 +73,7 @@ export class Graph {
         this.edges = [];
         this.varNodes = [];
         adjustScale(0);
+        this.#directed = true;
     }
 
     size() {
@@ -89,7 +91,7 @@ export class Graph {
         }
         // repaint graph
         this.traverse((node) => {
-            node.repaint();
+            node.repaint(this.#directed);
         });
         // repaint variables (varNodes), if any
         for (const varNode of this.varNodes) {
@@ -192,6 +194,7 @@ export class Graph {
         this.varNodes = this.varNodes.filter(v => !v.hasEdge(node));
         adjustScale(this.nodes.length);
         this.#checkAndAdjustVersions(node.label);
+        this.#directed = this.isDirected();
         return node;
     }
     // #endregion - add/remove Node
@@ -240,13 +243,13 @@ export class Graph {
         return edge;
     }
 
-    hasEdge(fromNode, toNode, bidirectional) {
-        return bidirectional
-            ? fromNode.hasEdge(toNode) && toNode.hasEdge(fromNode)
-            : fromNode.hasEdge(toNode);
+    hasEdge(fromNode, toNode, directed) {
+        return directed
+            ? fromNode.hasEdge(toNode)
+            : fromNode.hasEdge(toNode) && toNode.hasEdge(fromNode);
     }
 
-    addEdge(fromNode, toNode, bidirectional) {
+    addEdge(fromNode, toNode, directed) {
         if (!fromNode.hasEdge(toNode)) {
             fromNode.addEdge(toNode);
             let edge = this.edges.filter(e => e.matchesNodes(fromNode, toNode))[0];
@@ -256,7 +259,7 @@ export class Graph {
                 edge.addDirection(fromNode, toNode);
             }
         }
-        if (bidirectional && !toNode.hasEdge(fromNode)) {
+        if (!directed && !toNode.hasEdge(fromNode)) {
             toNode.addEdge(fromNode);
             let edge = this.edges.filter(e => e.matchesNodes(toNode, fromNode))[0];
             if (edge == null) {
@@ -265,9 +268,10 @@ export class Graph {
                 edge.addDirection(toNode, fromNode);
             }
         }
+        this.#directed = this.isDirected();
     }
 
-    removeEdge(fromNode, toNode, bidirectional) {
+    removeEdge(fromNode, toNode, directed) {
         if (fromNode.hasEdge(toNode)) {
             fromNode.removeEdge(toNode);
             let edge = this.edges.filter(e => e.matchesNodes(fromNode, toNode))[0];
@@ -276,7 +280,7 @@ export class Graph {
                 this.edges = this.edges.filter(e => !e.matchesNodes(fromNode, toNode));
             }
         }
-        if (bidirectional && toNode.hasEdge(fromNode)) {
+        if (!directed && toNode.hasEdge(fromNode)) {
             toNode.removeEdge(fromNode);
             let edge = this.edges.filter(e => e.matchesNodes(toNode, fromNode))[0];
             edge.removeDirection(toNode, fromNode);
@@ -284,10 +288,23 @@ export class Graph {
                 this.edges = this.edges.filter(e => !e.matchesNodes(toNode, fromNode));
             }
         }
+        this.#directed = this.isDirected();
     }
 
     hasEdgeHighlights() {
         return (this.edges.filter(e => !e.matchesIndex(0)).length) > 0;
+    }
+
+    isDirected() {
+        let directed = false;
+        this.traverse((node) => {
+            for (const neighbor of node.neighbors) {
+                if (!directed && !neighbor.hasEdge(node)) {
+                    directed = true;
+                }
+            }
+        });
+        return directed;
     }
     // #endregion - Edge methods
 
@@ -360,11 +377,12 @@ export class Graph {
                 if (fromNode instanceof VarNode) {
                     fromNode.addEdge(toNode);
                 } else {
-                    this.addEdge(fromNode, toNode);
+                    this.addEdge(fromNode, toNode, true);
                 }
             }
         }
         adjustScale(this.nodes.length);
+        this.#directed = this.isDirected();
         return true;   
     }
 }

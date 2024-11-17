@@ -263,10 +263,11 @@ hCanvas.addEventListener('mouseup', (event) => {
             // add/remove edges only if both nodes involved are graph nodes, not variable nodes
             if (!(clickedNode instanceof VarNode) && !(droppedNode instanceof VarNode)) {
                 // => reset edge from clickedNode to droppedNode
-                if (!graph.hasEdge(clickedNode, droppedNode, shiftClicked)) {
-                    graph.addEdge(clickedNode, droppedNode, shiftClicked);
+                let directed = !shiftClicked;
+                if (!graph.hasEdge(clickedNode, droppedNode, directed)) {
+                    graph.addEdge(clickedNode, droppedNode, directed);
                 } else {
-                    graph.removeEdge(clickedNode, droppedNode, shiftClicked);
+                    graph.removeEdge(clickedNode, droppedNode, directed);
                 }
             }
             graph.traverse(n => n.selected = false);

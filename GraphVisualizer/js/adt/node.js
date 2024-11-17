@@ -38,6 +38,7 @@ export class Node {
         this.marker = 0;
         this.selected = false;
     }
+
     getEdgeWeight(neighbor) {
         // Assuming you have access to the graph object or edges directly
         // Find the edge between this node and the neighbor node
@@ -64,7 +65,7 @@ export class Node {
         this.colorIndex = (deltaIndex < 0) ? 0 : Math.max(1,(this.colorIndex + deltaIndex) % HIGHLIGHT_PALLETE.length);
     }
 
-    repaint() {
+    repaint(directed) {
         for(const neighbor of this.neighbors) {
             if (neighbor.marker == 0 || !neighbor.hasEdge(this)) {
                 this.#graphics.drawLine(
@@ -75,14 +76,16 @@ export class Node {
                     LINE_WIDTH[SCALE],
                     'black');
             }
-            this.#graphics.drawArrow(
-                this.x, this.y,
-                neighbor.x, neighbor.y,
-                RADIUS[SCALE],
-                ARROW_LENGTH[SCALE],
-                ARROW_WIDTH[SCALE],
-                LINE_WIDTH[SCALE],
-                'black');
+            if (directed) {
+                this.#graphics.drawArrow(
+                    this.x, this.y,
+                    neighbor.x, neighbor.y,
+                    RADIUS[SCALE],
+                    ARROW_LENGTH[SCALE],
+                    ARROW_WIDTH[SCALE],
+                    LINE_WIDTH[SCALE],
+                    'black');
+            }
         }
         this.#graphics.drawNode(
             this.label,
@@ -108,7 +111,7 @@ export class Node {
         let d = Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2));
         return d <= RADIUS[SCALE];
     }
-
+ 
     hasEdge(node) {
         return this.neighbors.some(n => (n === node));
     }
