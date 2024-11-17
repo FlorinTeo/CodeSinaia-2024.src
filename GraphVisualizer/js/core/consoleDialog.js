@@ -22,6 +22,14 @@ export class ConsoleDialog {
         this.#hConsoleBtnRunStep = document.getElementById('hConsoleBtnRun');
         this.#hConsoleBtnResize = document.getElementById('hConsoleBtnResize');
 
+        this.#hConsoleDialog.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+        });
+
+        this.#hConsoleDialog.addEventListener('mouseup', (event) => {
+            event.preventDefault();
+        });
+
         this.#selection = "";
 
         this.#hConsoleClose.addEventListener('click', () => { this.onBtnCloseClick(); });
