@@ -1,3 +1,5 @@
+import { ContextMenu } from "./contextMenu.js";
+
 export class ConsoleDialog {
 
     #hConsoleDialog;
@@ -6,6 +8,7 @@ export class ConsoleDialog {
     #hConsoleBtnClear;
     #hConsoleBtnRunStep;
     #hConsoleBtnResize;
+    #ctxMenuConsole;
     #lambdaOnClose;
     #width;
     #code;
@@ -22,8 +25,17 @@ export class ConsoleDialog {
         this.#hConsoleBtnRunStep = document.getElementById('hConsoleBtnRun');
         this.#hConsoleBtnResize = document.getElementById('hConsoleBtnResize');
 
+        this.#ctxMenuConsole = new ContextMenu("hCtxMenuConsole");
+
         this.#hConsoleDialog.addEventListener('contextmenu', (event) => {
             event.preventDefault();
+            this.#ctxMenuConsole.show(event.pageX - 10, event.pageY - 10, () => { });
+        });
+
+        this.#hConsoleDialog.addEventListener('mousedown', (event) => {
+            if (this.#ctxMenuConsole.isShown) {
+                this.#ctxMenuConsole.onClose();
+            }
         });
 
         this.#hConsoleDialog.addEventListener('mouseup', (event) => {
