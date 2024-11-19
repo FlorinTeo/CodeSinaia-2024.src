@@ -6,10 +6,9 @@ import { ColorIndex } from "./adt/graph.js";
 
 export class UserCode extends CoreCode {
 
-    #delay = 100;
     #startNode;
     #endNode;
-
+    
     //#region graph setup helpers
     async setup(startStr, endStr) {
         let varNode = graph.varNodes.filter(vN => vN.label.toLowerCase() === startStr)[0];
@@ -38,6 +37,10 @@ export class UserCode extends CoreCode {
         queue.clear();
         stack.clear();
     }
+
+    #delay() {
+        return this.tracing ? Infinity : 100;
+    }
     //#endregion graph setup helpers
 
     async prefixExpression() {
@@ -56,6 +59,7 @@ export class UserCode extends CoreCode {
             if (node.neighbors.length > 0) {
                 if (node.colorIndex == ColorIndex.Gray) {
                     node.colorIndex = ColorIndex.Yellow;
+                    await this.step(this.#delay());
                     stack.push(node);
                     for(let i = node.neighbors.length-1; i >= 0; i--) {
                         let neighbor = node.neighbors[i];
@@ -76,7 +80,7 @@ export class UserCode extends CoreCode {
                 node.colorIndex = ColorIndex.Green;
                 node.state = node.label;
             }
-            await this.step(this.#delay);
+            await this.step(this.#delay());
         }
         console.outln(root.state);
         return true;
@@ -98,6 +102,7 @@ export class UserCode extends CoreCode {
             if (node.neighbors.length > 0) {
                 if (node.colorIndex == ColorIndex.Gray) {
                     node.colorIndex = ColorIndex.Yellow;
+                    await this.step(this.#delay());
                     stack.push(node);
                     for(let i = node.neighbors.length-1; i >= 0; i--) {
                         let neighbor = node.neighbors[i];
@@ -119,7 +124,7 @@ export class UserCode extends CoreCode {
                 node.colorIndex = ColorIndex.Green;
                 node.state = node.label;
             }
-            await this.step(this.#delay);
+            await this.step(this.#delay());
         }
         console.outln(root.state);
         return true;
@@ -141,6 +146,7 @@ export class UserCode extends CoreCode {
             if (node.neighbors.length > 0) {
                 if (node.colorIndex == ColorIndex.Gray) {
                     node.colorIndex = ColorIndex.Yellow;
+                    await this.step(this.#delay());
                     stack.push(node);
                     for(let i = node.neighbors.length-1; i >= 0; i--) {
                         let neighbor = node.neighbors[i];
@@ -162,7 +168,7 @@ export class UserCode extends CoreCode {
                 node.colorIndex = ColorIndex.Green;
                 node.state = node.label;
             }
-            await this.step(this.#delay);
+            await this.step(this.#delay());
         }
         console.outln(root.state);
         return true;
@@ -186,7 +192,7 @@ export class UserCode extends CoreCode {
                     let edge = graph.getEdge(node, n);
                     edge.colorIndex = ColorIndex.Green;
                     queue.enqueue(n);
-                    await this.step(this.#delay);
+                    await this.step(this.#delay());
                 }
             }
             if (node === root) {
@@ -200,7 +206,7 @@ export class UserCode extends CoreCode {
         for(const e of noncoloredEdges){
             graph.removeEdge(e.node1, e.node2);
             graph.removeEdge(e.node2, e.node1);
-            await this.step(this.#delay);
+            await this.step(this.#delay());
         }
     }
 
@@ -217,7 +223,7 @@ export class UserCode extends CoreCode {
             edge.colorIndex = ColorIndex.Green;
             distance += edge.node1.distance(edge.node2);
             crtNode.colorIndex = ColorIndex.Green;
-            await this.step(this.#delay);
+            await this.step(this.#delay());
             crtNode = crtNode.state;
         }
         crtNode.colorIndex = ColorIndex.Green;
@@ -245,7 +251,7 @@ export class UserCode extends CoreCode {
             iterations++;
             let node = queue.dequeue();
             node.colorIndex = ColorIndex.Magenta;
-            await this.step(this.#delay);
+            await this.step(this.#delay());
             for(const n of node.neighbors) {
                 if (n.state != null) {
                     continue;
@@ -259,10 +265,10 @@ export class UserCode extends CoreCode {
                     break;
                 }
                 n.colorIndex = ColorIndex.Red;
-                await this.step(this.#delay);
+                await this.step(this.#delay());
             }
             node.colorIndex = ColorIndex.Yellow;
-            await this.step(this.#delay);
+            await this.step(this.#delay());
         }
         await this.extractPath(startNode, endNode);
         console.outln(`    iterations = ${iterations}`);
@@ -289,7 +295,7 @@ export class UserCode extends CoreCode {
             iterations++;
             let node = queue.dequeue();
             node.colorIndex = ColorIndex.Magenta;
-            await this.step(this.#delay);
+            await this.step(this.#delay());
             for(const n of node.neighbors) {
                 let newCost = node.cost + node.distance(n);
                 // if (n.cost < newCost) {
@@ -303,11 +309,11 @@ export class UserCode extends CoreCode {
                     if (n != endNode) {               
                         n.colorIndex = ColorIndex.Red;
                     }
-                    await this.step(this.#delay);
+                    await this.step(this.#delay());
                 }
             }
             node.colorIndex = ColorIndex.Yellow;
-            await this.step(this.#delay);
+            await this.step(this.#delay());
         }
         await this.extractPath(startNode, endNode);
         console.outln(`    iterations = ${iterations}`);
@@ -334,7 +340,7 @@ export class UserCode extends CoreCode {
             iterations++;
             let node = queue.dequeue();
             node.colorIndex = ColorIndex.Magenta;
-            await this.step(this.#delay);
+            await this.step(this.#delay());
             for(const n of node.neighbors) {
                 if (n.state != null) {
                     continue;
@@ -349,10 +355,10 @@ export class UserCode extends CoreCode {
                     break;
                 }
                 n.colorIndex = ColorIndex.Red;
-                await this.step(this.#delay);
+                await this.step(this.#delay());
             }
             node.colorIndex = ColorIndex.Yellow;
-            await this.step(this.#delay);
+            await this.step(this.#delay());
         }
         await this.extractPath(startNode, endNode);
         console.outln(`    iterations = ${iterations}`);
@@ -365,14 +371,6 @@ export class UserCode extends CoreCode {
         console.outln("---- Starting user-defined code! ----");
         let selection = console.getSelection();
         switch(selection.toLowerCase()) {
-            case 'traceon':
-                console.outln("Tracing mode: ON");
-                this.#delay = Infinity;
-                break;
-            case 'traceoff':
-                console.outln("Tracing mode: OFF");
-                this.#delay = 100;
-                break;
             case 'loadgraph':
                 await this.loadGraph("graph.txt");
                 break;
@@ -410,19 +408,16 @@ export class UserCode extends CoreCode {
                 break;
             default:
                 console.outln("Available commands:");
-                console.outln("  traceOn      : sets tracing to step-by-step mode.");
-                console.outln("  traceOff     : sets tracing to automated mode.");
+                console.outln("  loadExprTree   : loads a sample expression tree.");
+                console.outln("    prefixExpr   : extracts the prefix form from an expression tree.");
+                console.outln("    infixExpr    : extracts the infix form from an expression tree.")
+                console.outln("    postfixExpr  : extracts postfix form from an expression tree.");
                 console.outln("  --------------");
-                console.outln("  loadExprTree : loads a sample expression tree.");
-                console.outln("  prefixExpr   : extracts the prefix form from an expression tree.");
-                console.outln("  infixExpr    : extracts the infix form from an expression tree.")
-                console.outln("  postfixExpr  : extracts postfix form from an expression tree.");
-                console.outln("  --------------");
-                console.outln("  loadGraph    : loads a sample graph.");
-                console.outln("  spanningTree : runs the Spanning tree algo.");
-                console.outln("  bfs          : runs Breath-First-Search algo.");
-                console.outln("  dijkstra     : runs Dijkstra algo.");
-                console.outln("  astar        : runs the A* algo.");
+                console.outln("  loadGraph      : loads a sample graph.");
+                console.outln("    spanningTree : runs the Spanning tree algo.");
+                console.outln("    bfs          : runs Breath-First-Search algo.");
+                console.outln("    dijkstra     : runs Dijkstra algo.");
+                console.outln("    astar        : runs the A* algo.");
                 console.outln("::Select word and click <Run> to execute command::");
         }
 

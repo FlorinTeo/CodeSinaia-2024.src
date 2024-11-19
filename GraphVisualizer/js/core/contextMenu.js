@@ -123,13 +123,23 @@ export class ContextMenu {
 
     getInput(name) {
         if (this.#menuEntries.has(name)) {
-            return this.#menuEntries.get(name).hInput.value;
+            let inputElement = this.#menuEntries.get(name).hInput;
+            if (inputElement.type === "text") {
+                return inputElement.value;
+            } else if (inputElement.type === "checkbox") {
+                return inputElement.checked;
+            }
         }
     }
 
     setInput(name, value) {
         if (this.#menuEntries.has(name)) {
-            this.#menuEntries.get(name).hInput.value=value;
+            let inputElement = this.#menuEntries.get(name).hInput;
+            if (inputElement.type === "text") {
+                inputElement.value = value;
+            } else if (inputElement.type === "checkbox") {
+                inputElement.checked = value;
+            }
         }
     }
 

@@ -53,6 +53,7 @@ export class ConsoleDialog {
                 ['hCtxMenuConsole_Paste', navigator.clipboard],
                 ['hCtxMenuConsole_Clear', this.#hConsoleText.value.length > 0],
             ]));
+            this.#ctxMenuConsole.setInput('hCtxMenuConsole_Trace', this.#code.tracing);
             this.#ctxMenuConsole.show(event.pageX - 10, event.pageY - 10, () => { });
         });
 
@@ -63,6 +64,7 @@ export class ConsoleDialog {
         });
 
         this.#ctxMenuConsole.addContextMenuListener('hCtxMenuConsole_Trace', (_, value) => { this.onCtxMenuTrace(); });
+
         this.#ctxMenuConsole.addContextMenuListener('hCtxMenuConsole_Copy', (_, value) => { this.onCtxMenuCopy(); });
         this.#ctxMenuConsole.addContextMenuListener('hCtxMenuConsole_Paste', (_, value) => { this.onCtxMenuPaste(); });
         this.#ctxMenuConsole.addContextMenuListener('hCtxMenuConsole_Clear', (_, value) => { this.onCtxMenuClear(); });
@@ -96,7 +98,7 @@ export class ConsoleDialog {
 
     // #region: Context Menu Handlers
     onCtxMenuTrace() {
-        this.outln('trace switch!');
+        this.#code.tracing = this.#ctxMenuConsole.getInput('hCtxMenuConsole_Trace');
     }
 
     onCtxMenuPaste() {

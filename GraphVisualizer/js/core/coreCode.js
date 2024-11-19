@@ -5,8 +5,11 @@ export class CoreCode {
     #hConsoleBtnRunStep; // Run/Step html button
     #nextStep // synchronization lambda linking promise with resolve
 
+    tracing; // boolean telling whether user code is to be traced through or not
+
     constructor () {
         this.#hConsoleBtnRunStep = null;
+        this.tracing = false;
     }
 
     async execute(hConsoleBtnRunStep) {
