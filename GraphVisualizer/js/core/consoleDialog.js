@@ -5,7 +5,6 @@ export class ConsoleDialog {
     #hConsoleDialog;
     #hConsoleClose;
     #hConsoleText;
-    #hConsoleBtnClear;
     #hConsoleBtnRunStep;
     #hConsoleBtnResize;
     #ctxMenuConsole;
@@ -21,32 +20,15 @@ export class ConsoleDialog {
         this.#hConsoleDialog = document.getElementById('hConsoleDialog');
         this.#hConsoleClose = document.getElementById('hConsoleClose');
         this.#hConsoleText = document.getElementById('hConsoleText');
-        this.#hConsoleBtnClear = document.getElementById('hConsoleBtnClear');
         this.#hConsoleBtnRunStep = document.getElementById('hConsoleBtnRun');
         this.#hConsoleBtnResize = document.getElementById('hConsoleBtnResize');
-
-        this.#ctxMenuConsole = new ContextMenu("hCtxMenuConsole");
-
-        this.#hConsoleDialog.addEventListener('contextmenu', (event) => {
-            event.preventDefault();
-            this.#ctxMenuConsole.show(event.pageX - 10, event.pageY - 10, () => { });
-        });
-
-        this.#hConsoleDialog.addEventListener('mousedown', (event) => {
-            if (this.#ctxMenuConsole.isShown) {
-                this.#ctxMenuConsole.onClose();
-            }
-        });
-
-        this.#hConsoleDialog.addEventListener('mouseup', (event) => {
-            event.preventDefault();
-        });
-
         this.#selection = "";
 
+        this.setupCtxMenuConsole();
+
+        this.#hConsoleDialog.addEventListener('mouseup', (event) => { event.preventDefault(); });
         this.#hConsoleClose.addEventListener('click', () => { this.onBtnCloseClick(); });
         this.#hConsoleBtnResize.addEventListener('click', () => { this.onBtnResize(); });
-        this.#hConsoleBtnClear.addEventListener('click', () => { this.onBtnClearClick(); });
         this.#hConsoleBtnRunStep.addEventListener('click', () => { this.onBtnRunStepClick(); })
         this.#hConsoleText.addEventListener('selectionchange', () => {
             let iStart = this.#hConsoleText.selectionStart;
@@ -59,6 +41,31 @@ export class ConsoleDialog {
         });
 
         this.#width = 32;
+    }
+
+    setupCtxMenuConsole() {
+        this.#ctxMenuConsole = new ContextMenu("hCtxMenuConsole");
+
+        this.#hConsoleDialog.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+            this.#ctxMenuConsole.setVisible(new Map([
+                ['hCtxMenuConsole_Copy', navigator.clipboard && (this.#selection.length > 0)],
+                ['hCtxMenuConsole_Paste', navigator.clipboard],
+                ['hCtxMenuConsole_Clear', this.#hConsoleText.value.length > 0],
+            ]));
+            this.#ctxMenuConsole.show(event.pageX - 10, event.pageY - 10, () => { });
+        });
+
+        this.#hConsoleDialog.addEventListener('mousedown', (event) => {
+            if (this.#ctxMenuConsole.isShown) {
+                this.#ctxMenuConsole.onClose();
+            }
+        });
+
+        this.#ctxMenuConsole.addContextMenuListener('hCtxMenuConsole_Trace', (_, value) => { this.onCtxMenuTrace(); });
+        this.#ctxMenuConsole.addContextMenuListener('hCtxMenuConsole_Copy', (_, value) => { this.onCtxMenuCopy(); });
+        this.#ctxMenuConsole.addContextMenuListener('hCtxMenuConsole_Paste', (_, value) => { this.onCtxMenuPaste(); });
+        this.#ctxMenuConsole.addContextMenuListener('hCtxMenuConsole_Clear', (_, value) => { this.onCtxMenuClear(); });
     }
 
     addCloseListener(lambdaOnClose) {
@@ -87,10 +94,34 @@ export class ConsoleDialog {
         await this.#code.execute(this.#hConsoleBtnRunStep);
     }
 
-    onBtnClearClick(event = null) {
+    // #region: Context Menu Handlers
+    onCtxMenuTrace() {
+        this.outln('trace switch!');
+    }
+
+    onCtxMenuPaste() {
+        navigator.clipboard.readText().then( text => {
+            if (text.length > 0) {
+                let pos = this.#hConsoleText.selectionStart;
+                let newText = this.#hConsoleText.value.slice(0, pos)
+                            + text
+                            + this.#hConsoleText.value.slice(pos);
+                this.#hConsoleText.value = newText;
+                this.#hConsoleText.focus();
+                this.#hConsoleText.setSelectionRange(pos, pos + text.length);
+            }
+        });
+    }
+
+    onCtxMenuCopy() {
+        navigator.clipboard.writeText(this.#selection);
+    }
+
+    onCtxMenuClear() {
         this.#code.done();
         this.clear();
     }
+    // #endregion: Context Menu Handlers
 
     getSelection() {
         return this.#selection.trim();

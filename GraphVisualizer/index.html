@@ -30,10 +30,7 @@
     </table>
 
     <div id="hCtxMenuCanvas" class="ctxmenu">
-        <p id="hCtxMenuCanvas_ResetS">
-            <label>Reset states___</label>
-            <input type="text">
-        </p>
+        <p id="hCtxMenuCanvas_ResetS"><label>Reset states___</label><input type="text"></p>
         <p id="hCtxMenuCanvas_ResetNh">Reset node highlights</p>
         <p id="hCtxMenuCanvas_ResetEh">Reset edge highlights</p>
         <p id="hCtxMenuCanvas_ResetQ">Reset queue</p>
@@ -46,14 +43,8 @@
     </div>
 
     <div id="hCtxMenuNode" class="ctxmenu">
-        <p id="hCtxMenuNode_Label">
-            <label>Label___</label>
-            <input id="hInput_NodeL" type="text">
-        </p>
-        <p id="hCtxMenuNode_State">
-            <label>State___</label>
-            <input id="hInput_NodeS" type="text">
-        </p>
+        <p id="hCtxMenuNode_Label"><label>Label___</label><input type="text"></p>
+        <p id="hCtxMenuNode_State"><label>State___&nbsp;</label><input type="text"></p>
         <div class="menu-separator"></div>
         <p id="hCtxMenuNode_Enqueue">Enqueue</p>
         <p id="hCtxMenuNode_Dequeue">Dequeue</p>
@@ -62,11 +53,12 @@
     </div>
 
     <div id="hCtxMenuConsole" class="ctxmenu">
-        <p id="hCtxMenuConsole_Debug">
-            <label>Debug___&nbsp;</label>
-            <input id="hInput_ConsoleD" type="checkbox">
-        </p>
+        <p id="hCtxMenuConsole_Trace"><label>Trace</label><input type="checkbox"></p>
         <div class="menu-separator"></div>
+        <p id="hCtxMenuConsole_Copy"><img src="res/clip-copy.png" width="20">&nbsp;Copy</p>
+        <p id="hCtxMenuConsole_Paste"><img src="res/clip-paste.png" width="20">&nbsp;Paste</p>
+        <div class="menu-separator"></div>
+        <p id="hCtxMenuConsole_Clear"><img src="res/btnDelete.png" width="20">&nbsp;Clear</p>
     </div>
 
     <dialog id="hXferDialog" class="xfer">
@@ -98,7 +90,6 @@
         </table>
         <table class="statusTable">
             <tr>
-                <td><img id="hConsoleBtnClear" src="res/btnDelete.png" width="24"></td>
                 <td><input id="hConsoleBtnRun" type="image" src="res/btnRun.png" height="20" alt="submit" accessKey="r"></td>
                 <td><img id="hConsoleBtnResize" src="res/console-resize.png" width="24"></td>
             </tr>

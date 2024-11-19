@@ -25,6 +25,7 @@ export class ContextMenu {
                         hP: hElement,
                         hLabel: null,
                         hInput: null,
+                        hImg: null,
                         fOnClick: null
                     });
             } else {
@@ -34,6 +35,8 @@ export class ContextMenu {
                 } else if (hElement.tagName === 'INPUT') {
                     lastMenuKVP[1].hInput = hElement;
                     hElement.setAttribute('autocomplete', 'off');
+                } else if (hElement.tagName === 'IMG') {
+                    lastMenuKVP[1].hImg = hElement;
                 }
             }
         }
@@ -43,20 +46,33 @@ export class ContextMenu {
         this.#hCtxMenu.addEventListener('contextmenu', (event) => { event.preventDefault(); });
         for(const menuEntry of this.#menuEntries.values()) {
             if (menuEntry.hInput != null) {
-                menuEntry.hInput.addEventListener('mouseenter', (event) => {
-                    menuEntry.hInput.select();
-                });
-                menuEntry.hInput.addEventListener('mouseleave', (event) => {
-                    menuEntry.hInput.select();
-                });
-                menuEntry.hInput.addEventListener('keydown', (event) => {
-                    if (event.key === 'Enter') {
-                        this.onClick(event, menuEntry.hP.id);
-                      } else if (event.key === 'Escape') {
-                        this.onClose(event);
-                      }
-                });
+                if (menuEntry.hInput.type === 'text') {
+                    menuEntry.hInput.addEventListener('mouseenter', (event) => {
+                        menuEntry.hInput.select();
+                    });
+                    menuEntry.hInput.addEventListener('mouseleave', (event) => {
+                        menuEntry.hInput.select();
+                    });
+                    menuEntry.hInput.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter') {
+                            this.onClick(event, menuEntry.hP.id);
+                        } else if (event.key === 'Escape') {
+                            this.onClose(event);
+                        }
+                    });
+                } else {
+                    // menuEntry.hInput.addEventListener('click', (event) => {
+                    //     this.onClick(event, menuEntry.hP.id);
+                    // });
+                }
                 menuEntry.hLabel.addEventListener('click', (event) => {
+                    this.onClick(event, menuEntry.hP.id);
+                });
+            } else if (menuEntry.hImg != null) {
+                menuEntry.hP.addEventListener('click', (event) => {
+                    this.onClick(event, menuEntry.hP.id);
+                });
+                menuEntry.hImg.addEventListener('click', (event) => {
                     this.onClick(event, menuEntry.hP.id);
                 });
             } else {
