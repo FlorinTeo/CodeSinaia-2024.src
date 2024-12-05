@@ -61,9 +61,9 @@ export class ContextMenu {
                         }
                     });
                 } else {
-                    // menuEntry.hInput.addEventListener('click', (event) => {
-                    //     this.onClick(event, menuEntry.hP.id);
-                    // });
+                    menuEntry.hInput.addEventListener('click', (event) => {
+                        this.onClick(event, menuEntry.hP.id);
+                    });
                 }
                 menuEntry.hLabel.addEventListener('click', (event) => {
                     this.onClick(event, menuEntry.hP.id);
