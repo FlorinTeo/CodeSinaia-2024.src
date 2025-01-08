@@ -99,26 +99,30 @@ export class UserCode extends CoreCode {
         stack.push(root);
         while (stack.size() > 0) {
             let node = stack.pop();
-            if (node.neighbors.length > 0) {
+            if (node.left || node.right) {
                 if (node.colorIndex == ColorIndex.Gray) {
                     node.colorIndex = ColorIndex.Yellow;
                     await this.step(this.#delay());
                     stack.push(node);
-                    for(let i = node.neighbors.length-1; i >= 0; i--) {
-                        let neighbor = node.neighbors[i];
-                        if (neighbor.colorIndex != ColorIndex.Gray) {
+                    if (node.left) {
+                        if (node.left.colorIndex != ColorIndex.Gray) {
                             console.outln("Error: Not a tree!");
                             return false;
                         }
-                        stack.push(node.neighbors[i]);
+                        stack.push(node.left);
+                    }
+                    if (node.right) {
+                        if (node.right.colorIndex != ColorIndex.Gray) {
+                            console.outln("Error: Not a tree!");
+                            return false;
+                        }
+                        stack.push(node.right);
                     }
                 } else {
                     node.colorIndex = ColorIndex.Green;
-                    node.state = `(${node.neighbors[0].state}`;
-                    for(let i = 1; i < node.neighbors.length; i++) {
-                        node.state += ` ${node.label} ${node.neighbors[i].state}`;
-                    }
-                    node.state += `)`;
+                    node.state = `(${node.left ? node.left.state + " " : ""}`
+                               + `${node.label}`
+                               + `${node.right ? " " + node.right.state : ""})`;
                 }
             } else {
                 node.colorIndex = ColorIndex.Green;
