@@ -22,6 +22,8 @@ export class Node {
     version;    // 0 if label is unique in the graph, 1, 2, ... if labels clash
     state;      // public state holder for this node
     neighbors;  // array of Node object, the neighbors of this node
+    left;       // reference to left child if a binary tree node (or undefined otherwise)
+    right;      // reference to right child if a binary tree node (or undefined otherwise)
     colorIndex; // color index of this node in the HIGHLIGHT_PALLETE array
     marker;     // internal state holder for this node
     selected;   // selected state holder for this node
@@ -34,6 +36,8 @@ export class Node {
         this.version = version ? version : 0;
         this.state = 0;
         this.neighbors = [];
+        this.left = null;
+        this.right = null;
         this.colorIndex = 0;
         this.marker = 0;
         this.selected = false;
@@ -128,6 +132,28 @@ export class Node {
 
     resortEdges() {
         this.neighbors.sort((n1, n2) => n1.x < n2.x ? -1 : n1.x > n2.x ? 1 : 0);
+        switch(this.neighbors.length) {
+            case 0:
+                this.left = null;
+                this.right = null;
+                break;
+            case 1:
+                if (this.neighbors[0].x < this.x) {
+                    this.left = this.neighbors[0];
+                    this.right = null;
+                } else {
+                    this.left = null;
+                    this.right = this.neighbors[0];
+                }
+                break;
+            case 2:
+                this.left = this.neighbors[0];
+                this.right = this.neighbors[1];
+                break;
+            default:
+                this.left = undefined;
+                this.right = undefined;
+        }
     }
 
     toString(brief = false, spacing = 0) {
