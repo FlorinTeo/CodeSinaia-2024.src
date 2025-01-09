@@ -367,12 +367,43 @@ export class UserCode extends CoreCode {
         await this.extractPath(startNode, endNode);
         console.outln(`    iterations = ${iterations}`);
     }
+    async reset(){
+        await this.step(1000);
+        for(const n of graph.nodes)
+            if(n.colorIndex==ColorIndex.Yellow||n.colorIndex==ColorIndex.Green) n.colorIndex=ColorIndex.Gray;
+        await this.step(1000);
+        for(const n of graph.edges)
+            if(n.colorIndex==ColorIndex.Yellow||n.colorIndex==ColorIndex.Green) n.colorIndex=ColorIndex.Gray;
+    }
 
     /**
      * Entry point for user-defined code.
      */
     async run() {
         console.outln("---- Starting user-defined code! ----");
+        //await this.colorShortestPath();
+        // // linked list check
+        // console.outln("Linked-list check..");
+        // let pass = await this.isList(graph);
+        // console.outln(pass ? "Graph IS a linked list!" : "Graph is NOT a linked list!");
+
+        // // tree check
+        // console.outln("Binary tree check..");
+        // pass = await this.isBinaryTree(graph);
+        // console.outln(pass ? "Graph IS a binary tree!" : "Graph is NOT a binary tree!");
+
+        // console.outln("Breath-first tree traversal:");
+        // await this.bfsTraverse();
+
+        // console.outln("\nDepth-first tree traversal:");
+        // await this.dfsTraverse();
+
+        // console.outln("Postfix Expression!")
+        // await this.postfixExpression();
+
+        // console.outln("Prefix Expression!")
+        // await this.prefixExpression();
+  await this.reset();
         let selection = console.getSelection();
         switch(selection.toLowerCase()) {
             case 'loadgraph':
@@ -424,7 +455,6 @@ export class UserCode extends CoreCode {
                 console.outln("    astar        : runs the A* algo.");
                 console.outln("::Select word and click <Run> to execute command::");
         }
-
         console.outln("---- User-defined code ended! ----");
     }
 }
