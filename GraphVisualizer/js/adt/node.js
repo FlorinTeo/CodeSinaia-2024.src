@@ -56,6 +56,7 @@ export class Node {
         // Handle case where no edge is found
         return Infinity;
     }
+
     toString() {
         return `<b>${this.label}</b>: ${this.state}`;
     }
@@ -116,6 +117,21 @@ export class Node {
         return d <= RADIUS[SCALE];
     }
  
+    isTree(arity) {
+        // if node was visited already, not a tree!
+        if (this.marker == 1) {
+            return false;
+        }
+        // mark the node
+        this.marker = 1;
+        // if there's an arity check and number of neighbors exceeds the arity, not a tree!
+        if (arity && this.neighbors.length > arity) {
+            return false;
+        }
+        // finally it's a tree if all its children are also trees
+        return this.neighbors.every(n => n.isTree(arity));
+    }
+
     hasEdge(node) {
         return this.neighbors.some(n => (n === node));
     }

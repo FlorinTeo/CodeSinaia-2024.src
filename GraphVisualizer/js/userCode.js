@@ -38,17 +38,27 @@ export class UserCode extends CoreCode {
         stack.clear();
     }
 
+    async isBinaryTree() {
+        let result = true;
+        graph.nodes.forEach(n => { n.marker = 0; });
+        if (!this.#startNode.isTree(2)) {
+            console.outln("Error: Not a binary tree!");
+            return false;
+        }
+        return true;
+    }
+
     #delay() {
         return this.tracing ? Infinity : 100;
     }
     //#endregion graph setup helpers
 
-    async prefixExpression() {
+    async toPrefixStr() {
         // pick up inputs in the algo
-        if (!await this.setup("root")) {
-            return;
+        if (!await this.setup("root") || !await this.isBinaryTree()) {
+            return false;
         }
-        
+       
         let root = this.#startNode;
         graph.traverse(n => {n.state = 0;});
         stack.clear();
@@ -61,20 +71,17 @@ export class UserCode extends CoreCode {
                     node.colorIndex = ColorIndex.Yellow;
                     await this.step(this.#delay());
                     stack.push(node);
-                    for(let i = node.neighbors.length-1; i >= 0; i--) {
-                        let neighbor = node.neighbors[i];
-                        if (neighbor.colorIndex != ColorIndex.Gray) {
-                            console.outln("Error: Not a tree!");
-                            return false;
-                        }
-                        stack.push(node.neighbors[i]);
+                    if (node.left) {
+                        stack.push(node.left);
+                    }
+                    if (node.right) {
+                        stack.push(node.right);
                     }
                 } else {
                     node.colorIndex = ColorIndex.Green;
-                    node.state = node.label;
-                    for(let i = 0; i < node.neighbors.length; i++) {
-                        node.state += `${node.neighbors[i].state}`;
-                    }
+                    node.state = `${node.label}`
+                               + `${node.left ? node.left.state : ""}`
+                               + `${node.right ? node.right.state : ""}`;
                 }
             } else {
                 node.colorIndex = ColorIndex.Green;
@@ -86,9 +93,9 @@ export class UserCode extends CoreCode {
         return true;
     }
 
-    async infixExpression() {
+    async toInfixStr() {
         // pick up inputs in the algo
-        if (!await this.setup("root")) {
+        if (!await this.setup("root") || !await this.isBinaryTree(this.#startNode)) {
             return;
         }
         
@@ -105,17 +112,9 @@ export class UserCode extends CoreCode {
                     await this.step(this.#delay());
                     stack.push(node);
                     if (node.left) {
-                        if (node.left.colorIndex != ColorIndex.Gray) {
-                            console.outln("Error: Not a tree!");
-                            return false;
-                        }
                         stack.push(node.left);
                     }
                     if (node.right) {
-                        if (node.right.colorIndex != ColorIndex.Gray) {
-                            console.outln("Error: Not a tree!");
-                            return false;
-                        }
                         stack.push(node.right);
                     }
                 } else {
@@ -134,9 +133,9 @@ export class UserCode extends CoreCode {
         return true;
     }
 
-    async postfixExpression() {
+    async toPostfixStr() {
         // pick up inputs in the algo
-        if (!await this.setup("root")) {
+        if (!await this.setup("root") || !await this.isBinaryTree(this.#startNode)) {
             return;
         }
         
@@ -152,21 +151,17 @@ export class UserCode extends CoreCode {
                     node.colorIndex = ColorIndex.Yellow;
                     await this.step(this.#delay());
                     stack.push(node);
-                    for(let i = node.neighbors.length-1; i >= 0; i--) {
-                        let neighbor = node.neighbors[i];
-                        if (neighbor.colorIndex != ColorIndex.Gray) {
-                            console.outln("Error: Not a tree!");
-                            return false;
-                        }
-                        stack.push(node.neighbors[i]);
+                    if (node.left) {
+                        stack.push(node.left);
+                    }
+                    if (node.right) {
+                        stack.push(node.right);
                     }
                 } else {
                     node.colorIndex = ColorIndex.Green;
-                    node.state = ``;
-                    for(let i = 0; i < node.neighbors.length; i++) {
-                        node.state += `${node.neighbors[i].state}`;
-                    }
-                    node.state += node.label;
+                    node.state = `${node.left ? node.left.state : ""}`
+                               + `${node.right ? node.right.state : ""}`
+                               + `${node.label}`;
                 }
             } else {
                 node.colorIndex = ColorIndex.Green;
@@ -176,6 +171,13 @@ export class UserCode extends CoreCode {
         }
         console.outln(root.state);
         return true;
+    }
+
+    async avlRebalance() {
+        if (!await this.setup("root") || !await this.isBinaryTree()) {
+            return false;
+        }
+        console.outln("Execute AVL Rebalance check");
     }
 
     async runSpanningTree() {
@@ -375,23 +377,29 @@ export class UserCode extends CoreCode {
         console.outln("---- Starting user-defined code! ----");
         let selection = console.getSelection();
         switch(selection.toLowerCase()) {
-            case 'loadgraph':
-                await this.loadGraph("graph.txt");
-                break;
-            case 'loadexprtree':
+            case 'loadtree':
                 await this.loadGraph("exprTree.txt");
                 break;
-            case 'prefixexpr':
+            case 'loadavltree':
+                await this.loadGraph("avlTree.txt");
+                break;
+            case 'toprefixstr':
                 console.outln("Prefix form of expression:");
-                await this.prefixExpression();
+                await this.toPrefixStr();
                 break;
-            case 'infixexpr':
+            case 'toinfixstr':
                 console.outln("Infix form of expression:");
-                await this.infixExpression();
+                await this.toInfixStr();
                 break;
-            case 'postfixexpr':
+            case 'topostfixstr':
                 console.outln("Postfix form of expression:");
-                await this.postfixExpression();
+                await this.toPostFixStr();
+                break;
+            case 'avlRebalance':
+                await this.avlRebalance();
+                break;
+            case 'loadgraph':
+                await this.loadGraph("graph.txt");
                 break;
             case 'spanningtree':
                 console.outln("Run Spanning Tree algo.");
@@ -412,12 +420,13 @@ export class UserCode extends CoreCode {
                 break;
             default:
                 console.outln("Available commands:");
-                console.outln("  loadExprTree   : loads a sample expression tree.");
-                console.outln("    prefixExpr   : extracts the prefix form from an expression tree.");
-                console.outln("    infixExpr    : extracts the infix form from an expression tree.")
-                console.outln("    postfixExpr  : extracts postfix form from an expression tree.");
+                console.outln("  loadTree / loadAVLTree : loads a sample binary tree.");
+                console.outln("    toPrefixStr  : serializes the tree in prefix order.");
+                console.outln("    toInfixStr   : serializes the tree in infix order.")
+                console.outln("    toPostfixStr : serializes the tree in postfix order.");
+                console.outln("    avlRebalance : highlights nodes for AVL rebalancing.");
                 console.outln("  --------------");
-                console.outln("  loadGraph      : loads a sample graph.");
+                console.outln("  loadGraph  : loads a sample graph.");
                 console.outln("    spanningTree : runs the Spanning tree algo.");
                 console.outln("    bfs          : runs Breath-First-Search algo.");
                 console.outln("    dijkstra     : runs Dijkstra algo.");
