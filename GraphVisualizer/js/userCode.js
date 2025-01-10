@@ -53,6 +53,7 @@ export class UserCode extends CoreCode {
     }
     //#endregion graph setup helpers
 
+    //#region tree algorithms
     async toPrefixStr() {
         // pick up inputs in the algo
         if (!await this.setup("root") || !await this.isBinaryTree()) {
@@ -177,9 +178,42 @@ export class UserCode extends CoreCode {
         if (!await this.setup("root") || !await this.isBinaryTree()) {
             return false;
         }
-        console.outln("Execute AVL Rebalance check");
+        let root = this.#startNode;
+        graph.traverse(n => {n.state = 0;});
+        stack.clear();
+        queue.clear();
+        stack.push(root);
+        while (stack.size() > 0) {
+            let node = stack.pop();
+            if (node.colorIndex == ColorIndex.Gray) {
+                node.colorIndex = ColorIndex.Yellow;
+                await this.step(this.#delay());
+                stack.push(node);
+                if (node.left) {
+                    stack.push(node.left);
+                }
+                if (node.right) {
+                    stack.push(node.right);
+                }
+            } else {
+                let heightLeft = node.left ? node.left.state : 0;
+                let heightRight = node.right ? node.right.state : 0;
+                node.state = Math.max(heightLeft, heightRight) + 1;
+                if ((node.left && node.left.colorIndex != ColorIndex.Gray) || (node.right && node.right.colorIndex != ColorIndex.Gray)) {
+                    node.colorIndex = ColorIndex.Blue;
+                } else if (Math.abs(heightLeft - heightRight) > 1) {
+                    node.colorIndex = ColorIndex.Green;
+                } else {
+                    node.colorIndex = ColorIndex.Gray;
+                }
+            }
+            await this.step(this.#delay()/10);
+        }
+        return true;
     }
+    //#endregion tree algorithms
 
+    //#region graph algorithms
     async runSpanningTree() {
         // pick up inputs in the algo
         if (!await this.setup("root")) {
@@ -369,6 +403,7 @@ export class UserCode extends CoreCode {
         await this.extractPath(startNode, endNode);
         console.outln(`    iterations = ${iterations}`);
     }
+    //#endregion graph algorithms
 
     /**
      * Entry point for user-defined code.
@@ -395,7 +430,7 @@ export class UserCode extends CoreCode {
                 console.outln("Postfix form of expression:");
                 await this.toPostFixStr();
                 break;
-            case 'avlRebalance':
+            case 'avlrebalance':
                 await this.avlRebalance();
                 break;
             case 'loadgraph':
