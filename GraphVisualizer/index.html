@@ -3,96 +3,11 @@
     <title>Graph Visualizer</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="index.css?v=10">
-    <script type="module" src="js/adt/node.js"></script>
-    <script type="module" src="js/adt/graph.js"></script>
-    <script type="module" src="js/adt/queue.js"></script>
-    <script type="module" src="js/adt/stack.js"></script>
-    <script type="module" src="js/adt/item.js"></script>
-    <script type="module" src="js/adt/edge.js"></script>
-    <script type="module" src="js/main.js"></script>
-    <script type="module" src="js/core/graphics.js"></script>
-    <script type="module" src="js/core/contextMenu.js"></script>
 </head>
-
 <body>
-    <table class="canvasTable">
-        <tr>
-            <td id="hTdCanvas"><canvas id="hMainCanvas" class="canvas"></canvas></td>
-            <td id="hTdBtn"><img id="hBtnConsole" src="res/btnSlide.png" width="8"></td>
-        </tr>
-    </table>
-
-    <table class="statusTable">
-        <tr>
-            <td><div id="hNodeState" class="status"></div></td>
-            <td><!--This is where buttons will go--></td>
-        </tr> 
-    </table>
-
-    <div id="hCtxMenuCanvas" class="ctxmenu">
-        <p id="hCtxMenuCanvas_ResetS"><label>Reset states___</label><input type="text"></p>
-        <p id="hCtxMenuCanvas_ResetNh">Reset node highlights</p>
-        <p id="hCtxMenuCanvas_ResetEh">Reset edge highlights</p>
-        <p id="hCtxMenuCanvas_ResetQ">Reset queue</p>
-        <p id="hCtxMenuCanvas_ResetT">Reset stack</p>
-        <p id="hCtxMenuCanvas_ResetG">Reset graph</p>
-        <div class="menu-separator"></div>
-        <p id="hCtxMenuCanvas_XFer">Transfer graph</p>
-        <div class="menu-separator"></div>
-        <p id="hCtxMenuCanvas_Help">Help</p>
-    </div>
-
-    <div id="hCtxMenuNode" class="ctxmenu">
-        <p id="hCtxMenuNode_Label"><label>Label___</label><input type="text"></p>
-        <p id="hCtxMenuNode_State"><label>State___&nbsp;</label><input type="text"></p>
-        <div class="menu-separator"></div>
-        <p id="hCtxMenuNode_Enqueue">Enqueue</p>
-        <p id="hCtxMenuNode_Dequeue">Dequeue</p>
-        <p id="hCtxMenuNode_Push">Push</p>
-        <p id="hCtxMenuNode_Pop">Pop</p>
-    </div>
-
-    <div id="hCtxMenuConsole" class="ctxmenu">
-        <p id="hCtxMenuConsole_Trace"><label>Trace</label><input type="checkbox"></p>
-        <div class="menu-separator"></div>
-        <p id="hCtxMenuConsole_Copy"><img src="res/clip-copy.png" width="20">&nbsp;Copy</p>
-        <p id="hCtxMenuConsole_Paste"><img src="res/clip-paste.png" width="20">&nbsp;Paste</p>
-        <div class="menu-separator"></div>
-        <p id="hCtxMenuConsole_Clear"><img src="res/btnDelete.png" width="20">&nbsp;Clear</p>
-    </div>
-
-    <dialog id="hXferDialog" class="xfer">
-        <div id="hXferTitleBar" class="textBar">
-            <img id="hXferClose" src="res/window-close.png" alt="Close" style="width:24px;height:24px;">
-        </div>
-        <div class="text">
-            <textarea id="hXferText">This is where the graph goes.</textarea>
-        </div>
-        <div class="buttons">
-            <div>
-                <input id="hXferBtn_Copy" type="image" src="res/clip-copy.png" title="Copy" alt="Copy" style="width:24px;height:24px;">
-                <input id="hXferBtn_Refresh" type="image" src="res/refresh.png" title="Refresh" alt="Refresh" style="width:24px;height:24px;">
-                <input id="hXferBtn_Paste" type="image" src="res/clip-paste.png" title="Paste" alt="Paste" style="width:24px;height:24px;">
-            </div>
-            <div>
-                <input id="hXferBtn_In" type="image" src="res/xfer-in.png" title="Xfer In" alt="XferIn" style="width:24px;height:24px;">
-                <input id="hXferBtn_Out" type="image" src="res/xfer-out.png" title="Xfer Out" alt="XferOut" style="width:24px;height:24px;">
-            </div>
-        </div>
-    </dialog>
-
-    <div id="hConsoleDialog" class="console">
-        <table class="consoleTable">
-            <tr>
-                <td><img id="hConsoleClose" src="res/btnSlide.png" width="8"></td>
-                <td><textarea id="hConsoleText">This is where the console output goes.</textarea></td>
-            </tr>
-        </table>
-        <table class="statusTable">
-            <tr>
-                <td><input id="hConsoleBtnRun" type="image" src="res/btnRun.png" height="20" alt="submit" accessKey="r"></td>
-                <td><img id="hConsoleBtnResize" src="res/console-resize.png" width="24"></td>
-            </tr>
-        </table>
-    </div>
+    <img src="relocation.png" width=120></img>
+    <p>As of January 12, 2025, <b>Graph Visualizer</b> has a new house:</p>
+    <p><a href="https://florinteo.github.io/EduCode/GraphVisualizer/">https://florinteo.github.io/EduCode/GraphVisualizer/</a></p>
+    <p>The source code can be found <a href="https://github.com/FlorinTeo/EduCode/tree/main/GraphVisualizer">here.</a><br>
+    This site will be soon decomissioned, please bookmark the new location.</p>
 </body>
