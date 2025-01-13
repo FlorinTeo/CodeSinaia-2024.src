@@ -1,10 +1,17 @@
 body {
 	font-family:Helvetica, sans-serif;
-    img {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 20px;
+    table {
+        border-collapse: collapse;
+        td {
+            img {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 0px;
+            }
+            padding: 10px;
+            /* border: 1px solid #ddd; */
+        }
     }
 }
 
